@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>耐人寻味的 for...else...语句</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/linux/">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 耐人寻味的 for...else...语句">
+                                        耐人寻味的 for...else...语句
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-07-24T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 24 July 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/for/"><i class="icon-tag"></i>for</a>
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <blockquote>
+<p>&#32769;&#23110;&#32473;&#24403;&#31243;&#24207;&#21592;&#30340;&#32769;&#20844;&#25171;&#30005;&#35805;&#65306;&#8220;&#19979;&#29677;&#39034;&#36335;&#20080;&#19968;&#26020;&#21253;&#23376;&#24102;&#22238;&#26469;&#65292;&#22914;&#26524;&#30475;&#21040;&#21334;&#35199;&#29916;&#30340;&#65292;&#20080;&#19968;&#20010;&#12290;&#8221;&#24403;&#26202;&#65292;&#31243;&#24207;&#21592;&#32769;&#20844;&#25163;&#25447;&#19968;&#20010;&#21253;&#23376;&#36827;&#20102;&#23478;&#38376;&#8230;&#8230;&#32769;&#23110;&#24594;&#36947;&#65306;&#8220;&#20320;&#24590;&#20040;&#23601;&#20080;&#20102;&#19968;&#20010;&#21253;&#23376;&#65311;&#8221;&#32769;&#20844;&#31572;&#26352;&#65306;&#8220;&#22240;&#20026;&#30475;&#21040;&#20102;&#21334;&#35199;&#29916;&#30340;&#12290;&#8221;</p>
+</blockquote>
+<p>&#31243;&#24207;&#21592;&#20080;&#35199;&#29916;&#30340;&#31505;&#35805;&#21487;&#33021;&#22823;&#37096;&#20998;&#35835;&#32773;&#37117;&#30693;&#36947;&#65292;&#20170;&#22825;&#20889;&#30340;&#36825;&#31687;&#25991;&#31456;&#21644;&#36825;&#20010;&#31505;&#35805;&#26377;&#19968;&#23450;&#30340;&#20851;&#31995;&#12290;</p>
+<p>&#20219;&#20309;&#32534;&#31243;&#35821;&#35328;&#37117;&#25552;&#20379;&#20102; if...else... &#35821;&#21477;&#65292;&#34920;&#31034;&#22914;&#26524;&#65288;if&#65289;&#28385;&#36275;&#26465;&#20214;&#23601;&#20570;&#26576;&#20214;&#20107;&#65292;&#21542;&#21017;&#65288;else&#65289;&#23601;&#20570;&#21478;&#22806;&#19968;&#20214;&#20107;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">if</span> <span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"true"</span><span class="p">)</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"false"</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#28982;&#32780;&#65292;&#22312; Python &#20013; else &#19981;&#20165;&#21487;&#20197;&#21644; if &#25645;&#37197;&#20351;&#29992;&#65292;&#36824;&#26377;&#21478;&#19968;&#31181;&#29305;&#26377;&#30340;&#21477;&#27861;&#26159; for&#8230;else &#8230;&#65292;&#38500;&#27492;&#20043;&#22806;&#65292;&#23427;&#36824;&#21487;&#20197;&#21644; while&#12289;try&#8230;except &#32452;&#21512;&#20351;&#29992;&#65292;&#20363;&#22914;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"end"</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="n">end</span>
+</pre></div>
+
+
+<p>&#20294;&#26159;&#65292;&#20320;&#20250;&#21457;&#29616; for&#8230;else&#8230; &#19982; if&#8230;else&#8230; &#34920;&#29616;&#24471;&#19981;&#19968;&#26679;&#65292;&#25353;&#29031;&#20197;&#24448;&#32463;&#39564;&#26469;&#35828;&#65292;&#25191;&#34892;&#20102; for &#35821;&#21477;&#22359;&#20013;&#30340;&#20195;&#30721;&#23601;&#19981;&#25191;&#34892; else &#37324;&#38754;&#30340;&#65292;&#21453;&#20043;&#20134;&#28982;&#12290;</p>
+<p>&#28982;&#32780;&#65292;&#25105;&#20204;&#30475;&#21040;&#30340;&#21364;&#24688;&#24688;&#30456;&#21453;&#65292;for &#24490;&#29615;&#32467;&#26463;&#20043;&#21518;&#25509;&#30528;&#21448;&#25191;&#34892;&#20102; else &#35821;&#21477;&#22359;&#65292;&#36825;&#23601;&#26377;&#28857;&#24847;&#24605;&#20102;&#65292;if &#8230; else &#8230; &#32763;&#35793;&#25104;&#30333;&#35805;&#23601;&#26159; <strong> &#22914;&#26524;&#8230;&#21542;&#21017;&#8230;</strong>&#65292;&#32780; for&#8230;else&#8230; &#32763;&#35793;&#25104;&#30333;&#35805;&#25104;&#20102; <strong>&#30452;&#21040;&#8230; &#28982;&#21518; &#8230;</strong>&#65292;&#20026;&#20160;&#20040;&#19981;&#25226;&#23427;&#20889;&#25104;  for&#8230;then&#8230; &#30340;&#21477;&#24335;&#21602;&#65311;&#36825;&#19981;&#26356;&#22909;&#29702;&#35299;&#21527;&#65311;</p>
+<p>&#21478;&#22806;&#65292;&#21363;&#20351; for &#24490;&#29615;&#36941;&#21382;&#30340;&#26159;&#19968;&#20010;&#31354;&#21015;&#34920;&#20063;&#20250;&#25191;&#34892; else &#35821;&#21477;&#22359;&#12290;</p>
+<div class="highlight"><pre><span/>for i in []:
+    print(i)
+else:
+    print("end")
+
+&gt;&gt;&gt;
+end
+</pre></div>
+
+
+<p>&#32487;&#32493;&#25506;&#32034;&#65292;&#22914;&#26524;&#25105;&#20204;&#29992; <code>break</code> &#25552;&#21069;&#32456;&#27490; for &#24490;&#29615;&#65292;&#20250;&#21457;&#29983;&#20160;&#20040;&#65311;</p>
+<div class="highlight"><pre><span/><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"end"</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">0</span>
+</pre></div>
+
+
+<p>&#24490;&#29615;&#36935;&#21040; break &#36864;&#20986;&#21518;&#65292;&#25972;&#20010;&#35821;&#21477;&#23601;&#32467;&#26463;&#65292;else &#35821;&#21477;&#22359;&#20063;&#19981;&#25191;&#34892;&#20102;&#12290;</p>
+<p>&#32508;&#19978;&#65292;&#25105;&#20204;&#21487;&#20197;&#24471;&#20986;&#36825;&#26679;&#19968;&#20010;&#32467;&#35770;&#65292;&#21482;&#26377;&#24403;&#24490;&#29615;&#37324;&#27809;&#26377;&#36935;&#21040; break &#26102;&#65292;else &#22359;&#25165;&#20250;&#25191;&#34892;&#12290;&#27492;&#21051;&#65292;&#20320;&#24212;&#35813;&#26126;&#30333;&#20102;&#65292;&#30495;&#27491;&#21644; else
+ &#25645;&#37197;&#20351;&#29992;&#30340;&#26159; for &#24490;&#29615;&#20013;&#30340; break&#65292;break ... else ... &#25165;&#26159;&#20004;&#20010;&#20114;&#26021;&#30340;&#26465;&#20214;</p>
+<p>Python &#20043;&#29238;&#20026;&#20160;&#20040;&#35201;&#25630;&#20986;&#36825;&#26679;&#30340;&#19968;&#31181;&#35821;&#27861;&#31958;&#20986;&#26469;&#21602;&#65311;&#36825;&#26159;&#25105;&#20204;&#24120;&#20154;&#27809;&#27861;&#29702;&#35299;&#30340;&#12290;&#19981;&#36807;&#12300;python&#20043;&#31109;&#12301;&#21578;&#35785;&#20102;&#25105;&#20204;&#31572;&#26696;&#65306;  <em>"Although that way may not be obvious at first unless you're Dutch."</em>&#12290;</p>
+<p>&#22312;&#24179;&#26102;&#30340;&#24320;&#21457;&#20013;&#30495;&#30340;&#24456;&#23569;&#26377; for...else... &#30340;&#24212;&#29992;&#22330;&#26223;&#65292;&#19981;&#36807;&#65292;&#20687;&#19979;&#38754;&#36825;&#31181;&#22330;&#26223;&#29992; for else &#36824;&#30495;&#26159;&#19968;&#31181; pythonic &#30340;&#29992;&#27861;&#12290;</p>
+<p>&#24403;&#20320;&#29992; for &#24490;&#29615;&#36845;&#20195;&#26597;&#25214;&#21015;&#34920;&#30340;&#20013;&#30340;&#26576;&#20010;&#20803;&#32032;&#26102;&#65292;&#22914;&#26524;&#25214;&#21040;&#20102;&#23601;&#31435;&#21051;&#36864;&#20986;&#24490;&#29615;&#65292;&#22914;&#26524;&#36845;&#20195;&#23436;&#20102;&#21015;&#34920;&#36824;&#27809;&#25214;&#21040;&#38656;&#35201;&#20197;&#21478;&#22806;&#19968;&#31181;&#24418;&#24335;&#65288;&#27604;&#22914;&#24322;&#24120;&#65289;&#30340;&#26041;&#24335;&#36890;&#30693;&#35843;&#29992;&#32773;&#26102;&#65292;&#29992; for...else... &#26080;&#30097;&#26159;&#26368;&#22909;&#30340;&#36873;&#25321;&#12290;</p>
+<div class="highlight"><pre><span/><span class="c1"># https://stackoverflow.com/a/9980752/1392860</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mylist</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">process</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"List argument missing terminal flag."</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#22914;&#26524;&#19981;&#29992; for...else... &#65292; &#37027;&#20040;&#36824;&#38656;&#35201;&#19987;&#38376;&#24314;&#31435;&#19968;&#20010;&#20020;&#26102;&#26631;&#35760;&#21464;&#37327;&#26469;&#26631;&#35760;&#26159;&#21542;&#24050;&#32463;&#25214;&#21040;&#20102;</p>
+<div class="highlight"><pre><span/><span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mylist</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">break</span>
+    <span class="n">process</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"List argument missing terminal flag."</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#24403;&#20320;&#24819;&#22312;&#25151;&#38388;&#37324;&#25214;&#26576;&#26679;&#19996;&#35199;&#26102;&#65292;&#21482;&#35201;&#22312;&#20219;&#24847;&#20301;&#32622;&#25214;&#21040;&#20102;&#65292;&#23601;&#20572;&#27490;&#32487;&#32493;&#25628;&#26597;&#24037;&#20316;&#12290;&#20294;&#22914;&#26524;&#25226;&#25972;&#20010;&#25151;&#38388;&#37117;&#32763;&#36941;&#20102;&#65292;&#36824;&#27809;&#25214;&#21040;&#25105;&#20204;&#24819;&#35201;&#30340;&#19996;&#35199;&#26102;&#65292;&#38656;&#35201;&#21578;&#35785;&#20154;&#23478;&#65292;&#24456;&#25265;&#27465;&#65292;&#36825;&#20799;&#27809;&#26377;&#20320;&#35201;&#25214;&#30340;&#19996;&#35199;&#12290;&#36935;&#21040;&#36825;&#26679;&#30340;&#24773;&#20917;&#26102;&#23601;&#29992; for ... else &#65292;&#38500;&#27492;&#20043;&#22806;&#65292;&#24656;&#24597;&#21482;&#20250;&#24341;&#36215;&#35823;&#25805;&#20316;&#12290;</p>
+<p>&#21442;&#32771;&#38142;&#25509;&#65306;https://stackoverflow.com/questions/9979970/why-does-python-use-else-after-for-and-while-loops/9980752#9980752</p>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/for-else.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+    <li><a href="https://foofish.net/"><i class="icon-external-link"></i>FOOFISH-PYTHON之禅</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="/category/linux/">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="/tag/extractor/">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/zhuang-shi-qi/">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/http/">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/re/">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/pa-chong/">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-0">
+    <a href="/tag/python/">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/shi-xian-yuan-li/">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; 2018 By Alex</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

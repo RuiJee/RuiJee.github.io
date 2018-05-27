@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Alex's Blog - Python技术</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/linux/">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+        <div class="article">
+                <h1><a href="/python_dict_implements.html">Python字典对象实现原理</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-12-24T00:00:00+08:00">
+        <i class="icon-calendar"></i>Thu 24 December 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/dict/"><i class="icon-tag"></i>dict</a>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/shi-xian-yuan-li/"><i class="icon-tag"></i>实现原理</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>字典类型是Python中最常用的数据类型之一，它是一个键值对的集合，字典通过键来索引，关联到相对的值，理论上它的查询复杂度是 O(1) ： &gt;&gt;&gt; d = {'a': 1, 'b': 2} &gt;&gt;&gt; d['c'] = 3 &gt;&gt;&gt; d {'a': 1, 'b': 2, 'c': 3} ...</p>
+                        <a class="btn primary xsmall" href="/python_dict_implements.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/python-list-implements.html">Python列表对象实现原理</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-12-16T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 16 December 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/list/"><i class="icon-tag"></i>list</a>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/shi-xian-yuan-li/"><i class="icon-tag"></i>实现原理</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>Python中的列表基于PyListObject实现，列表支持元素的插入、删除、更新操作，因此PyListObject是一个变长对象（列表的长度随着元素的增加和删除而变长和变短），同时它还是一个可变对象（列表中的元素根据列表的操作而发生变化，内存大小动态的变化），PyListObject的定义： typedef struct { # 列表对象引用计数 int ob_refcnt; # ...</p>
+                        <a class="btn primary xsmall" href="/python-list-implements.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/python_str_inplements.html">Python字符串对象实现原理</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-12-10T00:00:00+08:00">
+        <i class="icon-calendar"></i>Thu 10 December 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/shi-xian-yuan-li/"><i class="icon-tag"></i>实现原理</a>
+	<a href="/tag/str/"><i class="icon-tag"></i>str</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>在Python世界中将对象分为两种：一种是定长对象，比如整数，整数对象定义的时候就能确定它所占用的内存空间大小，另一种是变长对象，在对象定义时并不知道是多少，比如：str，list, set, dict等。 &gt;&gt;&gt; import sys &gt;&gt;&gt; sys.getsizeof(1000) 28 &gt;&gt;&gt; sys.getsizeof(2000) 28 &gt;&gt;&gt; ...</p>
+                        <a class="btn primary xsmall" href="/python_str_inplements.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/python_int_implement.html">Python 整数对象实现原理</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-12-08T00:00:00+08:00">
+        <i class="icon-calendar"></i>Tue 08 December 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/int/"><i class="icon-tag"></i>int</a>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/shi-xian-yuan-li/"><i class="icon-tag"></i>实现原理</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>整数对象在Python内部用PyIntObject结构体表示： typedef struct { PyObject_HEAD long ob_ival; } PyIntObject; PyObject_HEAD宏中定义的两个属性分别是： int ob_refcnt; struct _typeobject *ob_type; 这两个属性是所有Python对象固有的： ...</p>
+                        <a class="btn primary xsmall" href="/python_int_implement.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/six.html">OS X El-Capitan 安装 virtualenvwrapper 遇到 Operation not permitted</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-11-25T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 25 November 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>事情是这样的，在安装完virtualenv后，想配合virtualenvwrapper使用，于是直接是pip安装： $ pip install virtualenvwrapper 于是抱了一错误，说是没有权限，那么加上sudo后运行： $ sudo pip install virtualenvwrapper 发现还是有问题，仔细一看堆栈信息： Collecting six&gt;=1.9.0 ...</p>
+                        <a class="btn primary xsmall" href="/six.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/virtualenv.html">Python Virtualenv 介绍</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-11-25T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 25 November 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/virtualenv/"><i class="icon-tag"></i>virtualenv</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>动态语言Ruby、Python都有自己的虚拟环境，虚拟环境是程序执行时的独立执行环境，在同一台服务器中可以创建不同的虚拟环境供不同的系统使用，项目之间的运行环境保持独立性而相互不受影响。例如项目可以在基于Python2的环境中运行，而项目B可以在基于Python3的环境中运行。Python通virtualenv工具管理虚拟环境。 安装 virtualenv $ pip install ...</p>
+                        <a class="btn primary xsmall" href="/virtualenv.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/pip.html">修改Python的pip安装源</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-11-23T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 23 November 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/pip/"><i class="icon-tag"></i>pip</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>在 python 中用pip安装依赖包时默认会从 https://pypi.python.org/simple/这个地址取下载，但是这个网站经常出现下载不稳定、访问速度非常慢的情况，这时，我们可以修改配置用国内厂商提供的镜像地址来替换，一个是豆瓣的镜像，另一个是中国科学技术大学的。地址分别是： 豆瓣：http://pypi.douban.com/ 中国科学技术大学 ...</p>
+                        <a class="btn primary xsmall" href="/pip.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/datetime-timestamp.html">小记：datetime 与 timestamp 相互转换遇到的坑</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-08-14T00:00:00+08:00">
+        <i class="icon-calendar"></i>Fri 14 August 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/datetime/"><i class="icon-tag"></i>datetime</a>
+	<a href="/tag/timestamp/"><i class="icon-tag"></i>timestamp</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>事情是这样的，今天遇到一个业务场景：按照比赛的时间start_at作为分页查询的条件获取赛程列表，首先初始化20条数据（数据库用的是MongoDB） 事情是这样的，今天遇到一个业务场景：按照比赛的时间start_at作为分页查询的条件获取赛程列表，首先初始化20条数据（数据库用的是MongoDB）： 第1条记录: start_at: 2015-08-15 01:13:17.330299 ...</p>
+                        <a class="btn primary xsmall" href="/datetime-timestamp.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/guide-python-static-class-abstract-methods.html">如何在Python中正确使用static、class、abstract方法</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-06-17T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 17 June 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>本文翻译自The definitive guide on how to use static, class or abstract methods in Python，初译版本发布于伯乐在线，内容略有改动。 在Python面向对象编程中，类中的方法有多种形式：实例方法、静态方法、类方法、抽象方法，本文来说说如何正确地使用这些方法。 实例方法 实例方法的定义只需要把第一个参数指定为 ...</p>
+                        <a class="btn primary xsmall" href="/guide-python-static-class-abstract-methods.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/understanding-yield.html">如何理解Python关键字yield</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2015-06-11T00:00:00+08:00">
+        <i class="icon-calendar"></i>Thu 11 June 2015
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/yield/"><i class="icon-tag"></i>yield</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>两年前开始接触Python，在SO上看到一篇关于yield的文章，讲解不错，于是尝试将其翻译成了中文，发布在伯乐在线，后来译文收到了不少吐槽，于是两年后的今天对其文重新理解一篇，遂有了此文，译文加入了大量译注信息，帮助读者更好的理解。 （译注：以下代码必须在Python3环境下运行）在理解yield之前，你需要明白生成器(generator)是什么？生成器又源自于迭代对象。 ...</p>
+                        <a class="btn primary xsmall" href="/understanding-yield.html">更多 ...</a>
+                </div>
+        </div>
+        <hr />
+
+        <div class="pagination">
+        <ul>
+                        <li class="prev"><a href="/category/pythonji-zhu/6.html">&larr; Previous</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/.html">1</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/2.html">2</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/3.html">3</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/4.html">4</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/5.html">5</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/6.html">6</a></li>
+                        <li class="active"><a href="/category/pythonji-zhu/7.html">7</a></li>
+                        <li class=""><a href="/category/pythonji-zhu/8.html">8</a></li>
+                        <li class="next"><a href="/category/pythonji-zhu/8.html">Next &rarr;</a></li>
+        </ul>
+        </div>
+
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+    <li><a href="https://foofish.net/"><i class="icon-external-link"></i>FOOFISH-PYTHON之禅</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="/category/linux/">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="/tag/extractor/">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/zhuang-shi-qi/">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/http/">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/re/">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/pa-chong/">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-0">
+    <a href="/tag/python/">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/shi-xian-yuan-li/">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; 2018 By Alex</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

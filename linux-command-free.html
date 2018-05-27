@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Linux性能监控命令详解：free</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/linux/">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Linux性能监控命令详解：free">
+                                        Linux性能监控命令详解：free
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2016-02-27T00:00:00+08:00">
+        <i class="icon-calendar"></i>Sat 27 February 2016
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/free/"><i class="icon-tag"></i>free</a>
+	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#22312;&#31995;&#32479;&#36935;&#21040;&#21508;&#31181;IO&#29942;&#39048;&#65292;&#20869;&#23384;&#20351;&#29992;&#29575;&#39640;&#65292;cpu&#20351;&#29992;&#29575;&#39640;&#31561;&#38382;&#39064;&#26102;&#65292;&#25105;&#20204;&#22914;&#20309;&#26469;&#23450;&#20301;&#38169;&#35823;&#65311;linux&#25552;&#20379;&#20102;&#24456;&#22810;&#21629;&#20196;&#26469;&#21327;&#21161;&#25105;&#20204;&#24555;&#36895;&#23450;&#20301;&#21040;&#38169;&#35823;&#65292;<code>free</code>&#21629;&#20196;&#26159;Linux&#26368;&#24120;&#29992;&#30340;&#21629;&#20196;&#20043;&#19968;&#65306;&#23427;&#21487;&#20197;&#26597;&#30475;&#31995;&#32479;&#30340;&#20869;&#23384;&#29366;&#20917;&#65292;&#21253;&#25324;&#26381;&#21153;&#22120;&#30340;&#24635;&#20869;&#23384;&#65292;&#24050;&#32463;&#20351;&#29992;&#30340;&#20869;&#23384;&#21644;&#21097;&#19979;&#26410;&#34987;&#20351;&#29992;&#30340;&#20869;&#23384;&#65292;&#20197;&#21450;&#32531;&#20914;&#21306;&#21644;&#32531;&#23384;&#21508;&#33258;&#21344;&#29992;&#30340;&#20869;&#23384;&#24773;&#20917;&#12290;</p>
+<div class="highlight"><pre><span/>$ free -m
+             total       used       free     shared    buffers     cached
+Mem:           <span class="m">994</span>        <span class="m">787</span>        <span class="m">207</span>          <span class="m">0</span>        <span class="m">121</span>        227
+-/+ buffers/cache:        <span class="m">437</span>        557
+Swap:            <span class="m">0</span>          <span class="m">0</span>          0
+</pre></div>
+
+<p>&#35201;&#23436;&#20840;&#29702;&#35299;&#19978;&#38754;3&#34892;&#25968;&#25454;&#65292;&#20808;&#25630;&#26126;&#30333;buffer&#21644;cache&#26159;&#20160;&#20040;&#12290;</p>
+<h3>buffer&#65306;&#32531;&#20914;&#21306;</h3>
+<p>&#23558;&#25968;&#25454;&#32531;&#20914;&#19979;&#26469;&#65292;&#35299;&#20915;&#36895;&#24230;&#24930;&#21644;&#24555;&#30340;&#20132;&#25509;&#38382;&#39064;&#65307;&#36895;&#24230;&#24555;&#30340;&#38656;&#35201;&#36890;&#36807;&#32531;&#20914;&#21306;&#23558;&#25968;&#25454;&#19968;&#28857;&#19968;&#28857;&#20256;&#32473;&#36895;&#24230;&#24930;&#30340;&#21306;&#22495;&#12290;&#20363;&#22914;&#65306;&#20174;&#20869;&#23384;&#20013;&#23558;&#25968;&#25454;&#24448;&#30828;&#30424;&#20013;&#20889;&#20837;&#65292;&#24182;&#19981;&#26159;&#30452;&#25509;&#20889;&#20837;&#65292;&#32780;&#26159;&#32531;&#20914;&#21040;&#19968;&#23450;&#22823;&#23567;&#20043;&#21518;&#21047;&#20837;&#30828;&#30424;&#20013;&#12290;</p>
+<blockquote>
+<p>A buffer is something that has yet to be "written" to disk.  </p>
+</blockquote>
+<h3>cache&#65306;&#32531;&#23384;</h3>
+<p>&#23454;&#29616;&#25968;&#25454;&#30340;&#37325;&#22797;&#20351;&#29992;&#65292;&#36895;&#24230;&#24930;&#30340;&#35774;&#22791;&#38656;&#35201;&#36890;&#36807;&#32531;&#23384;&#23558;&#32463;&#24120;&#35201;&#29992;&#21040;&#30340;&#25968;&#25454;&#32531;&#23384;&#36215;&#26469;&#65292;&#32531;&#23384;&#19979;&#26469;&#30340;&#25968;&#25454;&#21487;&#20197;&#25552;&#20379;&#39640;&#36895;&#30340;&#20256;&#36755;&#36895;&#24230;&#32473;&#36895;&#24230;&#24555;&#30340;&#35774;&#22791;&#12290;&#20363;&#22914;&#65306;&#23558;&#30828;&#30424;&#20013;&#30340;&#25968;&#25454;&#35835;&#21462;&#20986;&#26469;&#25918;&#22312;&#20869;&#23384;&#30340;&#32531;&#23384;&#21306;&#20013;&#65292;&#36825;&#26679;&#20197;&#21518;&#20877;&#27425;&#35775;&#38382;&#21516;&#19968;&#20010;&#36164;&#28304;&#65292;&#36895;&#24230;&#20250;&#24555;&#24456;&#22810;&#12290;</p>
+<blockquote>
+<p>A cache is something that has been "read" from the disk and stored for later use.</p>
+</blockquote>
+<p>buffer&#26159;&#29992;&#20110;&#23384;&#25918;&#23558;&#35201;&#36755;&#20986;&#21040;disk&#65288;&#22359;&#35774;&#22791;&#65289;&#30340;&#25968;&#25454;&#65292;&#32780;cache&#26159;&#23384;&#25918;&#20174;disk&#19978;&#35835;&#20986;&#30340;&#25968;&#25454;&#12290;&#20108;&#32773;&#37117;&#26159;&#20026;&#25552;&#39640;IO&#24615;&#33021;&#32780;&#35774;&#35745;&#30340;&#12290;</p>
+<p>&#29702;&#35299;&#20102;buffer&#21644;cache&#30340;&#20316;&#29992;&#21518;&#65292;&#37027;&#20040;<code>free</code>&#23637;&#31034;&#30340;&#20449;&#24687;&#23601;&#26131;&#25026;&#20102;&#65292;&#29616;&#22312;&#24320;&#22987;&#20998;&#26512;free&#21629;&#20196;&#36755;&#20986;&#30340;&#27599;&#19968;&#34892;&#20195;&#34920;&#30340;&#21547;&#20041;&#65306;  </p>
+<h3>&#31532;&#19968;&#34892;&#65306;Mem</h3>
+<p>&#24635;&#20849;&#30340;&#20869;&#23384;994(total) = 787(used)+207(free)&#65292;used&#34920;&#31034;&#31995;&#32479;&#24050;&#32463;&#34987;&#20351;&#29992;&#30340;&#20869;&#23384;&#65292;&#23427;&#21253;&#25324;&#24212;&#29992;&#31243;&#24207;&#20351;&#29992;&#30340;&#20869;&#23384;&#65292;&#20197;&#21450;&#29992;&#20110;&#32531;&#20914;&#21644;&#32531;&#23384;&#30340;&#20869;&#23384;&#24635;&#21644;&#12290;  </p>
+<h3>&#31532;&#20108;&#34892;&#65306;-/+ buffers/cache</h3>
+<p>-buffers/cache&#65306;437(used) = 787(used) - 121(buffers) - 227(cached)&#65292;437&#34920;&#31034;&#38500;&#21435;&#32531;&#20914;&#21644;&#32531;&#23384;&#28040;&#32791;&#30340;&#20869;&#23384;&#22806;&#65292;&#24212;&#29992;&#31243;&#24207;&#23454;&#38469;&#28040;&#32791;&#30340;&#20869;&#23384;&#26159;437M&#12290;</p>
+<p>+buffers/cache&#65306;557(free) = 207(free)+121(buffers)+cached(227)&#65292;557&#34920;&#31034;&#31995;&#32479;&#21487;&#29992;&#30340;&#20869;&#23384;&#26377;557M&#65292;&#22240;&#20026;&#22914;&#26524;&#36935;&#21040;&#20869;&#23384;&#21578;&#24613;&#30340;&#24773;&#20917;&#26102;&#65292;buffer&#21644;cache&#25152;&#21344;&#30340;&#20869;&#23384;&#36824;&#26159;&#21487;&#20197;&#29992;&#26469;&#32473;&#24212;&#29992;&#31243;&#24207;&#20351;&#29992;&#12290;</p>
+<h3>&#31532;&#19977;&#34892;&#65306;Swap</h3>
+<p>&#30475;&#21040;&#24456;&#22810;&#25991;&#31456;&#30452;&#25509;&#35828;&#19981;&#35299;&#37322;&#20102;&#65292;&#20294;&#36825;&#37324;&#25105;&#35201;&#35299;&#37322;&#19968;&#19979;&#65292;Swap&#34920;&#31034;&#20132;&#25442;&#20998;&#21306;&#65292;&#20063;&#23601;&#26159;&#25105;&#20204;&#36890;&#24120;&#25152;&#35828;&#30340;&#34394;&#25311;&#20869;&#23384;&#12290;&#23601;&#21487;&#20197;&#25226;&#19968;&#37096;&#20998;&#30913;&#30424;&#31354;&#38388;&#24403;&#20570;&#20869;&#23384;&#20351;&#29992;&#65292;&#36825;&#37096;&#20998;&#31354;&#38388;&#21483;&#20570;&#34394;&#25311;&#20869;&#23384;&#65292;&#24403;&#31995;&#32479;&#20869;&#23384;&#19981;&#36275;&#26102;&#65292;&#31995;&#32479;&#20250;&#25226;&#37027;&#20123;&#36824;&#39547;&#30041;&#22312;&#20869;&#23384;&#20013;&#20294;&#26159;&#24403;&#21069;&#27809;&#26377;&#36816;&#34892;&#30340;&#31243;&#24207;&#26242;&#26102;&#25918;&#21040;&#34394;&#25311;&#20869;&#23384;&#20013;&#21435;&#12290;</p>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/linux-command-free.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+    <li><a href="https://foofish.net/"><i class="icon-external-link"></i>FOOFISH-PYTHON之禅</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="/category/linux/">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="/tag/extractor/">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/zhuang-shi-qi/">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/http/">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/re/">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/pa-chong/">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-0">
+    <a href="/tag/python/">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/shi-xian-yuan-li/">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; 2018 By Alex</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

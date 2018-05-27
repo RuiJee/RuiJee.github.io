@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python爬虫之模拟知乎登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/linux/">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pa-chong-ji-zhu/">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python爬虫之模拟知乎登录">
+                                        Python爬虫之模拟知乎登录
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-03-30T00:00:00+08:00">
+        <i class="icon-calendar"></i>Thu 30 March 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pa-chong-ji-zhu/"><i class="icon-folder-open"></i>爬虫技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/pa-chong/"><i class="icon-tag"></i>爬虫</a>
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#32463;&#24120;&#20889;&#29228;&#34411;&#30340;&#37117;&#30693;&#36947;&#65292;&#26377;&#20123;&#39029;&#38754;&#22312;&#30331;&#24405;&#20043;&#21069;&#26159;&#34987;&#31105;&#27490;&#25235;&#21462;&#30340;&#65292;&#27604;&#22914;&#30693;&#20046;&#30340;&#35805;&#39064;&#39029;&#38754;&#23601;&#35201;&#27714;&#29992;&#25143;&#30331;&#24405;&#25165;&#33021;&#35775;&#38382;&#65292;&#32780; &#8220;&#30331;&#24405;&#8221; &#31163;&#19981;&#24320; HTTP &#20013;&#30340; Cookie &#25216;&#26415;&#12290;</p>
+<h3>&#30331;&#24405;&#21407;&#29702;</h3>
+<p>Cookie &#30340;&#21407;&#29702;&#38750;&#24120;&#31616;&#21333;&#65292;&#22240;&#20026; HTTP &#26159;&#19968;&#31181;&#26080;&#29366;&#24577;&#30340;&#21327;&#35758;&#65292;&#22240;&#27492;&#20026;&#20102;&#22312;&#26080;&#29366;&#24577;&#30340; HTTP &#21327;&#35758;&#20043;&#19978;&#32500;&#25252;&#20250;&#35805;&#65288;session&#65289;&#29366;&#24577;&#65292;&#35753;&#26381;&#21153;&#22120;&#30693;&#36947;&#24403;&#21069;&#26159;&#21644;&#21738;&#20010;&#23458;&#25143;&#22312;&#25171;&#20132;&#36947;&#65292;Cookie &#25216;&#26415;&#20986;&#29616;&#20102; &#65292;Cookie &#30456;&#24403;&#20110;&#26159;&#26381;&#21153;&#31471;&#20998;&#37197;&#32473;&#23458;&#25143;&#31471;&#30340;&#19968;&#20010;&#26631;&#35782;&#12290;</p>
+<p><img alt="cookie" src="https://user-gold-cdn.xitu.io/2017/3/30/148bef434d45094357f64914c470820a.png"/></p>
+<ol>
+<li>&#27983;&#35272;&#22120;&#31532;&#19968;&#27425;&#21457;&#36215; HTTP &#35831;&#27714;&#26102;&#65292;&#27809;&#26377;&#25658;&#24102;&#20219;&#20309; Cookie &#20449;&#24687;</li>
+<li>&#26381;&#21153;&#22120;&#25226; HTTP &#21709;&#24212;&#65292;&#21516;&#26102;&#36824;&#26377;&#19968;&#20010; Cookie &#20449;&#24687;&#65292;&#19968;&#36215;&#36820;&#22238;&#32473;&#27983;&#35272;&#22120;</li>
+<li>&#27983;&#35272;&#22120;&#31532;&#20108;&#27425;&#35831;&#27714;&#23601;&#25226;&#26381;&#21153;&#22120;&#36820;&#22238;&#30340; Cookie &#20449;&#24687;&#19968;&#36215;&#21457;&#36865;&#32473;&#26381;&#21153;&#22120;</li>
+<li>&#26381;&#21153;&#22120;&#25910;&#21040;HTTP&#35831;&#27714;&#65292;&#21457;&#29616;&#35831;&#27714;&#22836;&#20013;&#26377;Cookie&#23383;&#27573;&#65292; &#20415;&#30693;&#36947;&#20043;&#21069;&#23601;&#21644;&#36825;&#20010;&#29992;&#25143;&#25171;&#36807;&#20132;&#36947;&#20102;&#12290;</li>
+</ol>
+<h3>&#23454;&#25112;&#24212;&#29992;</h3>
+<p>&#29992;&#36807;&#30693;&#20046;&#30340;&#37117;&#30693;&#36947;&#65292;&#21482;&#35201;&#25552;&#20379;&#29992;&#25143;&#21517;&#21644;&#23494;&#30721;&#20197;&#21450;&#39564;&#35777;&#30721;&#20043;&#21518;&#21363;&#21487;&#30331;&#24405;&#12290;&#24403;&#28982;&#65292;&#36825;&#21482;&#26159;&#25105;&#20204;&#30524;&#20013;&#30475;&#21040;&#30340;&#29616;&#35937;&#12290;&#32780;&#32972;&#21518;&#38544;&#34255;&#30340;&#25216;&#26415;&#32454;&#33410;&#23601;&#38656;&#35201;&#20511;&#21161;&#27983;&#35272;&#22120;&#26469;&#25366;&#25496;&#20102;&#12290;&#29616;&#22312;&#25105;&#20204;&#23601;&#29992; Chrome &#26469;&#26597;&#30475;&#24403;&#25105;&#20204;&#22635;&#23436;&#34920;&#21333;&#21518;&#65292;&#31350;&#31455;&#21457;&#29983;&#20102;&#20160;&#20040;&#65311;</p>
+<p><img alt="" src="https://dn-mhke0kuv.qbox.me/154bf15b8ced37049263.png"/></p>
+<p>&#65288;&#22914;&#26524;&#24050;&#32463;&#30331;&#24405;&#30340;&#65292;&#20808;&#36864;&#20986;&#65289;&#39318;&#20808;&#36827;&#20837;&#30693;&#20046;&#30340;&#30331;&#24405;&#39029;&#38754; https://www.zhihu.com/#signin &#65292;&#25171;&#24320; Chrome &#30340;&#24320;&#21457;&#32773;&#24037;&#20855;&#26465;&#65288;&#25353; F12&#65289;&#20808;&#23581;&#35797;&#36755;&#20837;&#19968;&#20010;&#38169;&#35823;&#30340;&#39564;&#35777;&#30721;&#35266;&#23519;&#27983;&#35272;&#22120;&#26159;&#22914;&#20309;&#21457;&#36865;&#35831;&#27714;&#30340;&#12290;</p>
+<p><img alt="" src="https://dn-mhke0kuv.qbox.me/e3f561c2d6c4d7c1e172.png"/></p>
+<p>&#20174;&#27983;&#35272;&#22120;&#30340;&#35831;&#27714;&#21487;&#20197;&#21457;&#29616;&#20960;&#20010;&#20851;&#38190;&#30340;&#20449;&#24687;</p>
+<ol>
+<li>&#30331;&#24405;&#30340; URL &#22320;&#22336;&#26159; https://www.zhihu.com/login/email</li>
+<li>&#30331;&#24405;&#38656;&#35201;&#25552;&#20379;&#30340;&#34920;&#21333;&#25968;&#25454;&#26377;4&#20010;&#65306;&#29992;&#25143;&#21517;&#65288;email&#65289;&#12289;&#23494;&#30721;&#65288;password&#65289;&#12289;&#39564;&#35777;&#30721;&#65288;captcha&#65289;&#12289;_xsrf&#12290;</li>
+<li>&#33719;&#21462;&#39564;&#35777;&#30721;&#30340;URL&#22320;&#22336;&#26159; https://www.zhihu.com/captcha.gif?r=1490690391695&amp;type=login</li>
+</ol>
+<p>_xsrf &#26159;&#20160;&#20040;&#65311;&#22914;&#26524;&#20320;&#23545;CSRF&#65288;&#36328;&#31449;&#35831;&#27714;&#20266;&#36896;&#65289;&#25915;&#20987;&#38750;&#24120;&#29087;&#24713;&#30340;&#35805;&#65292;&#37027;&#20040;&#20320;&#19968;&#23450;&#30693;&#36947;&#23427;&#30340;&#20316;&#29992;&#65292;xsrf&#26159;&#19968;&#20018;&#20266;&#38543;&#26426;&#25968;&#65292;&#23427;&#26159;&#29992;&#20110;&#38450;&#27490;&#36328;&#31449;&#35831;&#27714;&#20266;&#36896;&#30340;&#12290;&#23427;&#19968;&#33324;&#23384;&#22312;&#32593;&#39029;&#30340; form &#34920;&#21333;&#26631;&#31614;&#20013;&#65292;&#20026;&#20102;&#35777;&#23454;&#36825;&#19968;&#28857;&#65292;&#21487;&#20197;&#22312;&#39029;&#38754;&#19978;&#25628;&#32034; &#8220;xsrf&#8221;&#65292;&#26524;&#28982;&#65292;_xsrf&#22312;&#19968;&#20010;&#38544;&#34255;&#30340; input &#26631;&#31614;&#20013;</p>
+<p><img alt="" src="https://dn-mhke0kuv.qbox.me/293797eedb48655c9a24.png"/></p>
+<p>&#25720;&#28165;&#20102;&#27983;&#35272;&#22120;&#30331;&#24405;&#26102;&#25152;&#38656;&#35201;&#30340;&#25968;&#25454;&#26159;&#22914;&#20309;&#33719;&#21462;&#20043;&#21518;&#65292;&#37027;&#20040;&#29616;&#22312;&#23601;&#21487;&#20197;&#24320;&#22987;&#20889;&#20195;&#30721;&#29992; Python &#27169;&#25311;&#27983;&#35272;&#22120;&#26469;&#30331;&#24405;&#20102;&#12290;&#30331;&#24405;&#26102;&#25152;&#20381;&#36182;&#30340;&#20004;&#20010;&#31532;&#19977;&#26041;&#24211;&#26159; requests &#21644; BeautifulSoup&#65292;&#20808;&#23433;&#35013;</p>
+<div class="highlight"><pre><span/><span class="n">pip</span> <span class="n">install</span> <span class="n">beautifulsoup4</span><span class="o">==</span><span class="mf">4.5</span><span class="o">.</span><span class="mi">3</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">requests</span><span class="o">==</span><span class="mf">2.13</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+<p>http.cookiejar &#27169;&#22359;&#21487;&#29992;&#20110;&#33258;&#21160;&#22788;&#29702;HTTP Cookie&#65292;LWPCookieJar &#23545;&#35937;&#23601;&#26159;&#23545; <em>cookies</em> &#30340;&#23553;&#35013;&#65292;&#23427;&#25903;&#25345;&#25226; cookies &#20445;&#23384;&#21040;&#25991;&#20214;&#20197;&#21450;&#20174;&#25991;&#20214;&#20013;&#21152;&#36733;&#12290;</p>
+<p>&#32780; session &#23545;&#35937; &#25552;&#20379;&#20102; Cookie &#30340;&#25345;&#20037;&#21270;&#65292;&#36830;&#25509;&#27744;&#21151;&#33021;&#65292;&#21487;&#20197;&#36890;&#36807; session &#23545;&#35937;&#21457;&#36865;&#35831;&#27714;</p>
+<p>&#39318;&#20808;&#20174;cookies.txt &#25991;&#20214;&#20013;&#21152;&#36733; cookie&#20449;&#24687;&#65292;&#22240;&#20026;&#39318;&#27425;&#36816;&#34892;&#36824;&#27809;&#26377;cookie&#65292;&#25152;&#26377;&#20250;&#20986;&#29616; LoadError &#24322;&#24120;&#12290;</p>
+<div class="highlight"><pre><span/><span class="kn">from</span> <span class="nn">http</span> <span class="kn">import</span> <span class="n">cookiejar</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+<span class="n">session</span><span class="o">.</span><span class="n">cookies</span> <span class="o">=</span> <span class="n">cookiejar</span><span class="o">.</span><span class="n">LWPCookieJar</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">'cookies.txt'</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ignore_discard</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">LoadError</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"load cookies failed"</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>&#33719;&#21462; xsrf</h3>
+<p>&#21069;&#38754;&#24050;&#32463;&#25214;&#21040;&#20102; xsrf &#25152;&#22312;&#30340;&#26631;&#31614;&#65292;<input type="hidden" name="_xsrf" value="ef85127d992f6ea39d9817bbb7a315d4"/>&#65292;&#21033;&#29992; BeatifulSoup &#30340; find &#26041;&#27861;&#21487;&#20197;&#38750;&#24120;&#20415;&#25463;&#30340;&#33719;&#21462;&#35813;&#20540;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">get_xsrf</span><span class="p">():</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://www.zhihu.com"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s2">"html.parser"</span><span class="p">)</span>
+    <span class="n">xsrf</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"_xsrf"</span><span class="p">})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xsrf</span>
+</pre></div>
+
+
+<h3>&#33719;&#21462;&#39564;&#35777;&#30721;</h3>
+<p>&#39564;&#35777;&#30721;&#26159;&#36890;&#36807; /captcha.gif &#25509;&#21475;&#36820;&#22238;&#30340;&#65292;&#36825;&#37324;&#25105;&#20204;&#25226;&#39564;&#35777;&#30721;&#22270;&#29255;&#19979;&#36733;&#20445;&#23384;&#21040;&#24403;&#21069;&#30446;&#24405;&#65292;&#30001;&#20154;&#24037;&#35782;&#21035;&#65292;&#24403;&#28982;&#20320;&#21487;&#20197;&#29992;&#31532;&#19977;&#26041;&#25903;&#25345;&#24211;&#26469;&#33258;&#21160;&#35782;&#21035;&#65292;&#27604;&#22914; pytesser&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">get_captcha</span><span class="p">():</span>
+    <span class="sd">"""</span>
+<span class="sd">    &#25226;&#39564;&#35777;&#30721;&#22270;&#29255;&#20445;&#23384;&#21040;&#24403;&#21069;&#30446;&#24405;&#65292;&#25163;&#21160;&#35782;&#21035;&#39564;&#35777;&#30721;</span>
+<span class="sd">    :return:</span>
+<span class="sd">    """</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+    <span class="n">captcha_url</span> <span class="o">=</span> <span class="s1">'https://www.zhihu.com/captcha.gif?r='</span> <span class="o">+</span> <span class="n">t</span> <span class="o">+</span> <span class="s2">"&amp;type=login"</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">captcha_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'captcha.jpg'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">captcha</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"&#39564;&#35777;&#30721;&#65306;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">captcha</span>
+</pre></div>
+
+
+<h3>&#30331;&#24405;</h3>
+<p>&#19968;&#20999;&#21442;&#25968;&#20934;&#22791;&#23601;&#32490;&#20043;&#21518;&#65292;&#23601;&#21487;&#20197;&#35831;&#27714;&#30331;&#24405;&#25509;&#21475;&#20102;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="n">login_url</span> <span class="o">=</span> <span class="s1">'https://www.zhihu.com/login/email'</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'email'</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+        <span class="s1">'password'</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
+        <span class="s1">'_xsrf'</span><span class="p">:</span> <span class="n">get_xsrf</span><span class="p">(),</span>
+        <span class="s2">"captcha"</span><span class="p">:</span> <span class="n">get_captcha</span><span class="p">(),</span>
+        <span class="s1">'remember_me'</span><span class="p">:</span> <span class="s1">'true'</span><span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">login_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">login_code</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">login_code</span><span class="p">[</span><span class="s1">'msg'</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+
+
+<p>&#35831;&#27714;&#25104;&#21151;&#21518;&#65292;session &#20250;&#33258;&#21160;&#25226; &#26381;&#21153;&#31471;&#30340;&#36820;&#22238;&#30340;cookie &#20449;&#24687;&#22635;&#20805;&#21040; session.cookies &#23545;&#35937;&#20013;&#65292;&#19979;&#27425;&#35831;&#27714;&#26102;&#65292;&#23458;&#25143;&#31471;&#23601;&#21487;&#20197;&#33258;&#21160;&#25658;&#24102;&#36825;&#20123;cookie&#21435;&#35775;&#38382;&#37027;&#20123;&#38656;&#35201;&#30331;&#24405;&#30340;&#39029;&#38754;&#20102;&#12290;</p>
+<p>&#28304;&#30721;&#65306;<a href="https://github.com/lzjun567/crawler_html2pdf/blob/master/zhihu/auto_login.py">https://github.com/lzjun567/crawler_html2pdf/blob/master/zhihu/auto_login.py</a></p>
+<p>&#21442;&#32771;&#36164;&#26009;&#65306; </p>
+<ul>
+<li>&#20851;&#20110; HTTP &#21327;&#35758;&#30340;&#31616;&#21333;&#20171;&#32461;&#65292;&#25512;&#33616;&#20844;&#20247;&#21495;&#12300;Python&#20043;&#31109;&#12301;&#20013;&#20889;&#30340;&#19968;&#31687;&#25991;&#31456;<a href="https://foofish.net/http-request-process.html">&#19968;&#27425;&#23436;&#25972;&#30340;HTTP&#35831;&#27714;&#36807;&#31243;</a> </li>
+<li>https://docs.python.org/3/library/http.cookies.html</li>
+<li>http://docs.python-requests.org/en/master/user/advanced/#session-objects</li>
+</ul>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/python-auto-login-zhihu.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+    <li><a href="https://foofish.net/"><i class="icon-external-link"></i>FOOFISH-PYTHON之禅</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="/category/linux/">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="/tag/extractor/">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/zhuang-shi-qi/">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/http/">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/re/">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/pa-chong/">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-0">
+    <a href="/tag/python/">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/shi-xian-yuan-li/">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; 2018 By Alex</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

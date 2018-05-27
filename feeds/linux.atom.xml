@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Alex's Blog - Linux</title><link href="/" rel="alternate"></link><link href="/feeds/linux.atom.xml" rel="self"></link><id>/</id><updated>2016-12-23T00:00:00+08:00</updated><entry><title>Linux中批量替换文件名</title><link href="/linux-rename.html" rel="alternate"></link><published>2016-12-23T00:00:00+08:00</published><updated>2016-12-23T00:00:00+08:00</updated><author><name>Alex</name></author><id>tag:None,2016-12-23:/linux-rename.html</id><summary type="html">&lt;p&gt;在Linux系统中修改文件名可以用mv命令，但是它只能对单个文件进行操作，如要要批量执行还要写shell脚本，用for语句迭代执行，不过Linux中另外一个命令支持批量替换文件名，它是rename，rename支持正则表达式匹配。需要注意的是，rename命令在不同的Linux发行版语法格式不一样。 语法 在Debian或者Ubuntu环境下使用的语法是： rename ...&lt;/p&gt;</summary><content type="html">&lt;article&gt;
+        &lt;p&gt;&amp;#22312;Linux&amp;#31995;&amp;#32479;&amp;#20013;&amp;#20462;&amp;#25913;&amp;#25991;&amp;#20214;&amp;#21517;&amp;#21487;&amp;#20197;&amp;#29992;&lt;code&gt;mv&lt;/code&gt;&amp;#21629;&amp;#20196;&amp;#65292;&amp;#20294;&amp;#26159;&amp;#23427;&amp;#21482;&amp;#33021;&amp;#23545;&amp;#21333;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#36827;&amp;#34892;&amp;#25805;&amp;#20316;&amp;#65292;&amp;#22914;&amp;#35201;&amp;#35201;&amp;#25209;&amp;#37327;&amp;#25191;&amp;#34892;&amp;#36824;&amp;#35201;&amp;#20889;shell&amp;#33050;&amp;#26412;&amp;#65292;&amp;#29992;&lt;code&gt;for&lt;/code&gt;&amp;#35821;&amp;#21477;&amp;#36845;&amp;#20195;&amp;#25191;&amp;#34892;&amp;#65292;&amp;#19981;&amp;#36807;Linux&amp;#20013;&amp;#21478;&amp;#22806;&amp;#19968;&amp;#20010;&amp;#21629;&amp;#20196;&amp;#25903;&amp;#25345;&amp;#25209;&amp;#37327;&amp;#26367;&amp;#25442;&amp;#25991;&amp;#20214;&amp;#21517;&amp;#65292;&amp;#23427;&amp;#26159;&lt;code&gt;rename&lt;/code&gt;&amp;#65292;&lt;code&gt;rename&lt;/code&gt;&amp;#25903;&amp;#25345;&amp;#27491;&amp;#21017;&amp;#34920;&amp;#36798;&amp;#24335;&amp;#21305;&amp;#37197;&amp;#12290;&amp;#38656;&amp;#35201;&amp;#27880;&amp;#24847;&amp;#30340;&amp;#26159;&amp;#65292;&lt;code&gt;rename&lt;/code&gt;&amp;#21629;&amp;#20196;&amp;#22312;&amp;#19981;&amp;#21516;&amp;#30340;Linux&amp;#21457;&amp;#34892;&amp;#29256;&amp;#35821;&amp;#27861;&amp;#26684;&amp;#24335;&amp;#19981;&amp;#19968;&amp;#26679;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;&amp;#35821;&amp;#27861;&lt;/h3&gt;
+&lt;p&gt;&amp;#22312;Debian&amp;#25110;&amp;#32773;Ubuntu&amp;#29615;&amp;#22659;&amp;#19979;&amp;#20351;&amp;#29992;&amp;#30340;&amp;#35821;&amp;#27861;&amp;#26159;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;rename 's/stringx/stringy/' files
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&amp;#32780;&amp;#22312;CentOS&amp;#19979;&amp;#25110;&amp;#32773;RedHat&amp;#19979;&amp;#26159;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;rename stringx stringy files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;rename&amp;#30340;&amp;#21442;&amp;#25968;&amp;#20998;&amp;#20026;&amp;#19977;&amp;#37096;&amp;#20998;&amp;#65306;  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;stringx &amp;#65306; &amp;#34987;&amp;#26367;&amp;#25442;&amp;#23383;&amp;#31526;&amp;#20018;&lt;/li&gt;
+&lt;li&gt;stringy &amp;#65306;&amp;#26367;&amp;#25442;&amp;#23383;&amp;#31526;&amp;#20018;&lt;/li&gt;
+&lt;li&gt;files &amp;#65306;&amp;#21305;&amp;#37197;&amp;#30340;&amp;#25991;&amp;#20214;&amp;#21015;&amp;#34920;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;&amp;#20363;&amp;#22914;&lt;/h3&gt;
+&lt;p&gt;&amp;#20363;&amp;#22914;&amp;#26377;&amp;#22914;&amp;#19979;&amp;#25991;&amp;#20214;&amp;#65292;&amp;#24819;&amp;#25226;&amp;#25152;&amp;#26377;&amp;#25991;&amp;#20214;&amp;#20013;&amp;#30340;&lt;code&gt;@&lt;/code&gt;&amp;#31526;&amp;#21495;&amp;#21435;&amp;#25481;&amp;#65292;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;uodong_pic@2x.png
+eixin_pic@2x.png
+inkehu_pic@2x.png
+anting_pic-@2x.png
+huanfa_pic@2x.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;CentOS&amp;#36825;&amp;#20040;&amp;#20889;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;&lt;span class="n"&gt;rename&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="mi"&gt;@2&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;png&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;png&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;png&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ubuntu&amp;#36825;&amp;#20040;&amp;#20889;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;&lt;span class="n"&gt;rename&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="mi"&gt;@2&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;png&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+        &lt;br/&gt;
+        &lt;/article&gt;
+
+&lt;p&gt;Original:https://foofish.net/linux-rename.html&lt;/p&gt;</content><category term="linux"></category><category term="rename"></category></entry><entry><title>Linux文件权限介绍</title><link href="/linux-file-permission.html" rel="alternate"></link><published>2016-09-30T00:00:00+08:00</published><updated>2016-09-30T00:00:00+08:00</updated><author><name>Alex</name></author><id>tag:None,2016-09-30:/linux-file-permission.html</id><summary type="html">&lt;p&gt;在Linux中，一切皆为文件（目录也是文件），每个文件对用户具有可读（read）、可写（write）、可执行（execute）权限。目录的执行操作表示是否有权限进入该目录，文件的可执行表示是否可以运行该文件。文件都会从属于一个用户和一个用户组，每个文件针对文件的拥有者、所属组以及其他用户组具有特定的权限。 如上图，除去第一个表示文件类型的字符外，后面的字符均以三个为一组，是『rwx』 ...&lt;/p&gt;</summary><content type="html">&lt;article&gt;
+        &lt;p&gt;&amp;#22312;Linux&amp;#20013;&amp;#65292;&amp;#19968;&amp;#20999;&amp;#30342;&amp;#20026;&amp;#25991;&amp;#20214;&amp;#65288;&amp;#30446;&amp;#24405;&amp;#20063;&amp;#26159;&amp;#25991;&amp;#20214;&amp;#65289;&amp;#65292;&amp;#27599;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#23545;&amp;#29992;&amp;#25143;&amp;#20855;&amp;#26377;&amp;#21487;&amp;#35835;&amp;#65288;read&amp;#65289;&amp;#12289;&amp;#21487;&amp;#20889;&amp;#65288;write&amp;#65289;&amp;#12289;&amp;#21487;&amp;#25191;&amp;#34892;&amp;#65288;execute&amp;#65289;&amp;#26435;&amp;#38480;&amp;#12290;&amp;#30446;&amp;#24405;&amp;#30340;&amp;#25191;&amp;#34892;&amp;#25805;&amp;#20316;&amp;#34920;&amp;#31034;&amp;#26159;&amp;#21542;&amp;#26377;&amp;#26435;&amp;#38480;&amp;#36827;&amp;#20837;&amp;#35813;&amp;#30446;&amp;#24405;&amp;#65292;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#21487;&amp;#25191;&amp;#34892;&amp;#34920;&amp;#31034;&amp;#26159;&amp;#21542;&amp;#21487;&amp;#20197;&amp;#36816;&amp;#34892;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#12290;&amp;#25991;&amp;#20214;&amp;#37117;&amp;#20250;&amp;#20174;&amp;#23646;&amp;#20110;&amp;#19968;&amp;#20010;&amp;#29992;&amp;#25143;&amp;#21644;&amp;#19968;&amp;#20010;&amp;#29992;&amp;#25143;&amp;#32452;&amp;#65292;&amp;#27599;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#38024;&amp;#23545;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25317;&amp;#26377;&amp;#32773;&amp;#12289;&amp;#25152;&amp;#23646;&amp;#32452;&amp;#20197;&amp;#21450;&amp;#20854;&amp;#20182;&amp;#29992;&amp;#25143;&amp;#32452;&amp;#20855;&amp;#26377;&amp;#29305;&amp;#23450;&amp;#30340;&amp;#26435;&amp;#38480;&amp;#12290;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="http://7d9py7.com1.z0.glb.clouddn.com/0210filepermission_2.gif" src="http://7d9py7.com1.z0.glb.clouddn.com/0210filepermission_3.gif"/&gt;&lt;/p&gt;
+&lt;p&gt;&amp;#22914;&amp;#19978;&amp;#22270;&amp;#65292;&amp;#38500;&amp;#21435;&amp;#31532;&amp;#19968;&amp;#20010;&amp;#34920;&amp;#31034;&amp;#25991;&amp;#20214;&amp;#31867;&amp;#22411;&amp;#30340;&amp;#23383;&amp;#31526;&amp;#22806;&amp;#65292;&amp;#21518;&amp;#38754;&amp;#30340;&amp;#23383;&amp;#31526;&amp;#22343;&amp;#20197;&amp;#19977;&amp;#20010;&amp;#20026;&amp;#19968;&amp;#32452;&amp;#65292;&amp;#26159;&amp;#12302;rwx&amp;#12303; &amp;#30340;&amp;#19977;&amp;#20010;&amp;#21442;&amp;#25968;&amp;#30340;&amp;#32452;&amp;#21512;&amp;#12290;[ r ]&amp;#20195;&amp;#34920;&amp;#21487;&amp;#35835;(read)&amp;#12289;[ w ]&amp;#20195;&amp;#34920;&amp;#21487;&amp;#20889;(write)&amp;#12289;[ x ]&amp;#20195;&amp;#34920;&amp;#21487;&amp;#25191;&amp;#34892;(execute)&amp;#12290;&amp;#21516;&amp;#26102;&amp;#20182;&amp;#20204;&amp;#20063;&amp;#20250;&amp;#20998;&amp;#21035;&amp;#23545;&amp;#24212;&amp;#21040;&amp;#19968;&amp;#20010;&amp;#25968;&amp;#23383;&amp;#65292;[ r ]&amp;#23545;&amp;#24212;4&amp;#65292;[ w ]&amp;#23545;&amp;#24212;2&amp;#65292;[ x ]&amp;#23545;&amp;#24212;1&amp;#65292;&amp;#36825;&amp;#20123;&amp;#25968;&amp;#23383;&amp;#22312;&amp;#20462;&amp;#25913;&amp;#25991;&amp;#20214;&amp;#26435;&amp;#38480;&amp;#30340;&amp;#26102;&amp;#20505;&amp;#21487;&amp;#20197;&amp;#29992;&amp;#21040;&amp;#65292;&amp;#22914;&amp;#26524;&amp;#27809;&amp;#26377;[ rwx ]&amp;#20013;&amp;#30340;&amp;#26576;&amp;#20010;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#23601;&amp;#20250;&amp;#29992;&amp;#20943;&amp;#21495;[ - ]&amp;#26367;&amp;#20195;&amp;#12290;&lt;/p&gt;
+&lt;p&gt;&amp;#31532;&amp;#19968;&amp;#32452;&amp;#26159;&amp;#25991;&amp;#20214;&amp;#25317;&amp;#26377;&amp;#32773;&amp;#23545;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25805;&amp;#20316;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#31532;&amp;#20108;&amp;#32452;&amp;#26159;&amp;#25991;&amp;#20214;&amp;#25152;&amp;#23646;&amp;#32452;&amp;#23545;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25805;&amp;#20316;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#31532;&amp;#19977;&amp;#32452;&amp;#26159;&amp;#20854;&amp;#20182;&amp;#32452;&amp;#30340;&amp;#29992;&amp;#25143;&amp;#23545;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25805;&amp;#20316;&amp;#26435;&amp;#38480;&amp;#12290;&amp;#20030;&amp;#20363;&amp;#35828;&amp;#26126;&amp;#65306;  &amp;#26377;&amp;#19968;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#26435;&amp;#38480;&amp;#25968;&amp;#25454;&amp;#20026;&amp;#12302;rwxr-xr--&amp;#12303;&amp;#65292;&amp;#37027;&amp;#20040;&amp;#21069;3&amp;#20010;&amp;#23383;&amp;#31526;&amp;#34920;&amp;#31034;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25317;&amp;#26377;&amp;#32773;&amp;#21487;&amp;#20197;&amp;#23545;&amp;#25991;&amp;#20214;&amp;#36827;&amp;#34892;&amp;#35835;&amp;#12289;&amp;#20889;&amp;#12289;&amp;#25191;&amp;#34892;&amp;#19977;&amp;#20010;&amp;#25805;&amp;#20316;&amp;#65292;&amp;#20013;&amp;#38388;3&amp;#20010;&amp;#23383;&amp;#31526;&amp;#34920;&amp;#31034;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25152;&amp;#23646;&amp;#32452;&amp;#21487;&amp;#20197;&amp;#23545;&amp;#25991;&amp;#20214;&amp;#36827;&amp;#34892;&amp;#35835;&amp;#21644;&amp;#25191;&amp;#34892;&amp;#25805;&amp;#20316;&amp;#65292;&amp;#26368;&amp;#21518;3&amp;#20010;&amp;#23383;&amp;#31526;&amp;#34920;&amp;#31034;&amp;#20854;&amp;#20182;&amp;#32676;&amp;#32452;&amp;#30340;&amp;#29992;&amp;#25143;&amp;#21482;&amp;#33021;&amp;#23545;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#36827;&amp;#34892;&amp;#35835;&amp;#25805;&amp;#20316;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;&amp;#26356;&amp;#25913;&amp;#25991;&amp;#20214;&amp;#26435;&amp;#38480;&amp;#65306;chmod&lt;/h3&gt;
+&lt;p&gt;&amp;#26356;&amp;#25913;&amp;#25991;&amp;#20214;&amp;#26435;&amp;#38480;&amp;#20351;&amp;#29992;&amp;#21629;&amp;#20196; &lt;strong&gt;chmod&lt;/strong&gt; &amp;#65292;&amp;#19968;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#26435;&amp;#38480;&amp;#23545;&amp;#24212;3&amp;#31181;&amp;#29992;&amp;#25143;&amp;#65288;&amp;#33258;&amp;#24049;&amp;#12289;&amp;#32452;&amp;#12289;&amp;#20854;&amp;#20182;&amp;#20154;&amp;#65289;&amp;#30340;&amp;#35835;&amp;#20889;&amp;#25191;&amp;#34892;&amp;#20849;&amp;#26377;9&amp;#20010;&amp;#65292;&amp;#19977;&amp;#20010;&amp;#20026;&amp;#19968;&amp;#32452;&amp;#65292;&amp;#25226;&amp;#27599;&amp;#32452;&amp;#30340;&amp;#26435;&amp;#38480;&amp;#30456;&amp;#21152;&amp;#24471;&amp;#21040;&amp;#19968;&amp;#20010;&amp;#25968;&amp;#23383;&amp;#65292;&amp;#20363;&amp;#22914;[rwxrwx---]&amp;#23545;&amp;#24212;&amp;#30340;&amp;#25968;&amp;#23383;&amp;#26159;&amp;#65306;  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;owner = rwx = 4+2+1 = 7
+group = rwx = 4+2+1 = 7
+others= --- = 0+0+0 = 0
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&amp;#21482;&amp;#35201;&amp;#29992;&amp;#25143;&amp;#23545;&amp;#25991;&amp;#20214;&amp;#26377;&amp;#20889;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#37027;&amp;#20040;&amp;#35813;&amp;#29992;&amp;#25143;&amp;#23601;&amp;#21487;&amp;#20197;&amp;#26356;&amp;#26032;&amp;#20854;&amp;#20182;&amp;#29992;&amp;#25143;&amp;#23545;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25805;&amp;#20316;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#21629;&amp;#20196;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;chmod [-R] xyz &amp;#25991;&amp;#20214;&amp;#25110;&amp;#30446;&amp;#24405;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;xyz&amp;#65306;&amp;#20998;&amp;#21035;&amp;#23545;&amp;#24212;&amp;#19977;&amp;#31867;&amp;#29992;&amp;#25143;&amp;#26435;&amp;#38480;&amp;#20540;&amp;#30456;&amp;#21152;&amp;#30340;&amp;#21644;&amp;#12290;  &lt;/li&gt;
+&lt;li&gt;-R : &amp;#36827;&amp;#34892;&amp;#36882;&amp;#24402;(recursive)&amp;#30340;&amp;#25345;&amp;#32493;&amp;#21464;&amp;#26356;&amp;#65292;&amp;#20134;&amp;#21363;&amp;#36830;&amp;#21516;&amp;#27425;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#30340;&amp;#25152;&amp;#26377;&amp;#25991;&amp;#20214;&amp;#37117;&amp;#20250;&amp;#21464;&amp;#26356;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;#20363;&amp;#22914;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;[root@www ~]# ls -al .bashrc
+-rw-r--r--  1 root root 395 Jul  4 11:45 .bashrc
+[root@www ~]# chmod 777 .bashrc   # &amp;#26356;&amp;#25913;&amp;#20026;&amp;#25152;&amp;#26377;&amp;#29992;&amp;#25143;&amp;#37117;&amp;#21487;&amp;#20197;&amp;#35835;&amp;#20889;&amp;#25191;&amp;#34892;
+[root@www ~]# ls -al .bashrc
+-rwxrwxrwx  1 root root 395 Jul  4 11:45 .bashrc
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;chmod &amp;#38500;&amp;#20102;&amp;#21487;&amp;#20197;&amp;#20351;&amp;#29992;&amp;#25968;&amp;#23383;&amp;#30340;&amp;#26041;&amp;#24335;&amp;#21464;&amp;#26356;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#26435;&amp;#38480;&amp;#20043;&amp;#22806;&amp;#65292;&amp;#36824;&amp;#21487;&amp;#20197;&amp;#20351;&amp;#29992;&amp;#31526;&amp;#21495;&amp;#26469;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#26435;&amp;#38480;&amp;#65292;u&amp;#12289; g&amp;#12289;o&amp;#12289;a&amp;#20998;&amp;#21035;&amp;#26159;user&amp;#12289;group&amp;#12289;others&amp;#12289;all(&amp;#25152;&amp;#26377;&amp;#29992;&amp;#25143;&amp;#65289;&amp;#30340;&amp;#31616;&amp;#20889;&amp;#65292;r
+&amp;#12289;w&amp;#12289;x &amp;#20998;&amp;#21035;&amp;#26159;read&amp;#12289;write&amp;#12289;execute &amp;#30340;&amp;#31616;&amp;#20889;&amp;#65292;&amp;#37027;&amp;#20040;chmod&amp;#21487;&amp;#20197;&amp;#25509;&amp;#25910;&amp;#36825;&amp;#20123;&amp;#31616;&amp;#20889;&amp;#23383;&amp;#31526;&amp;#26469;&amp;#21464;&amp;#26356;&amp;#25991;&amp;#20214;&amp;#26435;&amp;#38480;&amp;#12290;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;    u          
+    g                 +(&amp;#22686;&amp;#21152;)         r
+chmod   o                 -(&amp;#38500;&amp;#21435;)         w             &amp;#25991;&amp;#20214;&amp;#25110;&amp;#30446;&amp;#24405;
+    a                 =(&amp;#36171;&amp;#20540;)         x
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&amp;#20363;&amp;#22914;&amp;#65306;  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;# &amp;#32473;&amp;#33258;&amp;#24049;&amp;#35835;&amp;#20889;&amp;#25191;&amp;#34892;&amp;#26435;&amp;#38480;&amp;#65292;&amp;#32473;&amp;#29992;&amp;#25143;&amp;#32452;&amp;#21644;&amp;#20854;&amp;#20182;&amp;#20154;&amp;#35835;&amp;#21644;&amp;#25191;&amp;#34892;&amp;#25805;&amp;#20316;
+chmod  u=rwx,go=rx  .bashrc
+# &amp;#32473;&amp;#25152;&amp;#26377;&amp;#29992;&amp;#25143;&amp;#36861;&amp;#21152;&amp;#20889;&amp;#26435;&amp;#38480;
+chmod  a+w  .bashrc
+# &amp;#32473;&amp;#25152;&amp;#26377;&amp;#29992;&amp;#25143;&amp;#38500;&amp;#21435;&amp;#20889;&amp;#26435;&amp;#38480;
+chmod a-w   .bashrc
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;&amp;#25913;&amp;#21464;&amp;#25152;&amp;#23646;&amp;#32676;&amp;#32452; chgrp&lt;/h3&gt;
+&lt;p&gt;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#32676;&amp;#32452;&amp;#20351;&amp;#29992;chgrp&amp;#21629;&amp;#20196;&amp;#65292;&amp;#20182;&amp;#26159;change group &amp;#30340;&amp;#32553;&amp;#20889;&amp;#65292;&amp;#21629;&amp;#20196;&amp;#26684;&amp;#24335;&amp;#65306;  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;chgrp [-R] groupname dirname/filename
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;-R &amp;#36882;&amp;#24402;&amp;#25913;&amp;#21464;&amp;#30446;&amp;#24405;&amp;#21450;&amp;#23376;&amp;#30446;&amp;#24405;&amp;#25991;&amp;#20214;&amp;#65292;groupname &amp;#24517;&amp;#39035;&amp;#26159;&amp;#23384;&amp;#22312;&amp;#20110;&amp;#31995;&amp;#32479;&amp;#20013;&amp;#30340;/etc/group&amp;#25991;&amp;#20214;&amp;#37324;&amp;#38754;&amp;#30340;&amp;#32452;&amp;#12290;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;# &amp;#25226;&amp;#24403;&amp;#21069;&amp;#30446;&amp;#24405;&amp;#20197;&amp;#21450;&amp;#23376;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#25152;&amp;#26377;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25152;&amp;#23646;&amp;#32452;&amp;#26356;&amp;#26032;&amp;#20026;mysql&amp;#32452;
+chgrp -R mysql .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#25317;&amp;#26377;&amp;#32773; chown&lt;/h3&gt;
+&lt;p&gt;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25152;&amp;#23646;&amp;#32773;&amp;#20351;&amp;#29992; chown &amp;#21629;&amp;#20196;&amp;#65292;&amp;#20182;&amp;#26159;change owner &amp;#30340;&amp;#32553;&amp;#20889;&amp;#65292;&amp;#21629;&amp;#20196;&amp;#26684;&amp;#24335;&amp;#65306;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;chown [-R]  owner dirname/filename
+&amp;#25110;&amp;#32773;
+chown [-R] owner:group dirname/filename
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;chown &amp;#21629;&amp;#20196;&amp;#19981;&amp;#20165;&amp;#21487;&amp;#20197;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#25317;&amp;#26377;&amp;#32773;&amp;#65292;&amp;#21516;&amp;#26102;&amp;#36824;&amp;#21487;&amp;#20197;&amp;#25913;&amp;#21464;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#32676;&amp;#32452;&amp;#65292;&amp;#21482;&amp;#38656;&amp;#22312; owner &amp;#21518;&amp;#38754; &amp;#21152;&amp;#19978; group &amp;#30340;&amp;#21517;&amp;#31216;&amp;#21363;&amp;#21487;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;# &amp;#25226;install.log&amp;#25913;&amp;#25104;mysql&amp;#29992;&amp;#25143;
+ chown mysql install.log
+# &amp;#25226; install.log &amp;#25913;&amp;#25104;root&amp;#29992;&amp;#25143;&amp;#21644;root&amp;#32452;
+ chown root:root install.log
+&lt;/pre&gt;&lt;/div&gt;
+        &lt;br/&gt;
+        &lt;/article&gt;
+
+&lt;p&gt;Original:https://foofish.net/linux-file-permission.html&lt;/p&gt;</content><category term="linux"></category></entry><entry><title>在Linux中替换目录下多个文件中的字符串</title><link href="/replace-string-linux.html" rel="alternate"></link><published>2016-09-13T00:00:00+08:00</published><updated>2016-09-13T00:00:00+08:00</updated><author><name>Alex</name></author><id>tag:None,2016-09-13:/replace-string-linux.html</id><summary type="html">&lt;p&gt;在Linux中，替换多个文件中的某个字符串可以使用grep和sed的组合来实现这个功能。 基本格式 grep -rl matchstring somedir/ | xargs sed -i 's/string1/string2/g' matchstring是你将要被替换的字符串，它与string1是同样的字符串，string2是用来替换string1的字符串。somdir表示在指定目录下。 ...&lt;/p&gt;</summary><content type="html">&lt;article&gt;
+        &lt;p&gt;&amp;#22312;Linux&amp;#20013;&amp;#65292;&amp;#26367;&amp;#25442;&amp;#22810;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#20013;&amp;#30340;&amp;#26576;&amp;#20010;&amp;#23383;&amp;#31526;&amp;#20018;&amp;#21487;&amp;#20197;&amp;#20351;&amp;#29992;&lt;code&gt;grep&lt;/code&gt;&amp;#21644;&lt;code&gt;sed&lt;/code&gt;&amp;#30340;&amp;#32452;&amp;#21512;&amp;#26469;&amp;#23454;&amp;#29616;&amp;#36825;&amp;#20010;&amp;#21151;&amp;#33021;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;&amp;#22522;&amp;#26412;&amp;#26684;&amp;#24335;&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;grep -rl matchstring somedir/ | xargs sed -i 's/string1/string2/g'
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;matchstring&lt;/code&gt;&amp;#26159;&amp;#20320;&amp;#23558;&amp;#35201;&amp;#34987;&amp;#26367;&amp;#25442;&amp;#30340;&amp;#23383;&amp;#31526;&amp;#20018;&amp;#65292;&amp;#23427;&amp;#19982;&lt;code&gt;string1&lt;/code&gt;&amp;#26159;&amp;#21516;&amp;#26679;&amp;#30340;&amp;#23383;&amp;#31526;&amp;#20018;&amp;#65292;&lt;code&gt;string2&lt;/code&gt;&amp;#26159;&amp;#29992;&amp;#26469;&amp;#26367;&amp;#25442;&lt;code&gt;string1&lt;/code&gt;&amp;#30340;&amp;#23383;&amp;#31526;&amp;#20018;&amp;#12290;&lt;code&gt;somdir&lt;/code&gt;&amp;#34920;&amp;#31034;&amp;#22312;&amp;#25351;&amp;#23450;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;&amp;#20363;&amp;#23376;&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;grep -rl 'windows' ./ | xargs sed -i 's/windows/linux/g'
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&amp;#36825;&amp;#20010;&amp;#21629;&amp;#20196;&amp;#34920;&amp;#31034;&amp;#22312;&amp;#24403;&amp;#21069;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#25152;&amp;#26377;&amp;#25991;&amp;#20214;&amp;#20013;&amp;#25628;&amp;#32034;&amp;#23383;&amp;#31526;&amp;#20018;&amp;#8220;windows&amp;#8221;&amp;#65292;&amp;#24182;&amp;#29992;&amp;#8220;linux&amp;#8221;&amp;#26367;&amp;#25442;&amp;#20043;&amp;#12290;&lt;/p&gt;
+        &lt;br/&gt;
+        &lt;/article&gt;
+
+&lt;p&gt;Original:https://foofish.net/replace-string-linux.html&lt;/p&gt;</content><category term="linux"></category></entry><entry><title>Linux性能监控命令详解：lsof</title><link href="/linux-command-lsof.html" rel="alternate"></link><published>2016-03-27T00:00:00+08:00</published><updated>2016-03-27T00:00:00+08:00</updated><author><name>Alex</name></author><id>tag:None,2016-03-27:/linux-command-lsof.html</id><summary type="html">&lt;p&gt;lsof可以查看当前系统所有的打开文件，在linux环境下，一切皆文件，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件，如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，文件描述符提供了大量关于这个应用程序本身的信息。 命令参数： -a 列出被打开的文件的进程列表 -c&amp;lt;进程名&amp;gt; 列出指定进程所打开的文件 -g ...&lt;/p&gt;</summary><content type="html">&lt;article&gt;
+        &lt;p&gt;&lt;code&gt;lsof&lt;/code&gt;&amp;#21487;&amp;#20197;&amp;#26597;&amp;#30475;&amp;#24403;&amp;#21069;&amp;#31995;&amp;#32479;&amp;#25152;&amp;#26377;&amp;#30340;&amp;#25171;&amp;#24320;&amp;#25991;&amp;#20214;&amp;#65292;&amp;#22312;linux&amp;#29615;&amp;#22659;&amp;#19979;&amp;#65292;&amp;#19968;&amp;#20999;&amp;#30342;&amp;#25991;&amp;#20214;&amp;#65292;&amp;#36890;&amp;#36807;&amp;#25991;&amp;#20214;&amp;#19981;&amp;#20165;&amp;#20165;&amp;#21487;&amp;#20197;&amp;#35775;&amp;#38382;&amp;#24120;&amp;#35268;&amp;#25968;&amp;#25454;&amp;#65292;&amp;#36824;&amp;#21487;&amp;#20197;&amp;#35775;&amp;#38382;&amp;#32593;&amp;#32476;&amp;#36830;&amp;#25509;&amp;#21644;&amp;#30828;&amp;#20214;&amp;#65292;&amp;#22914;&amp;#20256;&amp;#36755;&amp;#25511;&amp;#21046;&amp;#21327;&amp;#35758; (TCP) &amp;#21644;&amp;#29992;&amp;#25143;&amp;#25968;&amp;#25454;&amp;#25253;&amp;#21327;&amp;#35758; (UDP) &amp;#22871;&amp;#25509;&amp;#23383;&amp;#31561;&amp;#65292;&amp;#31995;&amp;#32479;&amp;#22312;&amp;#21518;&amp;#21488;&amp;#37117;&amp;#20026;&amp;#35813;&amp;#24212;&amp;#29992;&amp;#31243;&amp;#24207;&amp;#20998;&amp;#37197;&amp;#20102;&amp;#19968;&amp;#20010;&amp;#25991;&amp;#20214;&amp;#25551;&amp;#36848;&amp;#31526;&amp;#65292;&amp;#25991;&amp;#20214;&amp;#25551;&amp;#36848;&amp;#31526;&amp;#25552;&amp;#20379;&amp;#20102;&amp;#22823;&amp;#37327;&amp;#20851;&amp;#20110;&amp;#36825;&amp;#20010;&amp;#24212;&amp;#29992;&amp;#31243;&amp;#24207;&amp;#26412;&amp;#36523;&amp;#30340;&amp;#20449;&amp;#24687;&amp;#12290;&lt;/p&gt;
+&lt;p&gt;&amp;#21629;&amp;#20196;&amp;#21442;&amp;#25968;&amp;#65306;  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;-a &amp;#21015;&amp;#20986;&amp;#34987;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;&amp;#30340;&amp;#36827;&amp;#31243;&amp;#21015;&amp;#34920;
+-c&amp;lt;&amp;#36827;&amp;#31243;&amp;#21517;&amp;gt; &amp;#21015;&amp;#20986;&amp;#25351;&amp;#23450;&amp;#36827;&amp;#31243;&amp;#25152;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;
+-g &amp;#21015;&amp;#20986;GID&amp;#21495;&amp;#36827;&amp;#31243;&amp;#35814;&amp;#24773;
+-d&amp;lt;&amp;#25991;&amp;#20214;&amp;#21495;&amp;gt; &amp;#21015;&amp;#20986;&amp;#21344;&amp;#29992;&amp;#35813;&amp;#25991;&amp;#20214;&amp;#21495;&amp;#30340;&amp;#36827;&amp;#31243;
++d&amp;lt;&amp;#30446;&amp;#24405;&amp;gt; &amp;#21015;&amp;#20986;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#34987;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;
++D&amp;lt;&amp;#30446;&amp;#24405;&amp;gt; &amp;#36882;&amp;#24402;&amp;#21015;&amp;#20986;&amp;#30446;&amp;#24405;&amp;#19979;&amp;#34987;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;
+-n&amp;lt;&amp;#30446;&amp;#24405;&amp;gt; &amp;#21015;&amp;#20986;&amp;#20351;&amp;#29992;NFS&amp;#30340;&amp;#25991;&amp;#20214;
+-i&amp;lt;&amp;#26465;&amp;#20214;&amp;gt; &amp;#21015;&amp;#20986;&amp;#31526;&amp;#21512;&amp;#26465;&amp;#20214;&amp;#30340;&amp;#36827;&amp;#31243;&amp;#12290;&amp;#65288;4&amp;#12289;6&amp;#12289;&amp;#21327;&amp;#35758;&amp;#12289;:&amp;#31471;&amp;#21475;&amp;#12289; @ip &amp;#65289;
+-p&amp;lt;&amp;#36827;&amp;#31243;&amp;#21495;&amp;gt; &amp;#21015;&amp;#20986;&amp;#25351;&amp;#23450;&amp;#36827;&amp;#31243;&amp;#21495;&amp;#25152;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;
+-u &amp;#21015;&amp;#20986;UID&amp;#21495;&amp;#36827;&amp;#31243;&amp;#35814;&amp;#24773;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;1&amp;#12289;&amp;#25991;&amp;#20214;&amp;#34987;&amp;#21738;&amp;#20123;&amp;#36827;&amp;#31243;&amp;#25171;&amp;#24320;&amp;#20102;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -a /var/lib/mysql/mysql/slow_log.CSV
+COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+mysqld  29363 mysql   63r   REG  253,1        0 263979 /var/lib/mysql/mysql/slow_log.CSV
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;2&amp;#12289;&amp;#21015;&amp;#20986;&amp;#29992;&amp;#25143;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214; &lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -u root | more
+COMMAND     PID USER   FD      TYPE             DEVICE SIZE/OFF       NODE NAME
+init          1 root  cwd       DIR              253,1     4096          2 /
+init          1 root  rtd       DIR              253,1     4096          2 /
+init          1 root  txt       REG              253,1   167192    1048737 /sbin/init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;3&amp;#12289;&amp;#21015;&amp;#20986;&amp;#31243;&amp;#24207;&amp;#65288;command&amp;#65289;&amp;#25171;&amp;#24320;&amp;#20102;&amp;#21738;&amp;#20123;&amp;#25991;&amp;#20214;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -c python
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+python  32280 root  rtd    DIR  253,1     4096      2 /
+python  32280 root  mem    REG  253,1    52120 927846 /lib/x86_64-linux-gnu/libnss_files-2.15.so
+python  32280 root  DEL    REG  253,1          263953 /usr/lib/python2.7/lib-dynload/_multiprocessing.so
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;4&amp;#12289;&amp;#26681;&amp;#25454;&amp;#36827;&amp;#31243;&amp;#21495;&amp;#21015;&amp;#20986;&amp;#35813;&amp;#36827;&amp;#31243;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -p 31370  #nginx&amp;#30340;&amp;#36827;&amp;#31243;&amp;#21495;
+COMMAND   PID     USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
+nginx   31370 www-data  cwd    DIR              253,1     4096       2 /
+nginx   31370 www-data  rtd    DIR              253,1     4096       2 /
+nginx   31370 www-data  txt    REG              253,1   843688 1186644 /usr/sbin/nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;5&amp;#12289;&amp;#26597;&amp;#30475;&amp;#25152;&amp;#26377;&amp;#32593;&amp;#32476;&amp;#36830;&amp;#25509;&amp;#65292;&amp;#21253;&amp;#25324;tcp&amp;#65292;udp&amp;#65292;ipv4,ipv6&amp;#30340;&amp;#36830;&amp;#25509;&amp;#65288;&amp;#32593;&amp;#32476;&amp;#36830;&amp;#25509;&amp;#20063;&amp;#26159;&amp;#25991;&amp;#20214;&amp;#65289;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -i
+COMMAND    PID     USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+pptpd      975     root    6u  IPv4     8836      0t0  TCP *:1723 (LISTEN)
+ssserver  7366     root    4u  IPv4   100096      0t0  TCP *:8388 (LISTEN)
+ssserver  7366     root    5u  IPv4   100097      0t0  UDP *:8388
+ssserver  7366     root    7u  IPv4   100098      0t0  UDP *:57935
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;6&amp;#12289;&amp;#26597;&amp;#30475;&amp;#26576;&amp;#20010;&amp;#31471;&amp;#21475;&amp;#25171;&amp;#24320;&amp;#30340;&amp;#25991;&amp;#20214;&amp;#65288;socket &amp;#36830;&amp;#25509;&amp;#65289;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;root@lzjun:~# lsof -i :80
+COMMAND   PID     USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
+nginx   31369     root    6u  IPv4 8882096      0t0  TCP *:http (LISTEN)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;7&amp;#12289;&amp;#26597;&amp;#30475;&amp;#25152;&amp;#26377;TCP&amp;#36830;&amp;#25509;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;lsof -n -P -i TCP -s TCP:LISTEN
+&lt;/pre&gt;&lt;/div&gt;
+        &lt;br/&gt;
+        &lt;/article&gt;
+
+&lt;p&gt;Original:https://foofish.net/linux-command-lsof.html&lt;/p&gt;</content><category term="linux"></category><category term="lsof"></category></entry><entry><title>Linux性能监控命令详解：free</title><link href="/linux-command-free.html" rel="alternate"></link><published>2016-02-27T00:00:00+08:00</published><updated>2016-02-27T00:00:00+08:00</updated><author><name>Alex</name></author><id>tag:None,2016-02-27:/linux-command-free.html</id><summary type="html">&lt;p&gt;在系统遇到各种IO瓶颈，内存使用率高，cpu使用率高等问题时，我们如何来定位错误？linux提供了很多命令来协助我们快速定位到错误，free命令是Linux最常用的命令之一：它可以查看系统的内存状况，包括服务器的总内存，已经使用的内存和剩下未被使用的内存，以及缓冲区和缓存各自占用的内存情况。 $ free -m total used free shared buffers cached ...&lt;/p&gt;</summary><content type="html">&lt;article&gt;
+        &lt;p&gt;&amp;#22312;&amp;#31995;&amp;#32479;&amp;#36935;&amp;#21040;&amp;#21508;&amp;#31181;IO&amp;#29942;&amp;#39048;&amp;#65292;&amp;#20869;&amp;#23384;&amp;#20351;&amp;#29992;&amp;#29575;&amp;#39640;&amp;#65292;cpu&amp;#20351;&amp;#29992;&amp;#29575;&amp;#39640;&amp;#31561;&amp;#38382;&amp;#39064;&amp;#26102;&amp;#65292;&amp;#25105;&amp;#20204;&amp;#22914;&amp;#20309;&amp;#26469;&amp;#23450;&amp;#20301;&amp;#38169;&amp;#35823;&amp;#65311;linux&amp;#25552;&amp;#20379;&amp;#20102;&amp;#24456;&amp;#22810;&amp;#21629;&amp;#20196;&amp;#26469;&amp;#21327;&amp;#21161;&amp;#25105;&amp;#20204;&amp;#24555;&amp;#36895;&amp;#23450;&amp;#20301;&amp;#21040;&amp;#38169;&amp;#35823;&amp;#65292;&lt;code&gt;free&lt;/code&gt;&amp;#21629;&amp;#20196;&amp;#26159;Linux&amp;#26368;&amp;#24120;&amp;#29992;&amp;#30340;&amp;#21629;&amp;#20196;&amp;#20043;&amp;#19968;&amp;#65306;&amp;#23427;&amp;#21487;&amp;#20197;&amp;#26597;&amp;#30475;&amp;#31995;&amp;#32479;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#29366;&amp;#20917;&amp;#65292;&amp;#21253;&amp;#25324;&amp;#26381;&amp;#21153;&amp;#22120;&amp;#30340;&amp;#24635;&amp;#20869;&amp;#23384;&amp;#65292;&amp;#24050;&amp;#32463;&amp;#20351;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#21644;&amp;#21097;&amp;#19979;&amp;#26410;&amp;#34987;&amp;#20351;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#65292;&amp;#20197;&amp;#21450;&amp;#32531;&amp;#20914;&amp;#21306;&amp;#21644;&amp;#32531;&amp;#23384;&amp;#21508;&amp;#33258;&amp;#21344;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#24773;&amp;#20917;&amp;#12290;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span/&gt;$ free -m
+             total       used       free     shared    buffers     cached
+Mem:           &lt;span class="m"&gt;994&lt;/span&gt;        &lt;span class="m"&gt;787&lt;/span&gt;        &lt;span class="m"&gt;207&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;        &lt;span class="m"&gt;121&lt;/span&gt;        227
+-/+ buffers/cache:        &lt;span class="m"&gt;437&lt;/span&gt;        557
+Swap:            &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          0
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&amp;#35201;&amp;#23436;&amp;#20840;&amp;#29702;&amp;#35299;&amp;#19978;&amp;#38754;3&amp;#34892;&amp;#25968;&amp;#25454;&amp;#65292;&amp;#20808;&amp;#25630;&amp;#26126;&amp;#30333;buffer&amp;#21644;cache&amp;#26159;&amp;#20160;&amp;#20040;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;buffer&amp;#65306;&amp;#32531;&amp;#20914;&amp;#21306;&lt;/h3&gt;
+&lt;p&gt;&amp;#23558;&amp;#25968;&amp;#25454;&amp;#32531;&amp;#20914;&amp;#19979;&amp;#26469;&amp;#65292;&amp;#35299;&amp;#20915;&amp;#36895;&amp;#24230;&amp;#24930;&amp;#21644;&amp;#24555;&amp;#30340;&amp;#20132;&amp;#25509;&amp;#38382;&amp;#39064;&amp;#65307;&amp;#36895;&amp;#24230;&amp;#24555;&amp;#30340;&amp;#38656;&amp;#35201;&amp;#36890;&amp;#36807;&amp;#32531;&amp;#20914;&amp;#21306;&amp;#23558;&amp;#25968;&amp;#25454;&amp;#19968;&amp;#28857;&amp;#19968;&amp;#28857;&amp;#20256;&amp;#32473;&amp;#36895;&amp;#24230;&amp;#24930;&amp;#30340;&amp;#21306;&amp;#22495;&amp;#12290;&amp;#20363;&amp;#22914;&amp;#65306;&amp;#20174;&amp;#20869;&amp;#23384;&amp;#20013;&amp;#23558;&amp;#25968;&amp;#25454;&amp;#24448;&amp;#30828;&amp;#30424;&amp;#20013;&amp;#20889;&amp;#20837;&amp;#65292;&amp;#24182;&amp;#19981;&amp;#26159;&amp;#30452;&amp;#25509;&amp;#20889;&amp;#20837;&amp;#65292;&amp;#32780;&amp;#26159;&amp;#32531;&amp;#20914;&amp;#21040;&amp;#19968;&amp;#23450;&amp;#22823;&amp;#23567;&amp;#20043;&amp;#21518;&amp;#21047;&amp;#20837;&amp;#30828;&amp;#30424;&amp;#20013;&amp;#12290;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A buffer is something that has yet to be "written" to disk.  &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;cache&amp;#65306;&amp;#32531;&amp;#23384;&lt;/h3&gt;
+&lt;p&gt;&amp;#23454;&amp;#29616;&amp;#25968;&amp;#25454;&amp;#30340;&amp;#37325;&amp;#22797;&amp;#20351;&amp;#29992;&amp;#65292;&amp;#36895;&amp;#24230;&amp;#24930;&amp;#30340;&amp;#35774;&amp;#22791;&amp;#38656;&amp;#35201;&amp;#36890;&amp;#36807;&amp;#32531;&amp;#23384;&amp;#23558;&amp;#32463;&amp;#24120;&amp;#35201;&amp;#29992;&amp;#21040;&amp;#30340;&amp;#25968;&amp;#25454;&amp;#32531;&amp;#23384;&amp;#36215;&amp;#26469;&amp;#65292;&amp;#32531;&amp;#23384;&amp;#19979;&amp;#26469;&amp;#30340;&amp;#25968;&amp;#25454;&amp;#21487;&amp;#20197;&amp;#25552;&amp;#20379;&amp;#39640;&amp;#36895;&amp;#30340;&amp;#20256;&amp;#36755;&amp;#36895;&amp;#24230;&amp;#32473;&amp;#36895;&amp;#24230;&amp;#24555;&amp;#30340;&amp;#35774;&amp;#22791;&amp;#12290;&amp;#20363;&amp;#22914;&amp;#65306;&amp;#23558;&amp;#30828;&amp;#30424;&amp;#20013;&amp;#30340;&amp;#25968;&amp;#25454;&amp;#35835;&amp;#21462;&amp;#20986;&amp;#26469;&amp;#25918;&amp;#22312;&amp;#20869;&amp;#23384;&amp;#30340;&amp;#32531;&amp;#23384;&amp;#21306;&amp;#20013;&amp;#65292;&amp;#36825;&amp;#26679;&amp;#20197;&amp;#21518;&amp;#20877;&amp;#27425;&amp;#35775;&amp;#38382;&amp;#21516;&amp;#19968;&amp;#20010;&amp;#36164;&amp;#28304;&amp;#65292;&amp;#36895;&amp;#24230;&amp;#20250;&amp;#24555;&amp;#24456;&amp;#22810;&amp;#12290;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A cache is something that has been "read" from the disk and stored for later use.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;buffer&amp;#26159;&amp;#29992;&amp;#20110;&amp;#23384;&amp;#25918;&amp;#23558;&amp;#35201;&amp;#36755;&amp;#20986;&amp;#21040;disk&amp;#65288;&amp;#22359;&amp;#35774;&amp;#22791;&amp;#65289;&amp;#30340;&amp;#25968;&amp;#25454;&amp;#65292;&amp;#32780;cache&amp;#26159;&amp;#23384;&amp;#25918;&amp;#20174;disk&amp;#19978;&amp;#35835;&amp;#20986;&amp;#30340;&amp;#25968;&amp;#25454;&amp;#12290;&amp;#20108;&amp;#32773;&amp;#37117;&amp;#26159;&amp;#20026;&amp;#25552;&amp;#39640;IO&amp;#24615;&amp;#33021;&amp;#32780;&amp;#35774;&amp;#35745;&amp;#30340;&amp;#12290;&lt;/p&gt;
+&lt;p&gt;&amp;#29702;&amp;#35299;&amp;#20102;buffer&amp;#21644;cache&amp;#30340;&amp;#20316;&amp;#29992;&amp;#21518;&amp;#65292;&amp;#37027;&amp;#20040;&lt;code&gt;free&lt;/code&gt;&amp;#23637;&amp;#31034;&amp;#30340;&amp;#20449;&amp;#24687;&amp;#23601;&amp;#26131;&amp;#25026;&amp;#20102;&amp;#65292;&amp;#29616;&amp;#22312;&amp;#24320;&amp;#22987;&amp;#20998;&amp;#26512;free&amp;#21629;&amp;#20196;&amp;#36755;&amp;#20986;&amp;#30340;&amp;#27599;&amp;#19968;&amp;#34892;&amp;#20195;&amp;#34920;&amp;#30340;&amp;#21547;&amp;#20041;&amp;#65306;  &lt;/p&gt;
+&lt;h3&gt;&amp;#31532;&amp;#19968;&amp;#34892;&amp;#65306;Mem&lt;/h3&gt;
+&lt;p&gt;&amp;#24635;&amp;#20849;&amp;#30340;&amp;#20869;&amp;#23384;994(total) = 787(used)+207(free)&amp;#65292;used&amp;#34920;&amp;#31034;&amp;#31995;&amp;#32479;&amp;#24050;&amp;#32463;&amp;#34987;&amp;#20351;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#65292;&amp;#23427;&amp;#21253;&amp;#25324;&amp;#24212;&amp;#29992;&amp;#31243;&amp;#24207;&amp;#20351;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#65292;&amp;#20197;&amp;#21450;&amp;#29992;&amp;#20110;&amp;#32531;&amp;#20914;&amp;#21644;&amp;#32531;&amp;#23384;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#24635;&amp;#21644;&amp;#12290;  &lt;/p&gt;
+&lt;h3&gt;&amp;#31532;&amp;#20108;&amp;#34892;&amp;#65306;-/+ buffers/cache&lt;/h3&gt;
+&lt;p&gt;-buffers/cache&amp;#65306;437(used) = 787(used) - 121(buffers) - 227(cached)&amp;#65292;437&amp;#34920;&amp;#31034;&amp;#38500;&amp;#21435;&amp;#32531;&amp;#20914;&amp;#21644;&amp;#32531;&amp;#23384;&amp;#28040;&amp;#32791;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#22806;&amp;#65292;&amp;#24212;&amp;#29992;&amp;#31243;&amp;#24207;&amp;#23454;&amp;#38469;&amp;#28040;&amp;#32791;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#26159;437M&amp;#12290;&lt;/p&gt;
+&lt;p&gt;+buffers/cache&amp;#65306;557(free) = 207(free)+121(buffers)+cached(227)&amp;#65292;557&amp;#34920;&amp;#31034;&amp;#31995;&amp;#32479;&amp;#21487;&amp;#29992;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#26377;557M&amp;#65292;&amp;#22240;&amp;#20026;&amp;#22914;&amp;#26524;&amp;#36935;&amp;#21040;&amp;#20869;&amp;#23384;&amp;#21578;&amp;#24613;&amp;#30340;&amp;#24773;&amp;#20917;&amp;#26102;&amp;#65292;buffer&amp;#21644;cache&amp;#25152;&amp;#21344;&amp;#30340;&amp;#20869;&amp;#23384;&amp;#36824;&amp;#26159;&amp;#21487;&amp;#20197;&amp;#29992;&amp;#26469;&amp;#32473;&amp;#24212;&amp;#29992;&amp;#31243;&amp;#24207;&amp;#20351;&amp;#29992;&amp;#12290;&lt;/p&gt;
+&lt;h3&gt;&amp;#31532;&amp;#19977;&amp;#34892;&amp;#65306;Swap&lt;/h3&gt;
+&lt;p&gt;&amp;#30475;&amp;#21040;&amp;#24456;&amp;#22810;&amp;#25991;&amp;#31456;&amp;#30452;&amp;#25509;&amp;#35828;&amp;#19981;&amp;#35299;&amp;#37322;&amp;#20102;&amp;#65292;&amp;#20294;&amp;#36825;&amp;#37324;&amp;#25105;&amp;#35201;&amp;#35299;&amp;#37322;&amp;#19968;&amp;#19979;&amp;#65292;Swap&amp;#34920;&amp;#31034;&amp;#20132;&amp;#25442;&amp;#20998;&amp;#21306;&amp;#65292;&amp;#20063;&amp;#23601;&amp;#26159;&amp;#25105;&amp;#20204;&amp;#36890;&amp;#24120;&amp;#25152;&amp;#35828;&amp;#30340;&amp;#34394;&amp;#25311;&amp;#20869;&amp;#23384;&amp;#12290;&amp;#23601;&amp;#21487;&amp;#20197;&amp;#25226;&amp;#19968;&amp;#37096;&amp;#20998;&amp;#30913;&amp;#30424;&amp;#31354;&amp;#38388;&amp;#24403;&amp;#20570;&amp;#20869;&amp;#23384;&amp;#20351;&amp;#29992;&amp;#65292;&amp;#36825;&amp;#37096;&amp;#20998;&amp;#31354;&amp;#38388;&amp;#21483;&amp;#20570;&amp;#34394;&amp;#25311;&amp;#20869;&amp;#23384;&amp;#65292;&amp;#24403;&amp;#31995;&amp;#32479;&amp;#20869;&amp;#23384;&amp;#19981;&amp;#36275;&amp;#26102;&amp;#65292;&amp;#31995;&amp;#32479;&amp;#20250;&amp;#25226;&amp;#37027;&amp;#20123;&amp;#36824;&amp;#39547;&amp;#30041;&amp;#22312;&amp;#20869;&amp;#23384;&amp;#20013;&amp;#20294;&amp;#26159;&amp;#24403;&amp;#21069;&amp;#27809;&amp;#26377;&amp;#36816;&amp;#34892;&amp;#30340;&amp;#31243;&amp;#24207;&amp;#26242;&amp;#26102;&amp;#25918;&amp;#21040;&amp;#34394;&amp;#25311;&amp;#20869;&amp;#23384;&amp;#20013;&amp;#21435;&amp;#12290;&lt;/p&gt;
+        &lt;br/&gt;
+        &lt;/article&gt;
+
+&lt;p&gt;Original:https://foofish.net/linux-command-free.html&lt;/p&gt;</content><category term="free"></category><category term="linux"></category></entry></feed>
