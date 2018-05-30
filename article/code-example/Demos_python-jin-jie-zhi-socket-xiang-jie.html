@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>python进阶之socket详解</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to python进阶之socket详解">
+                                        python进阶之socket详解
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># python进阶之socket详解</span>
+
+<span class="n">Socket</span><span class="err">的英文原义是“孔”或“插座”。作为</span><span class="n">BSD</span>
+<span class="n">UNIX</span><span class="err">的进程通信机制，通常也称作</span><span class="s2">&quot;套接字&quot;</span><span class="err">，用于描述</span><span class="n">IP</span><span class="err">地址和端口，是一个通信链的句柄，可以用来实现不同虚拟机或不同计算机之间的通信。</span>
+
+<span class="err">网络上的两个程序通过一个双向的通信连接实现数据的交换，这个连接的一端称为一个</span><span class="n">socket</span><span class="err">。</span>
+
+<span class="err">建立网络通信连接至少要一对端口号</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span><span class="err">。</span><span class="n">socket</span><span class="err">本质是编程接口</span><span class="p">(</span><span class="n">API</span><span class="p">)</span><span class="err">，对</span><span class="n">TCP</span><span class="o">/</span><span class="n">IP</span><span class="err">的封装，</span><span class="n">TCP</span><span class="o">/</span><span class="n">IP</span><span class="err">也要提供可供程序员做网络开发所用的</span>
+<span class="err">接口，这就是</span><span class="n">Socket</span><span class="err">编程接口；</span><span class="n">HTTP</span><span class="err">是轿车，提供了封装或者显示数据的具体形式</span><span class="p">;</span><span class="n">Socket</span><span class="err">是发动机，提供了网络通信的能力。</span>
+
+<span class="err">下面来说一下</span><span class="n">python</span><span class="err">的</span><span class="n">socket</span><span class="err">。</span>
+
+<span class="c1">### 1.socket模块</span>
+
+<span class="err">要使用</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span><span class="err">函数来创建套接字。其语法如下：</span>
+
+<span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket_family</span><span class="p">,</span><span class="n">socket_type</span><span class="p">,</span><span class="n">protocol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+
+
+<span class="n">socket_family</span><span class="err">可以是如下参数：</span>
+
+
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span> <span class="n">IPv4</span><span class="err">（默认）</span>
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span> <span class="n">IPv6</span>
+
+
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_UNIX</span> <span class="err">只能够用于单一的</span><span class="n">Unix</span><span class="err">系统进程间通信</span>
+
+
+
+<span class="n">socket_type</span><span class="err">可以是如下参数</span><span class="p">:</span>
+
+
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="err">　　流式</span><span class="n">socket</span> <span class="p">,</span> <span class="k">for</span> <span class="n">TCP</span> <span class="err">（默认）</span>
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="err">　　</span> <span class="err">数据报式</span><span class="n">socket</span> <span class="p">,</span> <span class="k">for</span> <span class="n">UDP</span>
+
+
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_RAW</span> <span class="err">原始套接字，普通的套接字无法处理</span><span class="n">ICMP</span><span class="err">、</span><span class="n">IGMP</span><span class="err">等网络报文，而</span><span class="n">SOCK_RAW</span><span class="err">可以；其次，</span><span class="n">SOCK_RAW</span><span class="err">也可以处理特</span>
+<span class="err">殊的</span><span class="n">IPv4</span><span class="err">报文；此外，利用原始套接字，可以通过</span><span class="n">IP_HDRINCL</span><span class="err">套接字选项由用户构造</span><span class="n">IP</span><span class="err">头。</span>
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_RDM</span> <span class="err">是一种可靠的</span><span class="n">UDP</span><span class="err">形式，即保证交付数据报但不保证顺序。</span><span class="n">SOCK_RAM</span><span class="err">用来提供对原始协议的低级访问，在需要执行某些特殊操</span>
+<span class="err">作时使用，如发送</span><span class="n">ICMP</span><span class="err">报文。</span><span class="n">SOCK_RAM</span><span class="err">通常仅限于高级用户或管理员运行的程序使用。</span>
+
+<span class="err">　　</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_SEQPACKET</span> <span class="err">可靠的连续数据包服务</span>
+
+
+
+<span class="n">protocol</span><span class="err">参数：</span>
+
+
+
+<span class="err">　　</span><span class="mi">0</span><span class="err">　　（默认）与特定的地址家族相关的协议</span><span class="p">,</span><span class="err">如果是</span> <span class="mi">0</span> <span class="err">，则系统就会根据地址格式和套接类别</span><span class="p">,</span><span class="err">自动选择一个合适的协议</span>
+
+
+
+<span class="c1">### 2.套接字对象内建方法</span>
+
+
+
+<span class="err">服务器端套接字函数</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">()</span><span class="err">　　　绑定地址</span><span class="p">(</span><span class="n">ip</span><span class="err">地址</span><span class="p">,</span><span class="err">端口</span><span class="p">)</span><span class="err">到套接字</span><span class="p">,</span><span class="err">参数必须是元组的格式例如：</span><span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="mi">8009</span><span class="p">))</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="err">　　开始监听，</span><span class="mi">5</span><span class="err">为最大挂起的连接数</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span><span class="err">　　被动接受客户端连接，阻塞，等待连接</span>
+
+
+
+<span class="err">客户端套接字函数</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span><span class="err">　　连接服务器端，参数必须是元组格式例如：</span><span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;127,0.0.1&#39;</span><span class="p">,</span><span class="mi">8009</span><span class="p">))</span>
+
+
+
+<span class="err">公共用途的套接字函数</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span><span class="err">　　接收</span><span class="n">TCP</span><span class="err">数据，</span><span class="mi">1024</span><span class="err">为一次数据接收的大小</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span><span class="err">　　发送</span><span class="n">TCP</span><span class="err">数据，</span><span class="n">python3</span><span class="err">发送数据的格式必须为</span><span class="nb">bytes</span><span class="err">格式</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">sendall</span><span class="p">()</span><span class="err">　　完整发送数据，内部循环调用</span><span class="n">send</span>
+
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span><span class="err">　　关闭套接字</span>
+
+
+
+<span class="c1">#### 实例1.简单实现socket程序</span>
+
+<span class="n">server</span><span class="err">端</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="c1"># _*_ coding:utf-8 _*_</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">socket</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">time</span>
+    <span class="n">IP_PORT</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="mi">8009</span><span class="p">)</span>
+    <span class="n">BUF_SIZE</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1024</span>
+    <span class="err"> </span>
+    <span class="n">tcp_server</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+    <span class="n">tcp_server</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">IP_PORT</span><span class="p">)</span>
+    <span class="n">tcp_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">    </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;waiting for connection...&quot;</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">conn</span><span class="p">,</span><span class="n">addr</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">tcp_server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="err">    </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;...connected from:&quot;</span><span class="p">,</span><span class="n">addr</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">        </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">tcp_server</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">BUF_SIZE</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">data</span><span class="p">:</span><span class="k">break</span>
+    <span class="err">        </span><span class="n">tcp_server</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">] </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(),</span><span class="n">data</span><span class="p">))</span>
+    <span class="err"> </span>
+    <span class="n">tcp_server</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="err">以上代码解释：</span>
+
+
+
+<span class="mi">1</span><span class="o">~</span><span class="mi">4</span><span class="err">行</span>
+
+
+
+<span class="err">第一行是</span><span class="n">Unix</span><span class="err">的启动信息行，随后导入</span><span class="n">time</span><span class="err">模块和</span><span class="n">socket</span><span class="err">模块</span>
+
+
+
+<span class="mi">5</span><span class="o">~</span><span class="mi">10</span><span class="err">行</span>
+
+
+
+<span class="n">IP_PORT</span><span class="err">为全局变量声明了</span><span class="n">IP</span><span class="err">地址和端口，表示</span><span class="n">bind</span><span class="p">()</span><span class="err">函数绑定在此地址上，把缓冲区的大小设定为</span><span class="mi">1</span><span class="n">K</span><span class="err">，</span><span class="n">listen</span><span class="p">()</span><span class="err">函数表示最多允许多少个连接同时进</span>
+<span class="err">来，后来的就会被拒绝掉</span>
+
+
+
+<span class="mi">11</span><span class="o">~</span><span class="err">到最后一行</span>
+
+
+
+<span class="err">在进入服务器的循环后，被动等待连接的到来。当有连接时，进入对话循环，等待客户端发送数据。如果消息为空，表示客户端已经退出，就跳出循环等待下一个连接到来。得到</span>
+<span class="err">客户端消息后，在消息前面加一个时间戳然后返回。最后一行不会执行，因为循环不会退出所以服务端也不会执行</span><span class="n">close</span><span class="p">()</span><span class="err">。只是提醒不要忘记调用</span><span class="n">close</span><span class="p">()</span><span class="err">函数。</span>
+
+
+
+<span class="n">client</span><span class="err">端</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="c1"># _*_ coding:utf-8 _*_</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">socket</span>
+    <span class="err"> </span>
+    <span class="n">HOST</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;127.0.0.1&#39;</span>
+    <span class="n">PORT</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">8009</span>
+    <span class="n">BUF_SIZE</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1024</span>
+    <span class="n">ADDR</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span><span class="n">PORT</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="n">client</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ADDR</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; &quot;</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">data</span><span class="p">:</span><span class="k">break</span>
+    <span class="err">    </span><span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="err">    </span><span class="n">recv_data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">client</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">BUF_SIZE</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">recv_data</span><span class="p">:</span><span class="k">break</span>
+    <span class="err">    </span><span class="k">print</span><span class="p">(</span><span class="n">recv_data</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="err">     </span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="mi">5</span><span class="o">~</span><span class="mi">11</span><span class="err">行</span>
+
+<span class="n">HOST</span><span class="err">和</span><span class="n">PORT</span><span class="err">变量表示服务器的</span><span class="n">IP</span><span class="err">地址与端口号。由于演示是在同一台服务器所以</span><span class="n">IP</span><span class="err">地址都是</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="err">，如果运行在其他服务器上要做相应的修改。端口号</span>
+<span class="err">要与服务器端完全相同否则无法通信。缓冲区大小还是</span><span class="mi">1</span><span class="n">K</span><span class="err">。</span>
+
+
+
+<span class="err">客户端套接字在</span><span class="mi">10</span><span class="err">行创建然后就去连接服务器端</span>
+
+
+
+<span class="mi">13</span><span class="o">~</span><span class="mi">21</span><span class="err">行</span>
+
+
+
+<span class="err">客户端也无限循环，客户端的循环在以下两个条件的任意一个发生后就退出：</span><span class="mf">1.</span><span class="err">用户输入为空的情况或者服务器端响应的消息为空。否则客户端会把用户输入的字符串发送给服</span>
+<span class="err">务器进行处理，然后接收显示服务器返回来的带有时间戳的字符串。</span>
+
+
+
+<span class="err">运行客户端程序与服务端程序</span>
+
+
+
+<span class="err">以下是客户端的输入与输出</span>
+
+
+
+    <span class="p">[</span><span class="n">root</span><span class="nd">@pythontab</span><span class="p">]</span><span class="c1"># python client.py </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">hello</span><span class="err"> </span><span class="n">python</span>
+    <span class="p">[</span><span class="n">Thu</span><span class="err"> </span><span class="n">Sep</span><span class="err"> </span><span class="mi">15</span><span class="err"> </span><span class="mi">22</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">12</span><span class="err"> </span><span class="mi">2016</span><span class="p">]</span><span class="err"> </span><span class="sa">b</span><span class="s1">&#39;hello python&#39;</span>
+
+
+
+<span class="err">以下是服务端输出</span>
+
+
+
+
+    <span class="p">[</span><span class="n">root</span><span class="nd">@pythontab</span><span class="p">]</span><span class="c1"># python server.py </span>
+    <span class="n">waiting</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">connection</span><span class="o">...</span>
+    <span class="o">...</span><span class="n">connected</span><span class="err"> </span><span class="n">from</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">55378</span><span class="p">)</span>
+
+<span class="c1">### 3.socketserver模块</span>
+
+<span class="n">socketserver</span><span class="err">是标准库中的一个高级别的模块。用于简化实现网络客户端与服务器所需要的大量样板代码。模块中已经实现了一些可以使用的类。</span>
+
+
+
+<span class="err">实例</span><span class="mi">1</span><span class="err">：使用</span><span class="n">socketserver</span><span class="err">实现与上面</span><span class="n">socket</span><span class="p">()</span><span class="err">实例一样的功能</span>
+
+
+
+<span class="err">服务端程序代码</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="c1"># _*_ coding:utf-8 _*_</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">socketserver</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">time</span>
+    <span class="err"> </span>
+    <span class="n">HOST</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;127.0.0.1&#39;</span>
+    <span class="n">PORT</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">8009</span>
+    <span class="n">ADDR</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span><span class="n">PORT</span><span class="p">)</span>
+    <span class="n">BUF_SIZE</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1024</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Myserver</span><span class="p">(</span><span class="n">socketserver</span><span class="o">.</span><span class="n">BaseRequestHandler</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="n">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;...connected from:&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">client_address</span><span class="p">)</span>
+    <span class="err">            </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">BUF_SIZE</span><span class="p">)</span>
+    <span class="err">            </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">data</span><span class="p">:</span><span class="k">break</span>
+    <span class="err">            </span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(),</span><span class="n">data</span><span class="p">)))</span>
+    <span class="err"> </span>
+    <span class="n">server</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">socketserver</span><span class="o">.</span><span class="n">ThreadingTCPServer</span><span class="p">(</span><span class="n">ADDR</span><span class="p">,</span><span class="n">Myserver</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;waiting for connection...&quot;</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+
+
+
+<span class="mi">11</span><span class="o">~</span><span class="mi">17</span><span class="err">行</span>
+
+
+
+<span class="err">主要的工作在这里。从</span><span class="n">socketserver</span><span class="err">的</span><span class="n">BaseRequestHandler</span><span class="err">类中派生出一个子类，并重写</span><span class="n">handle</span><span class="p">()</span><span class="err">函数。</span>
+
+
+
+<span class="err">在有客户端发进来的消息的时候，</span><span class="n">handle</span><span class="p">()</span><span class="err">函数就会被调用。</span>
+
+
+
+<span class="mi">19</span><span class="o">~</span><span class="mi">21</span><span class="err">行</span>
+
+
+
+<span class="err">代码的最后一部分用给定的</span><span class="n">IP</span><span class="err">地址和端口加上自定义处理请求的类</span><span class="p">(</span><span class="n">Myserver</span><span class="p">)</span><span class="err">。然后进入等待客户端请求与处理客户端请求的无限循环中。</span>
+
+
+
+<span class="err">客户端程序代码</span>
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">socket</span>
+    <span class="n">HOST</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;127.0.0.1&#39;</span>
+    <span class="n">PORT</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">8009</span>
+    <span class="n">ADDR</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span><span class="n">PORT</span><span class="p">)</span>
+    <span class="n">BUF_SIZE</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1024</span>
+    <span class="err"> </span>
+    <span class="n">client</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ADDR</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; &quot;</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">data</span><span class="p">:</span><span class="k">continue</span>
+    <span class="err">    </span><span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="err">    </span><span class="n">recv_data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">client</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">BUF_SIZE</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">recv_data</span><span class="p">:</span><span class="k">break</span>
+    <span class="err">    </span><span class="k">print</span><span class="p">(</span><span class="n">recv_data</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="err"> </span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="err">执行服务端和客户端代码</span>
+
+
+
+<span class="err">下面是客户端输出</span>
+
+
+
+    <span class="p">[</span><span class="n">root</span><span class="nd">@pythontab</span><span class="p">]</span><span class="c1"># python socketclient.py </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">hello</span><span class="err"> </span><span class="n">python</span>
+    <span class="n">Thu</span><span class="err"> </span><span class="n">Sep</span><span class="err"> </span><span class="mi">15</span><span class="err"> </span><span class="mi">23</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">31</span><span class="err"> </span><span class="mi">2016</span><span class="err"> </span><span class="sa">b</span><span class="s1">&#39;hello python&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">hello</span><span class="err"> </span><span class="n">pythontab</span>
+    <span class="n">Thu</span><span class="err"> </span><span class="n">Sep</span><span class="err"> </span><span class="mi">15</span><span class="err"> </span><span class="mi">23</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">49</span><span class="err"> </span><span class="mi">2016</span><span class="err"> </span><span class="sa">b</span><span class="s1">&#39;hello pythontab&#39;</span>
+
+
+
+<span class="err">下面是服务端输出</span>
+
+
+
+    <span class="p">[</span><span class="n">root</span><span class="nd">@pythontab</span><span class="p">]</span><span class="c1"># python socketserver.py </span>
+    <span class="n">waiting</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">connection</span><span class="o">...</span>
+    <span class="o">...</span><span class="n">connected</span><span class="err"> </span><span class="n">from</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">55385</span><span class="p">)</span>
+    <span class="o">...</span><span class="n">connected</span><span class="err"> </span><span class="n">from</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">55385</span><span class="p">)</span>
+    <span class="o">...</span><span class="n">connected</span><span class="err"> </span><span class="n">from</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">55385</span><span class="p">)</span>
+    <span class="o">...</span><span class="n">connected</span><span class="err"> </span><span class="n">from</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">55385</span><span class="p">)</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

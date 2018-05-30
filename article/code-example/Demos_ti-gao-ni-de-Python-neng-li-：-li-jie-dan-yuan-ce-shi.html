@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>提高你的Python能力：理解单元测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 提高你的Python能力：理解单元测试">
+                                        提高你的Python能力：理解单元测试
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 提高你的Python能力：理解单元测试</span>
+
+<span class="err">对于程序开发新手来说，一个最常见的困惑是测试的主题。他们隐约觉得“单元测试”是很好的，而且他们也应该做单元测试。但他们却不懂这个词的真正含义。如果这听起来像</span>
+<span class="err">是在说你，不要怕！在这篇文章中，我将介绍什么是单元测试，为什么它有用，以及如何对</span><span class="n">Python</span><span class="err">的代码进行单元测试。</span>
+
+<span class="c1">### 什么是测试？</span>
+
+<span class="err">在讨论为什么测试很有用、怎样进行测试之前，让我们先花几分钟来定义一下“单元测试”究竟是什么。在一般的编程术语中，“测试”指的是通过编写可以调用的代码（独立于</span>
+<span class="err">你实际应用程序的代码）来帮助你确定程序中是否有错误。这并不能证明你的代码是正确的（在非常有限的情况下这是唯一的可能）。它只是报告了测试者认为的那种情况是否被</span>
+<span class="err">正确处理了。</span>
+
+<span class="err">注：当我使用“测试”一次时，我指的是“自动化测试”，即这些测试是在机器上运行的。“手动测试”则是一个人运行程序，并与它进行交互，从而发现漏洞，这是个独立的概</span>
+<span class="err">念。</span>
+
+<span class="err">测试可以检查出什么样的情况呢？语法错误是语言的意外误用，如</span>
+
+
+
+    <span class="n">my_list</span><span class="o">..</span><span class="n">append</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="err">后面多余的一个</span> <span class="err">“</span><span class="o">.</span><span class="err">“。逻辑错误是当算法（可以看成是“解决问题的方式”）不正确时引发的。可能程序员忘记</span><span class="n">Python</span><span class="err">是“零索引“的并且试图通过写</span>
+
+
+
+    <span class="k">print</span><span class="p">(</span><span class="n">my_string</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">my_string</span><span class="p">)])</span>
+
+<span class="err">（这样会引起</span><span class="ne">IndexError</span><span class="err">）来打印出一个字符串中的最后一个字符。更大、更系统的错误也可以被检查出来。比如当用户输入一个大于</span><span class="mi">100</span><span class="err">的数字、或者在网站检索</span>
+<span class="err">不可用的时候挂起此网站的话，程序会一直崩溃。</span>
+
+<span class="err">这些所有的错误都可以通过对代码的仔细测试检查出来。</span><span class="n">Unit</span> <span class="n">testing</span><span class="p">,</span><span class="err">特指在一个分隔的代码单元中的测试。一个单元可以是整个模块，一个单独的类或者函数，</span>
+<span class="err">或者这两者间的任何代码。然而，重要的是，测试代码要与我们没有测试到的其他代码相互隔离（因为其它代码本身有错误的话会因此混淆测试结果）。考虑如下例子：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Return True if *number* is prime.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">True</span>
+    <span class="n">def</span><span class="err"> </span><span class="n">print_next_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Print the closest prime number larger than *number*.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">index</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">number</span>
+    <span class="err">    </span><span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">        </span><span class="n">index</span><span class="err"> </span><span class="o">+=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="err">            </span><span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<span class="err">你有两个函数，</span><span class="n">is_prime</span> <span class="err">和</span>
+<span class="n">print_next_prime</span><span class="err">。如果你想测试</span><span class="n">print_next_prime</span><span class="err">，我们就需要确定</span><span class="n">is_prime</span><span class="err">是正确的，因为</span><span class="n">print_next_prime</span>
+<span class="err">中调用了这个函数。在这种情况下，</span><span class="n">print_next_prime</span> <span class="err">函数是一个单元，</span><span class="n">is_prime</span>
+<span class="err">函数是另一个单元。由于单元测试每次只测试一个单元，因此我们需要仔细考虑怎样才能准确的测试</span> <span class="n">print_next_prime</span>
+<span class="err">?（更多的是关于之后怎样实现这些测试）。</span>
+
+<span class="err">因此，测试代码应该长什么样呢？如果上一个例子存在一个叫</span><span class="n">primes</span><span class="o">.</span><span class="n">py</span> <span class="err">的文件中，我们可以把测试代码写在一个叫</span> <span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+<span class="err">的文件中。下面是</span> <span class="n">test_primes</span><span class="o">.</span><span class="n">py</span> <span class="err">中的最基本内容，比如下面这个测试样例：</span>
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">unittest</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">primes</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">is_prime</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">PrimesTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Tests for `primes.py`.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="n">test_is_five_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="s2">&quot;&quot;&quot;Is five successfully determined to be prime?&quot;&quot;&quot;</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span><span class="err"> </span><span class="vm">__name__</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+<span class="err">这个文件通过一个</span><span class="n">test</span> <span class="n">case</span><span class="p">:</span><span class="err">?</span><span class="n">test_is_five_prime</span><span class="o">.</span> <span class="err">创建了一个单元测试。通过</span><span class="n">Python</span><span class="err">内嵌的一个测试框架</span> <span class="n">unittest</span><span class="err">。当</span><span class="n">u</span>
+<span class="n">nittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span><span class="err">被调用时，任何一个以</span><span class="n">test</span><span class="err">开头命名的成员函数将被运行，他们是</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="err">的一个派生类，并且是断言检查的。</span>
+<span class="err">如果我们通过输入</span><span class="n">python</span> <span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err">来运行测试，我们能够看到</span><span class="n">unittest</span><span class="err">框架在控制台上</span> <span class="err">的输出：</span>
+
+
+
+    <span class="err">$ </span><span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">E</span>
+    <span class="o">======================================================================</span>
+    <span class="n">ERROR</span><span class="p">:</span><span class="err"> </span><span class="n">test_is_five_prime</span><span class="err"> </span><span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">PrimesTestCase</span><span class="p">)</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;test_primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">8</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">test_is_five_prime</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;/home/jknupp/code/github_code/blug_private/primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">is_prime</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="ne">ZeroDivisionError</span><span class="p">:</span><span class="err"> </span><span class="n">integer</span><span class="err"> </span><span class="n">division</span><span class="err"> </span><span class="ow">or</span><span class="err"> </span><span class="n">modulo</span><span class="err"> </span><span class="n">by</span><span class="err"> </span><span class="n">zero</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">1</span><span class="err"> </span><span class="n">test</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+
+<span class="err">单独的“</span><span class="n">E</span><span class="err">”表示的是我们单元测试的结果（如果它成功了，会打印出一个“</span><span class="o">.</span><span class="err">”）。我们可以看到我们的测试失败了，以及导致失败的那行代码，还有任何引发的异常信息。</span>
+
+<span class="c1">### 为什么要测试？</span>
+
+<span class="err">在我们继续那个例子之前，要问个很重要的问题：“为什么测试对我来说有价值”？这是个公平的问题，也是那些对于代码测试不熟悉的人常问的问题。毕竟，测试需要一定的时</span>
+<span class="err">间，而我们完全可以用这些时间去编代码，为什么要测试而不是去做那些最有生产效率的事？</span>
+
+<span class="err">有很多答案可以有效的回答这个问题，我列出了以下几点：</span>
+
+<span class="err">测试可以保证你的代码在一系列给定条件下正常工作</span>
+
+<span class="err">测试确保了一系列条件下的正确性。语法错误基本上一定通过测试被查出来，一个代码单元的基本的逻辑也可以通过测试被检测出来，以确保一定条件下的正确性。再次，它不是</span>
+<span class="err">要证明代码是在任何条件下都正确的。我们只是简单的瞄准了一套比较完整的可能的条件（例如，你可以写一个测试来监测当你调用</span><span class="n">my_addition_function</span>
+<span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;refrigerator), 的时候，但你不必为每个参数检测所有可能的字符串）</span>
+
+<span class="err">测试允许人们确保对代码的改动不会破坏现有的功能</span>
+
+<span class="err">重构代码时，这一点特别有用。如果没有测试到位，你就没法保证你的代码的改变没有破坏之前工作正常的东西。如果你希望更改或重写你的代码，并希望不会破坏任何东西，适</span>
+<span class="err">当的单元测试是很必要的。</span>
+
+<span class="err">测试迫使人们在不寻常条件的情况下思考代码，这可能会揭示出逻辑错误</span>
+
+<span class="err">编写测试强迫你去思考在非正常条件下你的代码可能遇到的问题。在上面的例子中，</span><span class="n">my_addition_function</span><span class="err">函数可以将两个数字相加。测试基本正确性的简</span>
+<span class="err">单测试将调用</span><span class="n">my_addition_function</span><span class="err">（</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="err">），并断言说结果是</span><span class="mi">4</span><span class="err">。然而，进一步的测试可能会通过调用</span><span class="n">my_addition_function</span><span class="err">（</span>
+<span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="err">）来测试该功能是否能正确进行浮点数的运算。防御性的编码原则表明你的代码应该能够在非法输入的情况下正常失效，因此测试时，当字符串类型被作为参数传</span>
+<span class="err">递到函数中时应当抛出一个异常。</span>
+
+<span class="err">良好的测试要求模块化，解耦代码，这是一个良好的系统设计的标志</span>
+
+<span class="err">单元测试的整体做法是通过代码的松散耦合使其变得更容易。如果你的应用程序代码直接调用数据库，例如，测试你应用程序的逻辑依赖于一个有效的数据库连接，并且测试数据</span>
+<span class="err">要存在于数据库中。另一方面，隔离了外部资源的代码在测试过程中更容易被模拟对象所替代。出于必要，（人们）设计的有测试能力的应用程序最终采用了模块化和松散耦合。</span>
+
+<span class="c1">### 单元测试的剖析</span>
+
+<span class="err">通过继续之前的例子，我们将看到如何编写并组织单元测试。回想一下，</span><span class="n">primes</span><span class="o">.</span><span class="n">py</span><span class="err">包含以下代码：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Return True if *number* is prime.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">True</span>
+    <span class="n">def</span><span class="err"> </span><span class="n">print_next_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Print the closest prime number larger than *number*.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">index</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">number</span>
+    <span class="err">    </span><span class="k">while</span><span class="err"> </span><span class="bp">True</span><span class="p">:</span>
+    <span class="err">        </span><span class="n">index</span><span class="err"> </span><span class="o">+=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="err">            </span><span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<span class="err">同时，文件</span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err">包含如下代码：</span>
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">unittest</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">primes</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">is_prime</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">PrimesTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Tests for `primes.py`.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="n">test_is_five_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="s2">&quot;&quot;&quot;Is five successfully determined to be prime?&quot;&quot;&quot;</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span><span class="err"> </span><span class="vm">__name__</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+<span class="c1">### 做出断言</span>
+
+<span class="n">unittest</span><span class="err">是</span><span class="n">Python</span><span class="err">标准库中的一部分，并且也是我们开始“单元测试之旅”的一个好的起点。一个单元测试中包括一个或多个断言（一些声明被测试代码的一些属</span>
+<span class="err">性为真的语句）。会想你上学的时候“断言”这个词的字面意思就是“陈述事实”。在单元测试中，断言也是同样的作用。</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span> <span class="err">更像是自我解释。它能声明传递过去的参数的计算结果为真。</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="err">类包含了许多断言方法，所以一定要检查</span>
+<span class="err">列表并选择合适的方法进行测试。如果在每个测试中都用到</span><span class="n">assertTrue</span><span class="err">的话，则应该考虑一个反模式，因为它增加了测试中读者的认知负担。正确使用断言的方法应当</span>
+<span class="err">是使测试能够明确说明究竟是什么在被断言（例如，很明显?，只需扫一眼</span><span class="n">assertIsInstance</span> <span class="err">的方法名，就知道它要说明的是其参数）。</span>
+
+<span class="err">每个测试应该测试一个单独、有具体特性的代码，并且应该被赋予相关的命名。就单元测试发现机制的研究表明（主要在</span><span class="n">Python2</span><span class="o">.</span><span class="mi">7</span><span class="o">+</span><span class="err">和</span><span class="mf">3.2</span><span class="o">+</span><span class="err">版本中），测试方法应</span>
+<span class="err">该以</span><span class="n">test_</span><span class="err">为前缀命名。（这是可配置的，但是其目的是鉴别测试方法和非测试的实用方法）。如果我们把</span><span class="n">test_is_five_prime</span>
+<span class="err">的命名改为</span><span class="n">is_five_prime</span><span class="err">的话，运行</span><span class="n">python</span><span class="err">中的</span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err">时会输出如下信息</span><span class="p">:</span>
+
+
+
+    <span class="err">$ </span><span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">0</span><span class="err"> </span><span class="n">tests</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+    <span class="n">OK</span>
+
+<span class="err">不要被上面信息中的“</span><span class="n">OK</span><span class="err">”所糊弄了，只有当什么测试都没真正运行的时候才会显示出“</span><span class="n">OK</span><span class="err">”！我认为一个测试也没跑其实应该显示个报错的，但是个人感觉放在一边，这是</span>
+<span class="err">一个你应该注意是行为，尤其是当通过程序运行来检查测试结果的时候（例如，一个持续的集成工具，像</span><span class="n">TracisCI</span><span class="err">）。</span>
+
+<span class="err">异常</span>
+
+<span class="err">让我们回到</span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err">的实际内容中去，回忆一下运行</span><span class="n">python</span> <span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err">指令后的输出结果：</span>
+
+
+
+    <span class="err">$ </span><span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">E</span>
+    <span class="o">======================================================================</span>
+    <span class="n">ERROR</span><span class="p">:</span><span class="err"> </span><span class="n">test_is_five_prime</span><span class="err"> </span><span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">PrimesTestCase</span><span class="p">)</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;test_primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">8</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">test_is_five_prime</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;/home/jknupp/code/github_code/blug_private/primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">is_prime</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="ne">ZeroDivisionError</span><span class="p">:</span><span class="err"> </span><span class="n">integer</span><span class="err"> </span><span class="n">division</span><span class="err"> </span><span class="ow">or</span><span class="err"> </span><span class="n">modulo</span><span class="err"> </span><span class="n">by</span><span class="err"> </span><span class="n">zero</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">1</span><span class="err"> </span><span class="n">test</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+
+<span class="err">这些输出告诉我们，我们一个测试的结果失败并不是因为一个断言失败了，而是因为出现了一个未捕获的异常。事实上，由于抛出了一个异常，</span><span class="n">unittest</span><span class="err">框架并没有能够</span>
+<span class="err">运行我们的测试就返回了。</span>
+
+<span class="err">这里的问题很明确：我们使用的求模运算的计算范围中包括了</span><span class="mi">0</span><span class="err">，因此执行了一个除以</span><span class="mi">0</span><span class="err">的操作。为了解决这个问题，我们可以很简单的将起始值由</span><span class="mi">0</span><span class="err">变为</span><span class="mi">2</span><span class="err">，并指出对</span><span class="mi">0</span><span class="err">求模是</span>
+<span class="err">错误的，而对</span><span class="mi">1</span><span class="err">求模则一直是真（并且一个素数只能被自身和</span><span class="mi">1</span><span class="err">整除，因此我们无需检查</span><span class="mi">1</span><span class="err">）。</span>
+
+<span class="c1">### 解决问题</span>
+
+<span class="err">一次失败的测试使我们修改了代码。一旦我们改好了这个错误（将</span><span class="n">s_prime</span><span class="err">中的一行改为</span><span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span>
+<span class="n">number</span><span class="p">):</span><span class="err">），我们就得到了如下输出：</span>
+
+
+
+    <span class="err">$ </span><span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">.</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">1</span><span class="err"> </span><span class="n">test</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+
+<span class="err">现在错误已经改了，这是不是意味着我们应该删掉</span><span class="n">test_is_five_prime</span><span class="err">这个测试方法（因为很明显，它将不会一直能通过测试）？不应该删。由于通过测试是</span>
+<span class="err">最终目标的话单元测试应该尽量少的被删除。我们已经测试过</span><span class="n">is_prime</span><span class="err">的语法是有效的，并且，至少在一种情况下，它返回正确的结果。我们的目标是要建立一套能全部</span>
+<span class="err">通过的（单元测试的逻辑分组）测试，虽然有些一开始可能会失败。</span>
+
+<span class="n">test_is_five_prime</span><span class="err">用于处理一个“非特殊”的素数。让我们确保它也能正确处理非素数。将以下方法添加到</span><span class="n">PrimesTestCase</span><span class="err">类：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">test_is_four_non_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Is four correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="err"> </span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Four is not prime!&#39;</span><span class="p">)</span>
+
+<span class="err">请注意，这时我们给</span><span class="k">assert</span><span class="err">调用添加了可选的</span><span class="n">msg</span><span class="err">参数。如果该测试失败了，我们的信息将被打印到控制台，并给运行测试的人提供额外的信息。</span>
+
+<span class="c1">### 边界情况</span>
+
+<span class="err">我们已经成功的测试了两种普通情况。现在让我们考虑边界情况下、或者那些不寻常或意外的输入的用例。当测试一个其范围是正整数的函数时，边界情况下的实例包括</span><span class="mi">0</span><span class="err">、</span><span class="mi">1</span><span class="err">、</span>
+<span class="err">负数和一个很大的数字。现在让我们来测试其中的一些。</span>
+
+<span class="err">添加一个对</span><span class="mi">0</span><span class="err">的测试很简单。我们预计?</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="err">返回的是</span><span class="n">false</span><span class="err">，因为，根据定义，素数必须大于</span><span class="mi">1</span><span class="err">。</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">test_is_zero_not_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Is zero correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="err">可惜呀，输出是：</span>
+
+
+
+    <span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">..</span><span class="n">F</span>
+    <span class="o">======================================================================</span>
+    <span class="n">FAIL</span><span class="p">:</span><span class="err"> </span><span class="n">test_is_zero_not_prime</span><span class="err"> </span><span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">PrimesTestCase</span><span class="p">)</span>
+    <span class="n">Is</span><span class="err"> </span><span class="n">zero</span><span class="err"> </span><span class="n">correctly</span><span class="err"> </span><span class="n">determined</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">to</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">prime</span><span class="err">?</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;test_primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">17</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">test_is_zero_not_prime</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="ne">AssertionError</span><span class="p">:</span><span class="err"> </span><span class="bp">True</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">false</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">3</span><span class="err"> </span><span class="n">tests</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+    <span class="n">FAILED</span><span class="err"> </span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="mi">0</span><span class="err">被错误的判定为素数。我们忘记了，我们决定在数字范围中跳过</span><span class="mi">0</span><span class="err">和</span><span class="mi">1</span><span class="err">。让我们增加一个对他们的特殊检查。</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Return True if *number* is prime.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="n">number</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">True</span>
+
+<span class="err">现在测试通过了。我们的函数应该怎样处理一个负数？在写这个测试用例之前就知道输出结果是很重要的。在这种情况下，任何负数都应该返回</span><span class="n">false</span><span class="err">。</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">test_negative_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Is a negative number correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">index</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="err">这里我们觉得检查从</span><span class="o">-</span><span class="mi">1</span><span class="err">到</span><span class="o">-</span>
+<span class="mi">9</span><span class="err">的所有数字。在一个循环中调用</span><span class="n">test</span><span class="err">方法是非常合法的，在一个测试中多次调用断言方法也可以。我们可以在下面用（更详细）的方式改写代码。</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">test_negative_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Is a negative number correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">))</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="o">-</span><span class="mi">9</span><span class="p">))</span>
+
+<span class="err">这两个是完全等价的。除了当我们运行循环版本时，我们得到了一个我们不太想要的信息：</span>
+
+
+
+    <span class="n">python</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">...</span><span class="n">F</span>
+    <span class="o">======================================================================</span>
+    <span class="n">FAIL</span><span class="p">:</span><span class="err"> </span><span class="n">test_negative_number</span><span class="err"> </span><span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">PrimesTestCase</span><span class="p">)</span>
+    <span class="n">Is</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="n">negative</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="n">correctly</span><span class="err"> </span><span class="n">determined</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">to</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">prime</span><span class="err">?</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;test_primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">22</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">test_negative_number</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+    <span class="ne">AssertionError</span><span class="p">:</span><span class="err"> </span><span class="bp">True</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">false</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="n">tests</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+    <span class="n">FAILED</span><span class="err"> </span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="err">嗯···我们知道测试失败了，但是是在哪个负数上失败的？非常没用的是，</span><span class="n">Python</span><span class="err">的单元测试框架并没有打印出预期值和实际值。我们可以移步到两种方式上，并用其中</span>
+<span class="err">之一来解决问题：通过</span><span class="n">msg</span><span class="err">参数，或通过使用一个第三方的单元测试框架。</span>
+
+<span class="err">使用</span><span class="n">msg</span><span class="err">参数来</span><span class="n">assertFalse</span><span class="err">仅仅能够使我们认识到我们可以用字符串的格式设置来解决问题。</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">test_negative_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Is a negative number correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">index</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">),</span><span class="err"> </span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;{} should not be determined to be prime&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="err">从而给出了如下输出信息：</span>
+
+
+
+    <span class="n">python</span><span class="err"> </span><span class="n">test_primes</span>
+    <span class="o">...</span><span class="n">F</span>
+    <span class="o">======================================================================</span>
+    <span class="n">FAIL</span><span class="p">:</span><span class="err"> </span><span class="n">test_negative_number</span><span class="err"> </span><span class="p">(</span><span class="n">test_primes</span><span class="o">.</span><span class="n">PrimesTestCase</span><span class="p">)</span>
+    <span class="n">Is</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="n">negative</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="n">correctly</span><span class="err"> </span><span class="n">determined</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">to</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">prime</span><span class="err">?</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="n">File</span><span class="err"> </span><span class="s2">&quot;./test_primes.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">22</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">test_negative_number</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">),</span><span class="err"> </span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;{} should not be determined to be prime&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+    <span class="ne">AssertionError</span><span class="p">:</span><span class="err"> </span><span class="bp">True</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">false</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span><span class="err"> </span><span class="n">should</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">determined</span><span class="err"> </span><span class="n">to</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">prime</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="n">tests</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="mf">0.000</span><span class="n">s</span>
+    <span class="n">FAILED</span><span class="err"> </span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">### 妥善地修复代码</span>
+
+<span class="err">我们看到，失败的负数是第一个数字：</span><span class="o">-</span><span class="mi">1</span><span class="err">。为了解决这个问题，我们可以为负数增再增加一个特殊检查，但是编写单元测试的目的不是盲目的添加代码来检测边界情况。当一个</span>
+<span class="err">测试失败时，我们应该退后一步并且确定解决问题的最佳方式。在这种情况下，我们就不该增加一个额外的</span><span class="k">if</span><span class="err">：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Return True if *number* is prime.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">&lt;</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="n">number</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">True</span>
+
+<span class="err">应当首先使用如下代码：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">is_prime</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;Return True if *number* is prime.&quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">&lt;=</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="n">number</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">number</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="bp">False</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">True</span>
+
+<span class="err">在后一个代码中，我们发现如果参数小于等于</span><span class="mi">1</span><span class="err">时，两个</span><span class="k">if</span><span class="err">语句可以合并到一个返回值为</span><span class="n">false</span><span class="err">的语句中。这样做不仅更加简洁，并且很好的贴合了素数的定义（一个比</span><span class="mi">1</span>
+<span class="err">大并且只能被</span><span class="mi">1</span><span class="err">和它本身整除的数）。</span>
+
+<span class="c1">### 第三方测试框架</span>
+
+<span class="err">我们本来也可以通过使用第三方测试框架解决这个由于信息太少导致测试失败的问题。最常用的两个是</span><span class="n">py</span><span class="o">.</span><span class="n">test</span><span class="err">和</span><span class="n">nose</span><span class="err">。通过运行语句</span><span class="n">py</span><span class="o">.</span><span class="n">test</span>
+<span class="o">-</span><span class="n">l</span><span class="err">（</span><span class="o">-</span><span class="n">l</span><span class="err">为显示局部变量的值）可以得到如下结果。</span>
+
+
+
+    <span class="c1">#! bash</span>
+    <span class="n">py</span><span class="o">.</span><span class="n">test</span><span class="err"> </span><span class="o">-</span><span class="n">l</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">=============================</span><span class="err"> </span><span class="n">test</span><span class="err"> </span><span class="n">session</span><span class="err"> </span><span class="n">starts</span><span class="err"> </span><span class="o">==============================</span>
+    <span class="n">platform</span><span class="err"> </span><span class="n">linux2</span><span class="err"> </span><span class="o">--</span><span class="err"> </span><span class="n">Python</span><span class="err"> </span><span class="mf">2.7</span><span class="o">.</span><span class="mi">6</span><span class="err"> </span><span class="o">--</span><span class="err"> </span><span class="n">pytest</span><span class="o">-</span><span class="mf">2.4</span><span class="o">.</span><span class="mi">2</span>
+    <span class="n">collected</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="n">items</span>
+    <span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="err"> </span><span class="o">...</span><span class="n">F</span>
+    <span class="o">===================================</span><span class="err"> </span><span class="n">FAILURES</span><span class="err"> </span><span class="o">===================================</span>
+    <span class="n">_____________________</span><span class="err"> </span><span class="n">PrimesTestCase</span><span class="o">.</span><span class="n">test_negative_number</span><span class="err"> </span><span class="n">______________________</span>
+    <span class="bp">self</span><span class="err"> </span><span class="o">=</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">test_negative_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="s2">&quot;&quot;&quot;Is a negative number correctly determined not to be prime?&quot;&quot;&quot;</span>
+    <span class="err">        </span><span class="k">for</span><span class="err"> </span><span class="n">index</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="o">&gt;</span><span class="err">           </span><span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+    <span class="n">E</span><span class="err">           </span><span class="ne">AssertionError</span><span class="p">:</span><span class="err"> </span><span class="bp">True</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">false</span>
+    <span class="n">index</span><span class="err">      </span><span class="o">=</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span>
+    <span class="bp">self</span><span class="err">       </span><span class="o">=</span><span class="err"> </span><span class="n">test_primes</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="err"> </span><span class="ne">AssertionError</span>
+
+<span class="err">正如你所看到的，一些更有用的信息。这些框架提供了比单纯的更详细的输出更多的功能，但问题是仅仅知道它们能存在和扩展内置</span><span class="n">unittest</span><span class="err">测试包的功能。</span>
+
+<span class="err">结束语</span>
+
+<span class="err">在这篇文章中，你学到了什么是单元测试，为什么它们如此重要，还有怎样编写测试。这就是说，要注意我们只是剖开了测试方法学中的表层，更多高级的话题，比如测试案例的</span>
+<span class="err">组织、持续整合以及测试案例的管理等都是可供那些想要进一步学习</span><span class="n">Python</span><span class="err">中的测试的读者研究的很好的话题。</span>
+
+<span class="err">在不改变其功能的前提下重组</span><span class="o">/</span><span class="err">清理代码</span>
+
+<span class="err">编代码时不暴露其内部数据或函数并且不使用其他代码的内部数据或函数</span>
+
+
+
+<span class="err">文章转自：</span><span class="o">&lt;</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">blog</span><span class="o">.</span><span class="n">jobbole</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="mi">55180</span><span class="o">/&gt;</span><span class="err"> 作者：卷卷怪</span>
+
+<span class="err">英文出处：</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">jeffknupp</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">blog</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mi">12</span><span class="o">/</span><span class="mi">09</span><span class="o">/</span><span class="n">improve</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">understanding</span><span class="o">-</span>
+<span class="n">unit</span><span class="o">-</span><span class="n">testing</span><span class="o">/</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

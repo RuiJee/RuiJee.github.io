@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>常用的 Python 调试工具，Python开发必读</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 常用的 Python 调试工具，Python开发必读">
+                                        常用的 Python 调试工具，Python开发必读
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 常用的 Python 调试工具，Python开发必读</span>
+
+<span class="err">以下是我做调试或分析时用过的工具的一个概览。如果你知道有更好的工具，请在评论中留言，可以不用很完整的介绍。</span>
+
+<span class="c1">###### 日志</span>
+
+<span class="err">没错，就是日志。再多强调在你的应用里保留足量的日志的重要性也不为过。你应当对重要的内容打日志。如果你的日志打的足够好的话，单看日志你就能发现问题所在。那样可</span>
+<span class="err">以节省你大量的时间。</span>
+
+<span class="err">如果一直以来你都在代码里乱用</span> <span class="k">print</span> <span class="err">语句，马上停下来。换用</span><span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="err">。以后你还可以继续复用，或是全部停用等等。</span>
+
+<span class="c1">###### 跟踪</span>
+
+<span class="err">有时更好的办法是看执行了哪些语句。你可以使用一些</span><span class="n">IDE</span><span class="err">的调试器的单步执行，但你需要明确知道你在找那些语句，否则整个过程会进行地非常缓慢。</span>
+
+<span class="err">标准库里面的</span><span class="n">trace</span><span class="err">模块，可以打印运行时包含在其中的模块里所有执行到的语句。</span><span class="p">(</span><span class="err">就像制作一份项目报告</span><span class="p">)</span>
+
+
+
+
+    <span class="n">python</span><span class="err"> </span><span class="o">-</span><span class="n">mtrace</span><span class="err"> –</span><span class="n">trace</span><span class="err"> </span><span class="n">script</span><span class="o">.</span><span class="n">py</span>
+
+<span class="err">这会产生大量输出（执行到的每一行都会被打印出来，你可能想要用</span><span class="n">grep</span><span class="err">过滤那些你感兴趣的模块）</span><span class="o">.</span>
+
+<span class="err">比如：</span>
+
+
+
+
+    <span class="n">python</span><span class="err"> </span><span class="o">-</span><span class="n">mtrace</span><span class="err"> –</span><span class="n">trace</span><span class="err"> </span><span class="n">script</span><span class="o">.</span><span class="n">py</span><span class="err"> </span><span class="o">|</span><span class="err"> </span><span class="n">egrep</span><span class="err"> </span><span class="s1">&#39;^(mod1.py|mod2.py)&#39;</span>
+
+<span class="c1">###### 调试器</span>
+
+<span class="err">以下是如今应该人尽皆知的一个基础介绍：</span>
+
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">pdb</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span><span class="err"> </span><span class="c1"># 开启pdb提示</span>
+
+<span class="err">或者</span>
+
+
+
+
+    <span class="k">try</span><span class="p">:</span>
+    <span class="err">（一段抛出异常的代码）</span>
+    <span class="k">except</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">import</span><span class="err"> </span><span class="n">pdb</span>
+    <span class="err">    </span><span class="n">pdb</span><span class="o">.</span><span class="n">pm</span><span class="p">()</span><span class="err"> </span><span class="c1"># 或者 pdb.post_mortem()</span>
+    <span class="err">　　或者</span><span class="p">(</span><span class="err">输入 </span><span class="n">c</span><span class="err"> 开始执行脚本</span><span class="p">)</span>
+
+<span class="n">python</span> <span class="o">-</span><span class="n">mpdb</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span>
+
+<span class="err">在输入</span><span class="o">-</span><span class="err">计算</span><span class="o">-</span><span class="err">输出循环</span><span class="p">(</span><span class="err">注：</span><span class="n">REPL</span><span class="err">，</span><span class="n">READ</span><span class="o">-</span><span class="n">EVAL</span><span class="o">-</span><span class="n">PRINT</span><span class="o">-</span><span class="n">LOOP</span><span class="err">的缩写</span><span class="p">)</span><span class="err">环境下，可以有如下操作：</span>
+
+<span class="n">c</span> <span class="ow">or</span> <span class="k">continue</span>
+
+<span class="n">q</span> <span class="ow">or</span> <span class="n">quit</span>
+
+<span class="n">l</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">,</span> <span class="err">显示当前步帧的源码</span>
+
+<span class="n">w</span> <span class="ow">or</span> <span class="n">where</span><span class="p">,</span><span class="err">回溯调用过程</span>
+
+<span class="n">d</span> <span class="ow">or</span> <span class="n">down</span><span class="p">,</span> <span class="err">后退一步帧（注：相当于回滚）</span>
+
+<span class="n">u</span> <span class="ow">or</span> <span class="n">up</span><span class="p">,</span> <span class="err">前进一步帧</span>
+
+<span class="p">(</span><span class="err">回车</span><span class="p">),</span> <span class="err">重复上一条指令</span>
+
+<span class="err">其余的几乎全部指令（还有很少的其他一些命令除外）</span><span class="p">,</span><span class="err">在当前步帧上当作</span><span class="n">python</span><span class="err">代码进行解析。</span>
+
+<span class="err">如果你觉得挑战性还不够的话，可以试下</span><span class="n">smiley</span><span class="err">，</span><span class="o">-</span><span class="err">它可以给你展示那些变量而且你能使用它来远程追踪程序。</span>
+
+<span class="c1">###### 更好的调试器</span>
+
+<span class="n">pdb</span><span class="err">的直接替代者：</span>
+
+<span class="n">ipdb</span><span class="p">(</span><span class="n">easy_install</span> <span class="n">ipdb</span><span class="p">)</span> <span class="err">–</span> <span class="err">类似</span><span class="n">ipython</span><span class="p">(</span><span class="err">有自动完成，显示颜色等</span><span class="p">)</span>
+
+<span class="n">pudb</span><span class="p">(</span><span class="n">easy_install</span> <span class="n">pudb</span><span class="p">)</span> <span class="err">–</span> <span class="err">基于</span><span class="n">curses</span><span class="err">（类似图形界面接口），特别适合浏览源代码</span>
+
+<span class="c1">###### 远程调试器</span>
+
+<span class="err">安装方式</span><span class="p">:</span>
+
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">winpdb</span>
+
+<span class="err">用下面的方式取代以前的</span><span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span><span class="err">：</span>
+
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">rpdb2</span>
+    <span class="n">rpdb2</span><span class="o">.</span><span class="n">start_embedded_debugger</span><span class="p">(</span><span class="s2">&quot;secretpassword&quot;</span><span class="p">)</span>
+
+<span class="err">现在运行</span><span class="n">winpdb</span><span class="p">,</span><span class="err">文件</span><span class="o">-</span><span class="err">关联</span>
+
+<span class="err">不喜欢</span><span class="n">Winpdb</span><span class="err">?也可以直接包装</span><span class="n">PDB</span><span class="err">在</span><span class="n">TCP</span><span class="err">之上运行！</span>
+
+<span class="err">这样做：</span>
+
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">loggging</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Rdb</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">Pdb</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        This will run pdb as a ephemeral telnet service. Once you connect no one</span>
+<span class="s2">        else can connect. On construction this object will block execution till a</span>
+<span class="s2">        client has connected.</span>
+<span class="s2">     </span>
+<span class="s2">        Based on https://github.com/tamentis/rpdb I think ...</span>
+<span class="s2">     </span>
+<span class="s2">        To use this::</span>
+<span class="s2">     </span>
+<span class="s2">            Rdb(4444).set_trace()</span>
+<span class="s2">     </span>
+<span class="s2">        Then run: telnet 127.0.0.1 4444</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">old_stdout</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">old_stdin</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span><span class="err"> </span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span><span class="err"> </span><span class="n">port</span><span class="p">))</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">port</span><span class="p">:</span>
+    <span class="err">            </span><span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;PDB remote session open on: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
+    <span class="err">            </span><span class="k">print</span><span class="err"> </span><span class="o">&gt;&gt;</span><span class="err"> </span><span class="n">sys</span><span class="o">.</span><span class="n">__stderr__</span><span class="p">,</span><span class="err"> </span><span class="s2">&quot;PDB remote session open on:&quot;</span><span class="p">,</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
+    <span class="err">            </span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">connected_socket</span><span class="p">,</span><span class="err"> </span><span class="n">address</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">connected_socket</span><span class="o">.</span><span class="n">makefile</span><span class="p">(</span><span class="s1">&#39;rw&#39;</span><span class="p">)</span>
+    <span class="err">        </span><span class="n">pdb</span><span class="o">.</span><span class="n">Pdb</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">completekey</span><span class="o">=</span><span class="s1">&#39;tab&#39;</span><span class="p">,</span><span class="err"> </span><span class="n">stdin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span><span class="err"> </span><span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">)</span>
+    <span class="err">        </span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="n">do_continue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">arg</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">old_stdout</span>
+    <span class="err">        </span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">old_stdin</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">connected_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">listen_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">set_continue</span><span class="p">()</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="mi">1</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">do_c</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">do_cont</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">do_continue</span>
+    <span class="err"> </span>
+    <span class="n">def</span><span class="err"> </span><span class="n">set_trace</span><span class="p">():</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Opens a remote PDB on first available port.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="err">    </span><span class="n">rdb</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Rdb</span><span class="p">()</span>
+    <span class="err">    </span><span class="n">rdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+
+<span class="err">只想要一个</span><span class="n">REPL</span><span class="err">环境？试试</span><span class="n">IPython</span><span class="err">如何？</span>
+
+<span class="err">如果你不需要一个完整齐全的调试器，那就只需要用一下的方式启动一个</span><span class="n">IPython</span><span class="err">即可：</span>
+
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">IPython</span>
+    <span class="n">IPython</span><span class="o">.</span><span class="n">embed</span><span class="p">()</span>
+
+<span class="c1">###### 标准linux工具</span>
+
+<span class="err">我常常惊讶于它们竟然远未被充分利用。你能用这些工具解决很大范围内的问题：从性能问题（太多的系统调用，内存分配等等）到死锁，网络问题，磁盘问题等等。</span>
+
+<span class="err">其中最有用的是最直接的</span><span class="n">strace</span><span class="err">，只需要运行</span> <span class="n">sudo</span> <span class="n">strace</span> <span class="o">-</span><span class="n">p</span> <span class="mi">12345</span> <span class="err">或者</span> <span class="n">strace</span> <span class="o">-</span><span class="n">f</span> <span class="err">指令</span><span class="p">(</span><span class="o">-</span><span class="n">f</span>
+<span class="err">即同时追踪</span><span class="n">fork</span><span class="err">出来的子进程</span><span class="p">)</span><span class="err">，这就行了。输出一般会非常大，所以你可能想要把它重定向到一个文件以便作更多的分析（只需要加上</span> <span class="o">&amp;&gt;</span> <span class="err">文件名）。</span>
+
+<span class="err">再就是</span><span class="n">ltrace</span><span class="p">,</span><span class="err">有点类似</span><span class="n">strace</span><span class="err">，不同的是，它输出的是库函数调用。参数大体相同。</span>
+
+<span class="err">还有</span><span class="n">lsof</span> <span class="err">用来指出你在</span><span class="n">ltrace</span><span class="o">/</span><span class="n">strace</span><span class="err">中看到的句柄数值的意义。比如：</span>
+
+<span class="n">lsof</span> <span class="o">-</span><span class="n">p</span> <span class="mi">12345</span>
+
+<span class="err">更好的跟踪</span>
+
+<span class="err">使用简单而可以做很多事情</span><span class="o">-</span><span class="err">人人都该装上</span><span class="n">htop</span><span class="err">！</span>
+
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">htop</span>
+
+<span class="n">sudo</span> <span class="n">htop</span>
+
+<span class="err">现在找到那些你想要的进程，再输入：</span>
+
+<span class="n">s</span> <span class="o">-</span> <span class="err">代表系统调用过程</span><span class="p">(</span><span class="err">类似</span><span class="n">strace</span><span class="p">)</span>
+
+<span class="n">L</span> <span class="o">-</span> <span class="err">代表库调用过程</span><span class="p">(</span><span class="err">类似</span><span class="n">ltrace</span><span class="p">)</span>
+
+<span class="n">l</span> <span class="o">-</span> <span class="err">代表</span><span class="n">lsof</span>
+
+<span class="err">　　监控</span>
+
+<span class="err">没有好的持续的服务器监控，但是如果你曾遇到一些很诡异的情况，诸如为什么一切都运行的那么慢，那些系统资源都干什么去了，。。。等这些问题，想弄明白却又</span>
+<span class="err">无处下手之际，不必动用</span><span class="n">iotop</span><span class="p">,</span><span class="n">iftop</span><span class="p">,</span><span class="n">htop</span><span class="p">,</span><span class="n">iostat</span><span class="p">,</span><span class="n">vmstat</span><span class="err">这些工具，就用</span><span class="n">dstat</span><span class="err">吧！它可以做之前我们提过的大部分工作可</span>
+<span class="err">以做的事情，而且也许可以做的更好！</span>
+
+<span class="err">它会用一种紧凑的，代码高亮的方式（不同于</span><span class="n">iostat</span><span class="p">,</span><span class="n">vmstat</span><span class="err">）向你持续展示数据，你还经常可以看到过去的数据（不同于</span><span class="n">iftop</span><span class="p">,</span><span class="n">iostop</span><span class="p">,</span><span class="n">htop</span><span class="err">）</span>
+<span class="err">。</span>
+
+<span class="err">只需运行：</span>
+
+<span class="n">dstat</span> <span class="o">--</span><span class="n">cpu</span> <span class="o">--</span><span class="n">io</span> <span class="o">--</span><span class="n">mem</span> <span class="o">--</span><span class="n">net</span> <span class="o">--</span><span class="n">load</span> <span class="o">--</span><span class="n">fs</span> <span class="o">--</span><span class="n">vm</span> <span class="o">--</span><span class="n">disk</span><span class="o">-</span><span class="n">util</span> <span class="o">--</span><span class="n">disk</span><span class="o">-</span><span class="n">tps</span>
+<span class="o">--</span><span class="n">freespace</span> <span class="o">--</span><span class="n">swap</span> <span class="o">--</span><span class="n">top</span><span class="o">-</span><span class="n">io</span> <span class="o">--</span><span class="n">top</span><span class="o">-</span><span class="n">bio</span><span class="o">-</span><span class="n">adv</span>
+
+<span class="err">很可能有一种更简短的方式来写上面这条命令，</span>
+
+<span class="err">这是一个相当复杂而又强大的工具，但是这里我只提到了一些基本的内容（安装以及基础的命令）</span>
+
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">gdb</span> <span class="n">python</span><span class="o">-</span><span class="n">dbg</span>
+
+<span class="n">zcat</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">gdbinit</span><span class="o">.</span><span class="n">gz</span> <span class="o">&gt;</span> <span class="o">~/.</span><span class="n">gdbinit</span>
+
+<span class="err">用</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">dbg</span> <span class="err">运行程序：</span>
+
+<span class="n">sudo</span> <span class="n">gdb</span> <span class="o">-</span><span class="n">p</span> <span class="mi">12345</span>
+
+<span class="err">现在使用：</span>
+
+<span class="n">bt</span> <span class="o">-</span> <span class="err">堆栈跟踪（</span><span class="n">C</span> <span class="err">级别）</span>
+
+<span class="n">pystack</span> <span class="o">-</span> <span class="n">python</span> <span class="err">堆栈跟踪</span><span class="p">,</span><span class="err">不幸的是你需要有</span><span class="o">~/.</span><span class="n">gdbinit</span> <span class="err">并且使用</span><span class="n">python</span><span class="o">-</span><span class="n">dbg</span>
+
+<span class="n">c</span> <span class="o">-</span> <span class="err">继续</span>
+
+<span class="err">　　发生段错误？用</span><span class="n">faulthandler</span> <span class="err">！</span>
+
+
+
+<span class="err">　　</span><span class="n">python</span> <span class="mf">3.3</span><span class="err">版本以后新增的一个很棒的功能，可以向后移植到</span><span class="n">python2</span><span class="o">.</span><span class="n">x</span><span class="err">版本。只需要运行下面的语句，你就可以大抵知道什么原因引起来段错误。</span>
+
+<span class="kn">import</span> <span class="nn">faulthandler</span>
+
+<span class="n">faulthandler</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+<span class="c1">###### 内存泄露</span>
+
+<span class="err">嗯，这种情况下有很多的工具可以使用，其中有一些专门针对</span><span class="n">WSGI</span><span class="err">的程序比如</span><span class="n">Dozer</span><span class="err">，但是我最喜欢的当然是</span><span class="n">objgraph</span><span class="err">。使用简单方便，让人惊讶！</span>
+
+<span class="err">它没有集成</span><span class="n">WSGI</span><span class="err">或者其他，所以你需要自己去发现运行代码的方法，像下面这样：</span>
+
+<span class="kn">import</span> <span class="nn">objgraph</span>
+
+<span class="n">objs</span> <span class="o">=</span> <span class="n">objgraph</span><span class="o">.</span><span class="n">by_type</span><span class="p">(</span><span class="s2">&quot;Request&quot;</span><span class="p">)[:</span><span class="mi">15</span><span class="p">]</span>
+
+<span class="n">objgraph</span><span class="o">.</span><span class="n">show_backrefs</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">,</span>
+
+
+
+<span class="n">filename</span><span class="o">=</span><span class="s2">&quot;/tmp/graph.png&quot;</span><span class="p">)</span>
+
+<span class="n">Graph</span> <span class="n">written</span> <span class="n">to</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">objgraph</span><span class="o">-</span><span class="n">zbdM4z</span><span class="o">.</span><span class="n">dot</span> <span class="p">(</span><span class="mi">107</span> <span class="n">nodes</span><span class="p">)</span>
+
+<span class="n">Image</span> <span class="n">generated</span> <span class="k">as</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">graph</span><span class="o">.</span><span class="n">png</span>
+
+<span class="err">你会得到像这样一张图（注意：它非常大</span><span class="p">)</span><span class="err">。你也可以得到一张点输出。</span>
+
+<span class="c1">###### 内存使用</span>
+
+<span class="err">有时你想少用些内存。更少的内存分配常常可以使程序执行的更快，更好，用户希望内存合适好用</span><span class="p">)</span>
+
+<span class="err">有许多可用的工具，但在我看来最好用的是</span><span class="n">pytracemalloc</span><span class="err">。与其他工具相比，它开销非常小（不需要依赖于严重影响速度的</span><span class="n">sys</span><span class="o">.</span><span class="n">settrace</span><span class="err">）而且输出</span>
+<span class="err">非常详尽。但安装起来比较痛苦，你需要重新编译</span><span class="n">python</span><span class="err">，但有了</span><span class="n">apt</span><span class="err">，做起来也非常容易。</span>
+
+<span class="err">只需要运行这些命令然后去吃顿午餐或者干点别的：</span>
+
+<span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">source</span> <span class="n">python2</span><span class="o">.</span><span class="mi">7</span>
+
+<span class="n">cd</span> <span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">-*</span>
+
+<span class="n">wget</span><span class="err">?</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">wyplay</span><span class="o">/</span><span class="n">pytracemalloc</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="n">_track_free_</span>
+<span class="nb">list</span><span class="o">.</span><span class="n">patch</span>
+
+<span class="n">patch</span> <span class="o">-</span><span class="n">p1</span> <span class="o">&lt;</span> <span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="n">_track_free_list</span><span class="o">.</span><span class="n">patch</span>
+
+<span class="n">debuild</span> <span class="o">-</span><span class="n">us</span> <span class="o">-</span><span class="n">uc</span>
+
+<span class="n">cd</span> <span class="o">..</span>
+
+<span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">minimal_2</span><span class="o">.</span><span class="mi">7</span><span class="o">*.</span><span class="n">deb</span> <span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">dev_</span><span class="o">*.</span><span class="n">deb</span>
+
+<span class="err">接着安装</span><span class="n">pytracemalloc</span> <span class="err">（注意如果你在一个</span><span class="n">virtualenv</span><span class="err">虚拟环境下操作，你需要在重新安装</span><span class="n">python</span><span class="err">后再次重建</span> <span class="err">–</span> <span class="err">只需要运行</span>
+<span class="n">virtualenv</span> <span class="n">myenv</span><span class="err">）</span>
+
+<span class="n">pip</span> <span class="n">install</span> <span class="n">pytracemalloc</span>
+
+<span class="err">现在像下面这样在代码里包装你的应用程序</span>
+
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">tracemalloc</span><span class="p">,</span><span class="err"> </span><span class="n">time</span>
+    <span class="n">tracemalloc</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+    <span class="n">top</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">tracemalloc</span><span class="o">.</span><span class="n">DisplayTop</span><span class="p">(</span>
+    <span class="err">    </span><span class="mi">5000</span><span class="p">,</span><span class="err"> </span><span class="c1"># log the top 5000 locations</span>
+    <span class="err">    </span><span class="nb">file</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/tmp/memory-profile-</span><span class="si">%s</span><span class="s1">&#39;</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span><span class="err"> </span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">top</span><span class="o">.</span><span class="n">show_lineno</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">True</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="err">    </span><span class="c1"># code that needs to be traced</span>
+    <span class="k">finally</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">top</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="err">　　输出会像这样：</span>
+
+
+
+<span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">31</span> <span class="mi">18</span><span class="p">:</span><span class="mo">05</span><span class="p">:</span><span class="mo">07</span><span class="p">:</span> <span class="n">Top</span> <span class="mi">5000</span> <span class="n">allocations</span> <span class="n">per</span> <span class="nb">file</span> <span class="ow">and</span> <span class="n">line</span>
+
+<span class="err"> </span><span class="c1">#1: .../site-packages/billiard/_connection.py:198: size=1288 KiB, count=70</span>
+<span class="p">(</span><span class="o">+</span><span class="mi">0</span><span class="p">),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">18</span> <span class="n">KiB</span>
+
+<span class="err"> </span><span class="c1">#2: .../site-packages/billiard/_connection.py:199: size=1288 KiB, count=70</span>
+<span class="p">(</span><span class="o">+</span><span class="mi">0</span><span class="p">),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">18</span> <span class="n">KiB</span>
+
+<span class="err"> </span><span class="c1">#3: .../python2.7/importlib/__init__.py:37: size=459 KiB, count=5958 (+0),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">78</span> <span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#4: .../site-packages/amqp/transport.py:232: size=217 KiB, count=6960 (+0),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">32</span> <span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#5: .../site-packages/amqp/transport.py:231: size=206 KiB, count=8798 (+0),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">24</span> <span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#6: .../site-packages/amqp/serialization.py:210: size=199 KiB, count=822</span>
+<span class="p">(</span><span class="o">+</span><span class="mi">0</span><span class="p">),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">248</span> <span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#7: .../lib/python2.7/socket.py:224: size=179 KiB, count=5947 (+0),</span>
+<span class="n">average</span><span class="o">=</span><span class="mi">30</span>
+
+<span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#8: .../celery/utils/term.py:89: size=172 KiB, count=1953 (+0), average=90 B</span>
+
+<span class="err"> </span><span class="c1">#9: .../site-packages/kombu/connection.py:281: size=153 KiB, count=2400 (+0),</span>
+
+<span class="n">average</span><span class="o">=</span><span class="mi">65</span> <span class="n">B</span>
+
+<span class="err"> </span><span class="c1">#10: .../site-packages/amqp/serialization.py:462: size=147 KiB, count=4704</span>
+
+<span class="p">(</span><span class="o">+</span><span class="mi">0</span><span class="p">),</span> <span class="n">average</span><span class="o">=</span><span class="mi">32</span> <span class="n">B</span>
+
+<span class="err">　　…</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

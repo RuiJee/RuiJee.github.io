@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Blowfish加密解密的Python实现方法</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Blowfish加密解密的Python实现方法">
+                                        Blowfish加密解密的Python实现方法
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_security/index.html"><i class="icon-tag"></i>code_security</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">types</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Michael Gilfix &lt;mgilfix@eecs.tufts.edu&gt;&quot;</span>
+
+<span class="k">class</span> <span class="nc">Blowfish</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;Blowfish encryption Scheme</span>
+
+<span class="sd">    This class implements the encryption and decryption</span>
+<span class="sd">    functionality of the Blowfish cipher.</span>
+
+<span class="sd">    Public functions:</span>
+
+<span class="sd">        def __init__ (self, key)</span>
+<span class="sd">            Creates an instance of blowfish using &#39;key&#39;</span>
+<span class="sd">            as the encryption key. Key is a string of</span>
+<span class="sd">            length ranging from 8 to 56 bytes (64 to 448</span>
+<span class="sd">            bits). Once the instance of the object is</span>
+<span class="sd">            created, the key is no longer necessary.</span>
+
+<span class="sd">        def encrypt (self, data):</span>
+<span class="sd">            Encrypt an 8 byte (64-bit) block of text</span>
+<span class="sd">            where &#39;data&#39; is an 8 byte string. Returns an</span>
+<span class="sd">            8-byte encrypted string.</span>
+
+<span class="sd">        def decrypt (self, data):</span>
+<span class="sd">            Decrypt an 8 byte (64-bit) encrypted block</span>
+<span class="sd">            of text, where &#39;data&#39; is the 8 byte encrypted</span>
+<span class="sd">            string. Returns an 8-byte string of plaintext.</span>
+
+<span class="sd">        def cipher (self, xl, xr, direction):</span>
+<span class="sd">            Encrypts a 64-bit block of data where xl is</span>
+<span class="sd">            the upper 32-bits and xr is the lower 32-bits.</span>
+<span class="sd">            &#39;direction&#39; is the direction to apply the</span>
+<span class="sd">            cipher, either ENCRYPT or DECRYPT constants.</span>
+<span class="sd">            returns a tuple of either encrypted or decrypted</span>
+<span class="sd">            data of the left half and right half of the</span>
+<span class="sd">            64-bit block.</span>
+
+<span class="sd">        def initCTR(self):</span>
+<span class="sd">            Initializes CTR engine for encryption or decryption.</span>
+
+<span class="sd">        def encryptCTR(self, data):</span>
+<span class="sd">            Encrypts an arbitrary string and returns the</span>
+<span class="sd">            encrypted string. The method can be called successively</span>
+<span class="sd">            for multiple string blocks.</span>
+
+<span class="sd">        def decryptCTR(self, data):</span>
+<span class="sd">            Decrypts a string encrypted with encryptCTR() and</span>
+<span class="sd">            returns the decrypted string.</span>
+
+<span class="sd">    Private members:</span>
+
+<span class="sd">        def __round_func (self, xl)</span>
+<span class="sd">            Performs an obscuring function on the 32-bit</span>
+<span class="sd">            block of data &#39;xl&#39;, which is the left half of</span>
+<span class="sd">            the 64-bit block of data. Returns the 32-bit</span>
+<span class="sd">            result as a long integer.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Cipher directions</span>
+    <span class="n">ENCRYPT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">DECRYPT</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># For the __round_func</span>
+    <span class="n">modulus</span> <span class="o">=</span> <span class="nb">long</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">32</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">or</span> <span class="nb">len</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span> <span class="ow">or</span> <span class="nb">len</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">56</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Attempted to initialize Blowfish cipher with key of invalid length: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mh">0x243F6A88</span><span class="p">,</span> <span class="mh">0x85A308D3</span><span class="p">,</span> <span class="mh">0x13198A2E</span><span class="p">,</span> <span class="mh">0x03707344</span><span class="p">,</span>
+            <span class="mh">0xA4093822</span><span class="p">,</span> <span class="mh">0x299F31D0</span><span class="p">,</span> <span class="mh">0x082EFA98</span><span class="p">,</span> <span class="mh">0xEC4E6C89</span><span class="p">,</span>
+            <span class="mh">0x452821E6</span><span class="p">,</span> <span class="mh">0x38D01377</span><span class="p">,</span> <span class="mh">0xBE5466CF</span><span class="p">,</span> <span class="mh">0x34E90C6C</span><span class="p">,</span>
+            <span class="mh">0xC0AC29B7</span><span class="p">,</span> <span class="mh">0xC97C50DD</span><span class="p">,</span> <span class="mh">0x3F84D5B5</span><span class="p">,</span> <span class="mh">0xB5470917</span><span class="p">,</span>
+            <span class="mh">0x9216D5D9</span><span class="p">,</span> <span class="mh">0x8979FB1B</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="mh">0xD1310BA6</span><span class="p">,</span> <span class="mh">0x98DFB5AC</span><span class="p">,</span> <span class="mh">0x2FFD72DB</span><span class="p">,</span> <span class="mh">0xD01ADFB7</span><span class="p">,</span>
+                <span class="mh">0xB8E1AFED</span><span class="p">,</span> <span class="mh">0x6A267E96</span><span class="p">,</span> <span class="mh">0xBA7C9045</span><span class="p">,</span> <span class="mh">0xF12C7F99</span><span class="p">,</span>
+                <span class="mh">0x24A19947</span><span class="p">,</span> <span class="mh">0xB3916CF7</span><span class="p">,</span> <span class="mh">0x0801F2E2</span><span class="p">,</span> <span class="mh">0x858EFC16</span><span class="p">,</span>
+                <span class="mh">0x636920D8</span><span class="p">,</span> <span class="mh">0x71574E69</span><span class="p">,</span> <span class="mh">0xA458FEA3</span><span class="p">,</span> <span class="mh">0xF4933D7E</span><span class="p">,</span>
+                <span class="mh">0x0D95748F</span><span class="p">,</span> <span class="mh">0x728EB658</span><span class="p">,</span> <span class="mh">0x718BCD58</span><span class="p">,</span> <span class="mh">0x82154AEE</span><span class="p">,</span>
+                <span class="mh">0x7B54A41D</span><span class="p">,</span> <span class="mh">0xC25A59B5</span><span class="p">,</span> <span class="mh">0x9C30D539</span><span class="p">,</span> <span class="mh">0x2AF26013</span><span class="p">,</span>
+                <span class="mh">0xC5D1B023</span><span class="p">,</span> <span class="mh">0x286085F0</span><span class="p">,</span> <span class="mh">0xCA417918</span><span class="p">,</span> <span class="mh">0xB8DB38EF</span><span class="p">,</span>
+                <span class="mh">0x8E79DCB0</span><span class="p">,</span> <span class="mh">0x603A180E</span><span class="p">,</span> <span class="mh">0x6C9E0E8B</span><span class="p">,</span> <span class="mh">0xB01E8A3E</span><span class="p">,</span>
+                <span class="mh">0xD71577C1</span><span class="p">,</span> <span class="mh">0xBD314B27</span><span class="p">,</span> <span class="mh">0x78AF2FDA</span><span class="p">,</span> <span class="mh">0x55605C60</span><span class="p">,</span>
+                <span class="mh">0xE65525F3</span><span class="p">,</span> <span class="mh">0xAA55AB94</span><span class="p">,</span> <span class="mh">0x57489862</span><span class="p">,</span> <span class="mh">0x63E81440</span><span class="p">,</span>
+                <span class="mh">0x55CA396A</span><span class="p">,</span> <span class="mh">0x2AAB10B6</span><span class="p">,</span> <span class="mh">0xB4CC5C34</span><span class="p">,</span> <span class="mh">0x1141E8CE</span><span class="p">,</span>
+                <span class="mh">0xA15486AF</span><span class="p">,</span> <span class="mh">0x7C72E993</span><span class="p">,</span> <span class="mh">0xB3EE1411</span><span class="p">,</span> <span class="mh">0x636FBC2A</span><span class="p">,</span>
+                <span class="mh">0x2BA9C55D</span><span class="p">,</span> <span class="mh">0x741831F6</span><span class="p">,</span> <span class="mh">0xCE5C3E16</span><span class="p">,</span> <span class="mh">0x9B87931E</span><span class="p">,</span>
+                <span class="mh">0xAFD6BA33</span><span class="p">,</span> <span class="mh">0x6C24CF5C</span><span class="p">,</span> <span class="mh">0x7A325381</span><span class="p">,</span> <span class="mh">0x28958677</span><span class="p">,</span>
+                <span class="mh">0x3B8F4898</span><span class="p">,</span> <span class="mh">0x6B4BB9AF</span><span class="p">,</span> <span class="mh">0xC4BFE81B</span><span class="p">,</span> <span class="mh">0x66282193</span><span class="p">,</span>
+                <span class="mh">0x61D809CC</span><span class="p">,</span> <span class="mh">0xFB21A991</span><span class="p">,</span> <span class="mh">0x487CAC60</span><span class="p">,</span> <span class="mh">0x5DEC8032</span><span class="p">,</span>
+                <span class="mh">0xEF845D5D</span><span class="p">,</span> <span class="mh">0xE98575B1</span><span class="p">,</span> <span class="mh">0xDC262302</span><span class="p">,</span> <span class="mh">0xEB651B88</span><span class="p">,</span>
+                <span class="mh">0x23893E81</span><span class="p">,</span> <span class="mh">0xD396ACC5</span><span class="p">,</span> <span class="mh">0x0F6D6FF3</span><span class="p">,</span> <span class="mh">0x83F44239</span><span class="p">,</span>
+                <span class="mh">0x2E0B4482</span><span class="p">,</span> <span class="mh">0xA4842004</span><span class="p">,</span> <span class="mh">0x69C8F04A</span><span class="p">,</span> <span class="mh">0x9E1F9B5E</span><span class="p">,</span>
+                <span class="mh">0x21C66842</span><span class="p">,</span> <span class="mh">0xF6E96C9A</span><span class="p">,</span> <span class="mh">0x670C9C61</span><span class="p">,</span> <span class="mh">0xABD388F0</span><span class="p">,</span>
+                <span class="mh">0x6A51A0D2</span><span class="p">,</span> <span class="mh">0xD8542F68</span><span class="p">,</span> <span class="mh">0x960FA728</span><span class="p">,</span> <span class="mh">0xAB5133A3</span><span class="p">,</span>
+                <span class="mh">0x6EEF0B6C</span><span class="p">,</span> <span class="mh">0x137A3BE4</span><span class="p">,</span> <span class="mh">0xBA3BF050</span><span class="p">,</span> <span class="mh">0x7EFB2A98</span><span class="p">,</span>
+                <span class="mh">0xA1F1651D</span><span class="p">,</span> <span class="mh">0x39AF0176</span><span class="p">,</span> <span class="mh">0x66CA593E</span><span class="p">,</span> <span class="mh">0x82430E88</span><span class="p">,</span>
+                <span class="mh">0x8CEE8619</span><span class="p">,</span> <span class="mh">0x456F9FB4</span><span class="p">,</span> <span class="mh">0x7D84A5C3</span><span class="p">,</span> <span class="mh">0x3B8B5EBE</span><span class="p">,</span>
+                <span class="mh">0xE06F75D8</span><span class="p">,</span> <span class="mh">0x85C12073</span><span class="p">,</span> <span class="mh">0x401A449F</span><span class="p">,</span> <span class="mh">0x56C16AA6</span><span class="p">,</span>
+                <span class="mh">0x4ED3AA62</span><span class="p">,</span> <span class="mh">0x363F7706</span><span class="p">,</span> <span class="mh">0x1BFEDF72</span><span class="p">,</span> <span class="mh">0x429B023D</span><span class="p">,</span>
+                <span class="mh">0x37D0D724</span><span class="p">,</span> <span class="mh">0xD00A1248</span><span class="p">,</span> <span class="mh">0xDB0FEAD3</span><span class="p">,</span> <span class="mh">0x49F1C09B</span><span class="p">,</span>
+                <span class="mh">0x075372C9</span><span class="p">,</span> <span class="mh">0x80991B7B</span><span class="p">,</span> <span class="mh">0x25D479D8</span><span class="p">,</span> <span class="mh">0xF6E8DEF7</span><span class="p">,</span>
+                <span class="mh">0xE3FE501A</span><span class="p">,</span> <span class="mh">0xB6794C3B</span><span class="p">,</span> <span class="mh">0x976CE0BD</span><span class="p">,</span> <span class="mh">0x04C006BA</span><span class="p">,</span>
+                <span class="mh">0xC1A94FB6</span><span class="p">,</span> <span class="mh">0x409F60C4</span><span class="p">,</span> <span class="mh">0x5E5C9EC2</span><span class="p">,</span> <span class="mh">0x196A2463</span><span class="p">,</span>
+                <span class="mh">0x68FB6FAF</span><span class="p">,</span> <span class="mh">0x3E6C53B5</span><span class="p">,</span> <span class="mh">0x1339B2EB</span><span class="p">,</span> <span class="mh">0x3B52EC6F</span><span class="p">,</span>
+                <span class="mh">0x6DFC511F</span><span class="p">,</span> <span class="mh">0x9B30952C</span><span class="p">,</span> <span class="mh">0xCC814544</span><span class="p">,</span> <span class="mh">0xAF5EBD09</span><span class="p">,</span>
+                <span class="mh">0xBEE3D004</span><span class="p">,</span> <span class="mh">0xDE334AFD</span><span class="p">,</span> <span class="mh">0x660F2807</span><span class="p">,</span> <span class="mh">0x192E4BB3</span><span class="p">,</span>
+                <span class="mh">0xC0CBA857</span><span class="p">,</span> <span class="mh">0x45C8740F</span><span class="p">,</span> <span class="mh">0xD20B5F39</span><span class="p">,</span> <span class="mh">0xB9D3FBDB</span><span class="p">,</span>
+                <span class="mh">0x5579C0BD</span><span class="p">,</span> <span class="mh">0x1A60320A</span><span class="p">,</span> <span class="mh">0xD6A100C6</span><span class="p">,</span> <span class="mh">0x402C7279</span><span class="p">,</span>
+                <span class="mh">0x679F25FE</span><span class="p">,</span> <span class="mh">0xFB1FA3CC</span><span class="p">,</span> <span class="mh">0x8EA5E9F8</span><span class="p">,</span> <span class="mh">0xDB3222F8</span><span class="p">,</span>
+                <span class="mh">0x3C7516DF</span><span class="p">,</span> <span class="mh">0xFD616B15</span><span class="p">,</span> <span class="mh">0x2F501EC8</span><span class="p">,</span> <span class="mh">0xAD0552AB</span><span class="p">,</span>
+                <span class="mh">0x323DB5FA</span><span class="p">,</span> <span class="mh">0xFD238760</span><span class="p">,</span> <span class="mh">0x53317B48</span><span class="p">,</span> <span class="mh">0x3E00DF82</span><span class="p">,</span>
+                <span class="mh">0x9E5C57BB</span><span class="p">,</span> <span class="mh">0xCA6F8CA0</span><span class="p">,</span> <span class="mh">0x1A87562E</span><span class="p">,</span> <span class="mh">0xDF1769DB</span><span class="p">,</span>
+                <span class="mh">0xD542A8F6</span><span class="p">,</span> <span class="mh">0x287EFFC3</span><span class="p">,</span> <span class="mh">0xAC6732C6</span><span class="p">,</span> <span class="mh">0x8C4F5573</span><span class="p">,</span>
+                <span class="mh">0x695B27B0</span><span class="p">,</span> <span class="mh">0xBBCA58C8</span><span class="p">,</span> <span class="mh">0xE1FFA35D</span><span class="p">,</span> <span class="mh">0xB8F011A0</span><span class="p">,</span>
+                <span class="mh">0x10FA3D98</span><span class="p">,</span> <span class="mh">0xFD2183B8</span><span class="p">,</span> <span class="mh">0x4AFCB56C</span><span class="p">,</span> <span class="mh">0x2DD1D35B</span><span class="p">,</span>
+                <span class="mh">0x9A53E479</span><span class="p">,</span> <span class="mh">0xB6F84565</span><span class="p">,</span> <span class="mh">0xD28E49BC</span><span class="p">,</span> <span class="mh">0x4BFB9790</span><span class="p">,</span>
+                <span class="mh">0xE1DDF2DA</span><span class="p">,</span> <span class="mh">0xA4CB7E33</span><span class="p">,</span> <span class="mh">0x62FB1341</span><span class="p">,</span> <span class="mh">0xCEE4C6E8</span><span class="p">,</span>
+                <span class="mh">0xEF20CADA</span><span class="p">,</span> <span class="mh">0x36774C01</span><span class="p">,</span> <span class="mh">0xD07E9EFE</span><span class="p">,</span> <span class="mh">0x2BF11FB4</span><span class="p">,</span>
+                <span class="mh">0x95DBDA4D</span><span class="p">,</span> <span class="mh">0xAE909198</span><span class="p">,</span> <span class="mh">0xEAAD8E71</span><span class="p">,</span> <span class="mh">0x6B93D5A0</span><span class="p">,</span>
+                <span class="mh">0xD08ED1D0</span><span class="p">,</span> <span class="mh">0xAFC725E0</span><span class="p">,</span> <span class="mh">0x8E3C5B2F</span><span class="p">,</span> <span class="mh">0x8E7594B7</span><span class="p">,</span>
+                <span class="mh">0x8FF6E2FB</span><span class="p">,</span> <span class="mh">0xF2122B64</span><span class="p">,</span> <span class="mh">0x8888B812</span><span class="p">,</span> <span class="mh">0x900DF01C</span><span class="p">,</span>
+                <span class="mh">0x4FAD5EA0</span><span class="p">,</span> <span class="mh">0x688FC31C</span><span class="p">,</span> <span class="mh">0xD1CFF191</span><span class="p">,</span> <span class="mh">0xB3A8C1AD</span><span class="p">,</span>
+                <span class="mh">0x2F2F2218</span><span class="p">,</span> <span class="mh">0xBE0E1777</span><span class="p">,</span> <span class="mh">0xEA752DFE</span><span class="p">,</span> <span class="mh">0x8B021FA1</span><span class="p">,</span>
+                <span class="mh">0xE5A0CC0F</span><span class="p">,</span> <span class="mh">0xB56F74E8</span><span class="p">,</span> <span class="mh">0x18ACF3D6</span><span class="p">,</span> <span class="mh">0xCE89E299</span><span class="p">,</span>
+                <span class="mh">0xB4A84FE0</span><span class="p">,</span> <span class="mh">0xFD13E0B7</span><span class="p">,</span> <span class="mh">0x7CC43B81</span><span class="p">,</span> <span class="mh">0xD2ADA8D9</span><span class="p">,</span>
+                <span class="mh">0x165FA266</span><span class="p">,</span> <span class="mh">0x80957705</span><span class="p">,</span> <span class="mh">0x93CC7314</span><span class="p">,</span> <span class="mh">0x211A1477</span><span class="p">,</span>
+                <span class="mh">0xE6AD2065</span><span class="p">,</span> <span class="mh">0x77B5FA86</span><span class="p">,</span> <span class="mh">0xC75442F5</span><span class="p">,</span> <span class="mh">0xFB9D35CF</span><span class="p">,</span>
+                <span class="mh">0xEBCDAF0C</span><span class="p">,</span> <span class="mh">0x7B3E89A0</span><span class="p">,</span> <span class="mh">0xD6411BD3</span><span class="p">,</span> <span class="mh">0xAE1E7E49</span><span class="p">,</span>
+                <span class="mh">0x00250E2D</span><span class="p">,</span> <span class="mh">0x2071B35E</span><span class="p">,</span> <span class="mh">0x226800BB</span><span class="p">,</span> <span class="mh">0x57B8E0AF</span><span class="p">,</span>
+                <span class="mh">0x2464369B</span><span class="p">,</span> <span class="mh">0xF009B91E</span><span class="p">,</span> <span class="mh">0x5563911D</span><span class="p">,</span> <span class="mh">0x59DFA6AA</span><span class="p">,</span>
+                <span class="mh">0x78C14389</span><span class="p">,</span> <span class="mh">0xD95A537F</span><span class="p">,</span> <span class="mh">0x207D5BA2</span><span class="p">,</span> <span class="mh">0x02E5B9C5</span><span class="p">,</span>
+                <span class="mh">0x83260376</span><span class="p">,</span> <span class="mh">0x6295CFA9</span><span class="p">,</span> <span class="mh">0x11C81968</span><span class="p">,</span> <span class="mh">0x4E734A41</span><span class="p">,</span>
+                <span class="mh">0xB3472DCA</span><span class="p">,</span> <span class="mh">0x7B14A94A</span><span class="p">,</span> <span class="mh">0x1B510052</span><span class="p">,</span> <span class="mh">0x9A532915</span><span class="p">,</span>
+                <span class="mh">0xD60F573F</span><span class="p">,</span> <span class="mh">0xBC9BC6E4</span><span class="p">,</span> <span class="mh">0x2B60A476</span><span class="p">,</span> <span class="mh">0x81E67400</span><span class="p">,</span>
+                <span class="mh">0x08BA6FB5</span><span class="p">,</span> <span class="mh">0x571BE91F</span><span class="p">,</span> <span class="mh">0xF296EC6B</span><span class="p">,</span> <span class="mh">0x2A0DD915</span><span class="p">,</span>
+                <span class="mh">0xB6636521</span><span class="p">,</span> <span class="mh">0xE7B9F9B6</span><span class="p">,</span> <span class="mh">0xFF34052E</span><span class="p">,</span> <span class="mh">0xC5855664</span><span class="p">,</span>
+                <span class="mh">0x53B02D5D</span><span class="p">,</span> <span class="mh">0xA99F8FA1</span><span class="p">,</span> <span class="mh">0x08BA4799</span><span class="p">,</span> <span class="mh">0x6E85076A</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="mh">0x4B7A70E9</span><span class="p">,</span> <span class="mh">0xB5B32944</span><span class="p">,</span> <span class="mh">0xDB75092E</span><span class="p">,</span> <span class="mh">0xC4192623</span><span class="p">,</span>
+                <span class="mh">0xAD6EA6B0</span><span class="p">,</span> <span class="mh">0x49A7DF7D</span><span class="p">,</span> <span class="mh">0x9CEE60B8</span><span class="p">,</span> <span class="mh">0x8FEDB266</span><span class="p">,</span>
+                <span class="mh">0xECAA8C71</span><span class="p">,</span> <span class="mh">0x699A17FF</span><span class="p">,</span> <span class="mh">0x5664526C</span><span class="p">,</span> <span class="mh">0xC2B19EE1</span><span class="p">,</span>
+                <span class="mh">0x193602A5</span><span class="p">,</span> <span class="mh">0x75094C29</span><span class="p">,</span> <span class="mh">0xA0591340</span><span class="p">,</span> <span class="mh">0xE4183A3E</span><span class="p">,</span>
+                <span class="mh">0x3F54989A</span><span class="p">,</span> <span class="mh">0x5B429D65</span><span class="p">,</span> <span class="mh">0x6B8FE4D6</span><span class="p">,</span> <span class="mh">0x99F73FD6</span><span class="p">,</span>
+                <span class="mh">0xA1D29C07</span><span class="p">,</span> <span class="mh">0xEFE830F5</span><span class="p">,</span> <span class="mh">0x4D2D38E6</span><span class="p">,</span> <span class="mh">0xF0255DC1</span><span class="p">,</span>
+                <span class="mh">0x4CDD2086</span><span class="p">,</span> <span class="mh">0x8470EB26</span><span class="p">,</span> <span class="mh">0x6382E9C6</span><span class="p">,</span> <span class="mh">0x021ECC5E</span><span class="p">,</span>
+                <span class="mh">0x09686B3F</span><span class="p">,</span> <span class="mh">0x3EBAEFC9</span><span class="p">,</span> <span class="mh">0x3C971814</span><span class="p">,</span> <span class="mh">0x6B6A70A1</span><span class="p">,</span>
+                <span class="mh">0x687F3584</span><span class="p">,</span> <span class="mh">0x52A0E286</span><span class="p">,</span> <span class="mh">0xB79C5305</span><span class="p">,</span> <span class="mh">0xAA500737</span><span class="p">,</span>
+                <span class="mh">0x3E07841C</span><span class="p">,</span> <span class="mh">0x7FDEAE5C</span><span class="p">,</span> <span class="mh">0x8E7D44EC</span><span class="p">,</span> <span class="mh">0x5716F2B8</span><span class="p">,</span>
+                <span class="mh">0xB03ADA37</span><span class="p">,</span> <span class="mh">0xF0500C0D</span><span class="p">,</span> <span class="mh">0xF01C1F04</span><span class="p">,</span> <span class="mh">0x0200B3FF</span><span class="p">,</span>
+                <span class="mh">0xAE0CF51A</span><span class="p">,</span> <span class="mh">0x3CB574B2</span><span class="p">,</span> <span class="mh">0x25837A58</span><span class="p">,</span> <span class="mh">0xDC0921BD</span><span class="p">,</span>
+                <span class="mh">0xD19113F9</span><span class="p">,</span> <span class="mh">0x7CA92FF6</span><span class="p">,</span> <span class="mh">0x94324773</span><span class="p">,</span> <span class="mh">0x22F54701</span><span class="p">,</span>
+                <span class="mh">0x3AE5E581</span><span class="p">,</span> <span class="mh">0x37C2DADC</span><span class="p">,</span> <span class="mh">0xC8B57634</span><span class="p">,</span> <span class="mh">0x9AF3DDA7</span><span class="p">,</span>
+                <span class="mh">0xA9446146</span><span class="p">,</span> <span class="mh">0x0FD0030E</span><span class="p">,</span> <span class="mh">0xECC8C73E</span><span class="p">,</span> <span class="mh">0xA4751E41</span><span class="p">,</span>
+                <span class="mh">0xE238CD99</span><span class="p">,</span> <span class="mh">0x3BEA0E2F</span><span class="p">,</span> <span class="mh">0x3280BBA1</span><span class="p">,</span> <span class="mh">0x183EB331</span><span class="p">,</span>
+                <span class="mh">0x4E548B38</span><span class="p">,</span> <span class="mh">0x4F6DB908</span><span class="p">,</span> <span class="mh">0x6F420D03</span><span class="p">,</span> <span class="mh">0xF60A04BF</span><span class="p">,</span>
+                <span class="mh">0x2CB81290</span><span class="p">,</span> <span class="mh">0x24977C79</span><span class="p">,</span> <span class="mh">0x5679B072</span><span class="p">,</span> <span class="mh">0xBCAF89AF</span><span class="p">,</span>
+                <span class="mh">0xDE9A771F</span><span class="p">,</span> <span class="mh">0xD9930810</span><span class="p">,</span> <span class="mh">0xB38BAE12</span><span class="p">,</span> <span class="mh">0xDCCF3F2E</span><span class="p">,</span>
+                <span class="mh">0x5512721F</span><span class="p">,</span> <span class="mh">0x2E6B7124</span><span class="p">,</span> <span class="mh">0x501ADDE6</span><span class="p">,</span> <span class="mh">0x9F84CD87</span><span class="p">,</span>
+                <span class="mh">0x7A584718</span><span class="p">,</span> <span class="mh">0x7408DA17</span><span class="p">,</span> <span class="mh">0xBC9F9ABC</span><span class="p">,</span> <span class="mh">0xE94B7D8C</span><span class="p">,</span>
+                <span class="mh">0xEC7AEC3A</span><span class="p">,</span> <span class="mh">0xDB851DFA</span><span class="p">,</span> <span class="mh">0x63094366</span><span class="p">,</span> <span class="mh">0xC464C3D2</span><span class="p">,</span>
+                <span class="mh">0xEF1C1847</span><span class="p">,</span> <span class="mh">0x3215D908</span><span class="p">,</span> <span class="mh">0xDD433B37</span><span class="p">,</span> <span class="mh">0x24C2BA16</span><span class="p">,</span>
+                <span class="mh">0x12A14D43</span><span class="p">,</span> <span class="mh">0x2A65C451</span><span class="p">,</span> <span class="mh">0x50940002</span><span class="p">,</span> <span class="mh">0x133AE4DD</span><span class="p">,</span>
+                <span class="mh">0x71DFF89E</span><span class="p">,</span> <span class="mh">0x10314E55</span><span class="p">,</span> <span class="mh">0x81AC77D6</span><span class="p">,</span> <span class="mh">0x5F11199B</span><span class="p">,</span>
+
+<span class="mi">25</span><span class="n">aa</span>
+           <span class="mh">0x043556F1</span><span class="p">,</span> <span class="mh">0xD7A3C76B</span><span class="p">,</span> <span class="mh">0x3C11183B</span><span class="p">,</span> <span class="mh">0x5924A509</span><span class="p">,</span>
+                <span class="mh">0xF28FE6ED</span><span class="p">,</span> <span class="mh">0x97F1FBFA</span><span class="p">,</span> <span class="mh">0x9EBABF2C</span><span class="p">,</span> <span class="mh">0x1E153C6E</span><span class="p">,</span>
+                <span class="mh">0x86E34570</span><span class="p">,</span> <span class="mh">0xEAE96FB1</span><span class="p">,</span> <span class="mh">0x860E5E0A</span><span class="p">,</span> <span class="mh">0x5A3E2AB3</span><span class="p">,</span>
+                <span class="mh">0x771FE71C</span><span class="p">,</span> <span class="mh">0x4E3D06FA</span><span class="p">,</span> <span class="mh">0x2965DCB9</span><span class="p">,</span> <span class="mh">0x99E71D0F</span><span class="p">,</span>
+                <span class="mh">0x803E89D6</span><span class="p">,</span> <span class="mh">0x5266C825</span><span class="p">,</span> <span class="mh">0x2E4CC978</span><span class="p">,</span> <span class="mh">0x9C10B36A</span><span class="p">,</span>
+                <span class="mh">0xC6150EBA</span><span class="p">,</span> <span class="mh">0x94E2EA78</span><span class="p">,</span> <span class="mh">0xA5FC3C53</span><span class="p">,</span> <span class="mh">0x1E0A2DF4</span><span class="p">,</span>
+                <span class="mh">0xF2F74EA7</span><span class="p">,</span> <span class="mh">0x361D2B3D</span><span class="p">,</span> <span class="mh">0x1939260F</span><span class="p">,</span> <span class="mh">0x19C27960</span><span class="p">,</span>
+                <span class="mh">0x5223A708</span><span class="p">,</span> <span class="mh">0xF71312B6</span><span class="p">,</span> <span class="mh">0xEBADFE6E</span><span class="p">,</span> <span class="mh">0xEAC31F66</span><span class="p">,</span>
+                <span class="mh">0xE3BC4595</span><span class="p">,</span> <span class="mh">0xA67BC883</span><span class="p">,</span> <span class="mh">0xB17F37D1</span><span class="p">,</span> <span class="mh">0x018CFF28</span><span class="p">,</span>
+                <span class="mh">0xC332DDEF</span><span class="p">,</span> <span class="mh">0xBE6C5AA5</span><span class="p">,</span> <span class="mh">0x65582185</span><span class="p">,</span> <span class="mh">0x68AB9802</span><span class="p">,</span>
+                <span class="mh">0xEECEA50F</span><span class="p">,</span> <span class="mh">0xDB2F953B</span><span class="p">,</span> <span class="mh">0x2AEF7DAD</span><span class="p">,</span> <span class="mh">0x5B6E2F84</span><span class="p">,</span>
+                <span class="mh">0x1521B628</span><span class="p">,</span> <span class="mh">0x29076170</span><span class="p">,</span> <span class="mh">0xECDD4775</span><span class="p">,</span> <span class="mh">0x619F1510</span><span class="p">,</span>
+                <span class="mh">0x13CCA830</span><span class="p">,</span> <span class="mh">0xEB61BD96</span><span class="p">,</span> <span class="mh">0x0334FE1E</span><span class="p">,</span> <span class="mh">0xAA0363CF</span><span class="p">,</span>
+                <span class="mh">0xB5735C90</span><span class="p">,</span> <span class="mh">0x4C70A239</span><span class="p">,</span> <span class="mh">0xD59E9E0B</span><span class="p">,</span> <span class="mh">0xCBAADE14</span><span class="p">,</span>
+                <span class="mh">0xEECC86BC</span><span class="p">,</span> <span class="mh">0x60622CA7</span><span class="p">,</span> <span class="mh">0x9CAB5CAB</span><span class="p">,</span> <span class="mh">0xB2F3846E</span><span class="p">,</span>
+                <span class="mh">0x648B1EAF</span><span class="p">,</span> <span class="mh">0x19BDF0CA</span><span class="p">,</span> <span class="mh">0xA02369B9</span><span class="p">,</span> <span class="mh">0x655ABB50</span><span class="p">,</span>
+                <span class="mh">0x40685A32</span><span class="p">,</span> <span class="mh">0x3C2AB4B3</span><span class="p">,</span> <span class="mh">0x319EE9D5</span><span class="p">,</span> <span class="mh">0xC021B8F7</span><span class="p">,</span>
+                <span class="mh">0x9B540B19</span><span class="p">,</span> <span class="mh">0x875FA099</span><span class="p">,</span> <span class="mh">0x95F7997E</span><span class="p">,</span> <span class="mh">0x623D7DA8</span><span class="p">,</span>
+                <span class="mh">0xF837889A</span><span class="p">,</span> <span class="mh">0x97E32D77</span><span class="p">,</span> <span class="mh">0x11ED935F</span><span class="p">,</span> <span class="mh">0x16681281</span><span class="p">,</span>
+                <span class="mh">0x0E358829</span><span class="p">,</span> <span class="mh">0xC7E61FD6</span><span class="p">,</span> <span class="mh">0x96DEDFA1</span><span class="p">,</span> <span class="mh">0x7858BA99</span><span class="p">,</span>
+                <span class="mh">0x57F584A5</span><span class="p">,</span> <span class="mh">0x1B227263</span><span class="p">,</span> <span class="mh">0x9B83C3FF</span><span class="p">,</span> <span class="mh">0x1AC24696</span><span class="p">,</span>
+                <span class="mh">0xCDB30AEB</span><span class="p">,</span> <span class="mh">0x532E3054</span><span class="p">,</span> <span class="mh">0x8FD948E4</span><span class="p">,</span> <span class="mh">0x6DBC3128</span><span class="p">,</span>
+                <span class="mh">0x58EBF2EF</span><span class="p">,</span> <span class="mh">0x34C6FFEA</span><span class="p">,</span> <span class="mh">0xFE28ED61</span><span class="p">,</span> <span class="mh">0xEE7C3C73</span><span class="p">,</span>
+                <span class="mh">0x5D4A14D9</span><span class="p">,</span> <span class="mh">0xE864B7E3</span><span class="p">,</span> <span class="mh">0x42105D14</span><span class="p">,</span> <span class="mh">0x203E13E0</span><span class="p">,</span>
+                <span class="mh">0x45EEE2B6</span><span class="p">,</span> <span class="mh">0xA3AAABEA</span><span class="p">,</span> <span class="mh">0xDB6C4F15</span><span class="p">,</span> <span class="mh">0xFACB4FD0</span><span class="p">,</span>
+                <span class="mh">0xC742F442</span><span class="p">,</span> <span class="mh">0xEF6ABBB5</span><span class="p">,</span> <span class="mh">0x654F3B1D</span><span class="p">,</span> <span class="mh">0x41CD2105</span><span class="p">,</span>
+                <span class="mh">0xD81E799E</span><span class="p">,</span> <span class="mh">0x86854DC7</span><span class="p">,</span> <span class="mh">0xE44B476A</span><span class="p">,</span> <span class="mh">0x3D816250</span><span class="p">,</span>
+                <span class="mh">0xCF62A1F2</span><span class="p">,</span> <span class="mh">0x5B8D2646</span><span class="p">,</span> <span class="mh">0xFC8883A0</span><span class="p">,</span> <span class="mh">0xC1C7B6A3</span><span class="p">,</span>
+                <span class="mh">0x7F1524C3</span><span class="p">,</span> <span class="mh">0x69CB7492</span><span class="p">,</span> <span class="mh">0x47848A0B</span><span class="p">,</span> <span class="mh">0x5692B285</span><span class="p">,</span>
+                <span class="mh">0x095BBF00</span><span class="p">,</span> <span class="mh">0xAD19489D</span><span class="p">,</span> <span class="mh">0x1462B174</span><span class="p">,</span> <span class="mh">0x23820E00</span><span class="p">,</span>
+                <span class="mh">0x58428D2A</span><span class="p">,</span> <span class="mh">0x0C55F5EA</span><span class="p">,</span> <span class="mh">0x1DADF43E</span><span class="p">,</span> <span class="mh">0x233F7061</span><span class="p">,</span>
+                <span class="mh">0x3372F092</span><span class="p">,</span> <span class="mh">0x8D937E41</span><span class="p">,</span> <span class="mh">0xD65FECF1</span><span class="p">,</span> <span class="mh">0x6C223BDB</span><span class="p">,</span>
+                <span class="mh">0x7CDE3759</span><span class="p">,</span> <span class="mh">0xCBEE7460</span><span class="p">,</span> <span class="mh">0x4085F2A7</span><span class="p">,</span> <span class="mh">0xCE77326E</span><span class="p">,</span>
+                <span class="mh">0xA6078084</span><span class="p">,</span> <span class="mh">0x19F8509E</span><span class="p">,</span> <span class="mh">0xE8EFD855</span><span class="p">,</span> <span class="mh">0x61D99735</span><span class="p">,</span>
+                <span class="mh">0xA969A7AA</span><span class="p">,</span> <span class="mh">0xC50C06C2</span><span class="p">,</span> <span class="mh">0x5A04ABFC</span><span class="p">,</span> <span class="mh">0x800BCADC</span><span class="p">,</span>
+                <span class="mh">0x9E447A2E</span><span class="p">,</span> <span class="mh">0xC3453484</span><span class="p">,</span> <span class="mh">0xFDD56705</span><span class="p">,</span> <span class="mh">0x0E1E9EC9</span><span class="p">,</span>
+                <span class="mh">0xDB73DBD3</span><span class="p">,</span> <span class="mh">0x105588CD</span><span class="p">,</span> <span class="mh">0x675FDA79</span><span class="p">,</span> <span class="mh">0xE3674340</span><span class="p">,</span>
+                <span class="mh">0xC5C43465</span><span class="p">,</span> <span class="mh">0x713E38D8</span><span class="p">,</span> <span class="mh">0x3D28F89E</span><span class="p">,</span> <span class="mh">0xF16DFF20</span><span class="p">,</span>
+                <span class="mh">0x153E21E7</span><span class="p">,</span> <span class="mh">0x8FB03D4A</span><span class="p">,</span> <span class="mh">0xE6E39F2B</span><span class="p">,</span> <span class="mh">0xDB83ADF7</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="mh">0xE93D5A68</span><span class="p">,</span> <span class="mh">0x948140F7</span><span class="p">,</span> <span class="mh">0xF64C261C</span><span class="p">,</span> <span class="mh">0x94692934</span><span class="p">,</span>
+                <span class="mh">0x411520F7</span><span class="p">,</span> <span class="mh">0x7602D4F7</span><span class="p">,</span> <span class="mh">0xBCF46B2E</span><span class="p">,</span> <span class="mh">0xD4A20068</span><span class="p">,</span>
+                <span class="mh">0xD4082471</span><span class="p">,</span> <span class="mh">0x3320F46A</span><span class="p">,</span> <span class="mh">0x43B7D4B7</span><span class="p">,</span> <span class="mh">0x500061AF</span><span class="p">,</span>
+                <span class="mh">0x1E39F62E</span><span class="p">,</span> <span class="mh">0x97244546</span><span class="p">,</span> <span class="mh">0x14214F74</span><span class="p">,</span> <span class="mh">0xBF8B8840</span><span class="p">,</span>
+                <span class="mh">0x4D95FC1D</span><span class="p">,</span> <span class="mh">0x96B591AF</span><span class="p">,</span> <span class="mh">0x70F4DDD3</span><span class="p">,</span> <span class="mh">0x66A02F45</span><span class="p">,</span>
+                <span class="mh">0xBFBC09EC</span><span class="p">,</span> <span class="mh">0x03BD9785</span><span class="p">,</span> <span class="mh">0x7FAC6DD0</span><span class="p">,</span> <span class="mh">0x31CB8504</span><span class="p">,</span>
+                <span class="mh">0x96EB27B3</span><span class="p">,</span> <span class="mh">0x55FD3941</span><span class="p">,</span> <span class="mh">0xDA2547E6</span><span class="p">,</span> <span class="mh">0xABCA0A9A</span><span class="p">,</span>
+                <span class="mh">0x28507825</span><span class="p">,</span> <span class="mh">0x530429F4</span><span class="p">,</span> <span class="mh">0x0A2C86DA</span><span class="p">,</span> <span class="mh">0xE9B66DFB</span><span class="p">,</span>
+                <span class="mh">0x68DC1462</span><span class="p">,</span> <span class="mh">0xD7486900</span><span class="p">,</span> <span class="mh">0x680EC0A4</span><span class="p">,</span> <span class="mh">0x27A18DEE</span><span class="p">,</span>
+                <span class="mh">0x4F3FFEA2</span><span class="p">,</span> <span class="mh">0xE887AD8C</span><span class="p">,</span> <span class="mh">0xB58CE006</span><span class="p">,</span> <span class="mh">0x7AF4D6B6</span><span class="p">,</span>
+                <span class="mh">0xAACE1E7C</span><span class="p">,</span> <span class="mh">0xD3375FEC</span><span class="p">,</span> <span class="mh">0xCE78A399</span><span class="p">,</span> <span class="mh">0x406B2A42</span><span class="p">,</span>
+                <span class="mh">0x20FE9E35</span><span class="p">,</span> <span class="mh">0xD9F385B9</span><span class="p">,</span> <span class="mh">0xEE39D7AB</span><span class="p">,</span> <span class="mh">0x3B124E8B</span><span class="p">,</span>
+                <span class="mh">0x1DC9FAF7</span><span class="p">,</span> <span class="mh">0x4B6D1856</span><span class="p">,</span> <span class="mh">0x26A36631</span><span class="p">,</span> <span class="mh">0xEAE397B2</span><span class="p">,</span>
+                <span class="mh">0x3A6EFA74</span><span class="p">,</span> <span class="mh">0xDD5B4332</span><span class="p">,</span> <span class="mh">0x6841E7F7</span><span class="p">,</span> <span class="mh">0xCA7820FB</span><span class="p">,</span>
+                <span class="mh">0xFB0AF54E</span><span class="p">,</span> <span class="mh">0xD8FEB397</span><span class="p">,</span> <span class="mh">0x454056AC</span><span class="p">,</span> <span class="mh">0xBA489527</span><span class="p">,</span>
+                <span class="mh">0x55533A3A</span><span class="p">,</span> <span class="mh">0x20838D87</span><span class="p">,</span> <span class="mh">0xFE6BA9B7</span><span class="p">,</span> <span class="mh">0xD096954B</span><span class="p">,</span>
+                <span class="mh">0x55A867BC</span><span class="p">,</span> <span class="mh">0xA1159A58</span><span class="p">,</span> <span class="mh">0xCCA92963</span><span class="p">,</span> <span class="mh">0x99E1DB33</span><span class="p">,</span>
+                <span class="mh">0xA62A4A56</span><span class="p">,</span> <span class="mh">0x3F3125F9</span><span class="p">,</span> <span class="mh">0x5EF47E1C</span><span class="p">,</span> <span class="mh">0x9029317C</span><span class="p">,</span>
+                <span class="mh">0xFDF8E802</span><span class="p">,</span> <span class="mh">0x04272F70</span><span class="p">,</span> <span class="mh">0x80BB155C</span><span class="p">,</span> <span class="mh">0x05282CE3</span><span class="p">,</span>
+                <span class="mh">0x95C11548</span><span class="p">,</span> <span class="mh">0xE4C66D22</span><span class="p">,</span> <span class="mh">0x48C1133F</span><span class="p">,</span> <span class="mh">0xC70F86DC</span><span class="p">,</span>
+                <span class="mh">0x07F9C9EE</span><span class="p">,</span> <span class="mh">0x41041F0F</span><span class="p">,</span> <span class="mh">0x404779A4</span><span class="p">,</span> <span class="mh">0x5D886E17</span><span class="p">,</span>
+                <span class="mh">0x325F51EB</span><span class="p">,</span> <span class="mh">0xD59BC0D1</span><span class="p">,</span> <span class="mh">0xF2BCC18F</span><span class="p">,</span> <span class="mh">0x41113564</span><span class="p">,</span>
+                <span class="mh">0x257B7834</span><span class="p">,</span> <span class="mh">0x602A9C60</span><span class="p">,</span> <span class="mh">0xDFF8E8A3</span><span class="p">,</span> <span class="mh">0x1F636C1B</span><span class="p">,</span>
+                <span class="mh">0x0E12B4C2</span><span class="p">,</span> <span class="mh">0x02E1329E</span><span class="p">,</span> <span class="mh">0xAF664FD1</span><span class="p">,</span> <span class="mh">0xCAD18115</span><span class="p">,</span>
+                <span class="mh">0x6B2395E0</span><span class="p">,</span> <span class="mh">0x333E92E1</span><span class="p">,</span> <span class="mh">0x3B240B62</span><span class="p">,</span> <span class="mh">0xEEBEB922</span><span class="p">,</span>
+                <span class="mh">0x85B2A20E</span><span class="p">,</span> <span class="mh">0xE6BA0D99</span><span class="p">,</span> <span class="mh">0xDE720C8C</span><span class="p">,</span> <span class="mh">0x2DA2F728</span><span class="p">,</span>
+                <span class="mh">0xD0127845</span><span class="p">,</span> <span class="mh">0x95B794FD</span><span class="p">,</span> <span class="mh">0x647D0862</span><span class="p">,</span> <span class="mh">0xE7CCF5F0</span><span class="p">,</span>
+                <span class="mh">0x5449A36F</span><span class="p">,</span> <span class="mh">0x877D48FA</span><span class="p">,</span> <span class="mh">0xC39DFD27</span><span class="p">,</span> <span class="mh">0xF33E8D1E</span><span class="p">,</span>
+                <span class="mh">0x0A476341</span><span class="p">,</span> <span class="mh">0x992EFF74</span><span class="p">,</span> <span class="mh">0x3A6F6EAB</span><span class="p">,</span> <span class="mh">0xF4F8FD37</span><span class="p">,</span>
+                <span class="mh">0xA812DC60</span><span class="p">,</span> <span class="mh">0xA1EBDDF8</span><span class="p">,</span> <span class="mh">0x991BE14C</span><span class="p">,</span> <span class="mh">0xDB6E6B0D</span><span class="p">,</span>
+                <span class="mh">0xC67B5510</span><span class="p">,</span> <span class="mh">0x6D672C37</span><span class="p">,</span> <span class="mh">0x2765D43B</span><span class="p">,</span> <span class="mh">0xDCD0E804</span><span class="p">,</span>
+                <span class="mh">0xF1290DC7</span><span class="p">,</span> <span class="mh">0xCC00FFA3</span><span class="p">,</span> <span class="mh">0xB5390F92</span><span class="p">,</span> <span class="mh">0x690FED0B</span><span class="p">,</span>
+                <span class="mh">0x667B9FFB</span><span class="p">,</span> <span class="mh">0xCEDB7D9C</span><span class="p">,</span> <span class="mh">0xA091CF0B</span><span class="p">,</span> <span class="mh">0xD9155EA3</span><span class="p">,</span>
+                <span class="mh">0xBB132F88</span><span class="p">,</span> <span class="mh">0x515BAD24</span><span class="p">,</span> <span class="mh">0x7B9479BF</span><span class="p">,</span> <span class="mh">0x763BD6EB</span><span class="p">,</span>
+                <span class="mh">0x37392EB3</span><span class="p">,</span> <span class="mh">0xCC115979</span><span class="p">,</span> <span class="mh">0x8026E297</span><span class="p">,</span> <span class="mh">0xF42E312D</span><span class="p">,</span>
+                <span class="mh">0x6842ADA7</span><span class="p">,</span> <span class="mh">0xC66A2B3B</span><span class="p">,</span> <span class="mh">0x12754CCC</span><span class="p">,</span> <span class="mh">0x782EF11C</span><span class="p">,</span>
+                <span class="mh">0x6A124237</span><span class="p">,</span> <span class="mh">0xB79251E7</span><span class="p">,</span> <span class="mh">0x06A1BBE6</span><span class="p">,</span> <span class="mh">0x4BFB6350</span><span class="p">,</span>
+                <span class="mh">0x1A6B1018</span><span class="p">,</span> <span class="mh">0x11CAEDFA</span><span class="p">,</span> <span class="mh">0x3D25BDD8</span><span class="p">,</span> <span class="mh">0xE2E1C3C9</span><span class="p">,</span>
+                <span class="mh">0x44421659</span><span class="p">,</span> <span class="mh">0x0A121386</span><span class="p">,</span> <span class="mh">0xD90CEC6E</span><span class="p">,</span> <span class="mh">0xD5ABEA2A</span><span class="p">,</span>
+                <span class="mh">0x64AF674E</span><span class="p">,</span> <span class="mh">0xDA86A85F</span><span class="p">,</span> <span class="mh">0xBEBFE988</span><span class="p">,</span> <span class="mh">0x64E4C3FE</span><span class="p">,</span>
+                <span class="mh">0x9DBC8057</span><span class="p">,</span> <span class="mh">0xF0F7C086</span><span class="p">,</span> <span class="mh">0x60787BF8</span><span class="p">,</span> <span class="mh">0x6003604D</span><span class="p">,</span>
+                <span class="mh">0xD1FD8346</span><span class="p">,</span> <span class="mh">0xF6381FB0</span><span class="p">,</span> <span class="mh">0x7745AE04</span><span class="p">,</span> <span class="mh">0xD736FCCC</span><span class="p">,</span>
+                <span class="mh">0x83426B33</span><span class="p">,</span> <span class="mh">0xF01EAB71</span><span class="p">,</span> <span class="mh">0xB0804187</span><span class="p">,</span> <span class="mh">0x3C005E5F</span><span class="p">,</span>
+                <span class="mh">0x77A057BE</span><span class="p">,</span> <span class="mh">0xBDE8AE24</span><span class="p">,</span> <span class="mh">0x55464299</span><span class="p">,</span> <span class="mh">0xBF582E61</span><span class="p">,</span>
+                <span class="mh">0x4E58F48F</span><span class="p">,</span> <span class="mh">0xF2DDFDA2</span><span class="p">,</span> <span class="mh">0xF474EF38</span><span class="p">,</span> <span class="mh">0x8789BDC2</span><span class="p">,</span>
+                <span class="mh">0x5366F9C3</span><span class="p">,</span> <span class="mh">0xC8B38E74</span><span class="p">,</span> <span class="mh">0xB475F255</span><span class="p">,</span> <span class="mh">0x46FCD9B9</span><span class="p">,</span>
+                <span class="mh">0x7AEB2661</span><span class="p">,</span> <span class="mh">0x8B1DDF84</span><span class="p">,</span> <span class="mh">0x846A0E79</span><span class="p">,</span> <span class="mh">0x915F95E2</span><span class="p">,</span>
+                <span class="mh">0x466E598E</span><span class="p">,</span> <span class="mh">0x20B45770</span><span class="p">,</span> <span class="mh">0x8CD55591</span><span class="p">,</span> <span class="mh">0xC902DE4C</span><span class="p">,</span>
+                <span class="mh">0xB90BACE1</span><span class="p">,</span> <span class="mh">0xBB8205D0</span><span class="p">,</span> <span class="mh">0x11A86248</span><span class="p">,</span> <span class="mh">0x7574A99E</span><span class="p">,</span>
+                <span class="mh">0xB77F19B6</span><span class="p">,</span> <span class="mh">0xE0A9DC09</span><span class="p">,</span> <span class="mh">0x662D09A1</span><span class="p">,</span> <span class="mh">0xC4324633</span><span class="p">,</span>
+                <span class="mh">0xE85A1F02</span><span class="p">,</span> <span class="mh">0x09F0BE8C</span><span class="p">,</span> <span class="mh">0x4A99A025</span><span class="p">,</span> <span class="mh">0x1D6EFE10</span><span class="p">,</span>
+                <span class="mh">0x1AB93D1D</span><span class="p">,</span> <span class="mh">0x0BA5A4DF</span><span class="p">,</span> <span class="mh">0xA186F20F</span><span class="p">,</span> <span class="mh">0x2868F169</span><span class="p">,</span>
+                <span class="mh">0xDCB7DA83</span><span class="p">,</span> <span class="mh">0x573906FE</span><span class="p">,</span> <span class="mh">0xA1E2CE9B</span><span class="p">,</span> <span class="mh">0x4FCD7F52</span><span class="p">,</span>
+                <span class="mh">0x50115E01</span><span class="p">,</span> <span class="mh">0xA70683FA</span><span class="p">,</span> <span class="mh">0xA002B5C4</span><span class="p">,</span> <span class="mh">0x0DE6D027</span><span class="p">,</span>
+                <span class="mh">0x9AF88C27</span><span class="p">,</span> <span class="mh">0x773F8641</span><span class="p">,</span> <span class="mh">0xC3604C06</span><span class="p">,</span> <span class="mh">0x61A806B5</span><span class="p">,</span>
+                <span class="mh">0xF0177A28</span><span class="p">,</span> <span class="mh">0xC0F586E0</span><span class="p">,</span> <span class="mh">0x006058AA</span><span class="p">,</span> <span class="mh">0x30DC7D62</span><span class="p">,</span>
+                <span class="mh">0x11E69ED7</span><span class="p">,</span> <span class="mh">0x2338EA63</span><span class="p">,</span> <span class="mh">0x53C2DD94</span><span class="p">,</span> <span class="mh">0xC2C21634</span><span class="p">,</span>
+                <span class="mh">0xBBCBEE56</span><span class="p">,</span> <span class="mh">0x90BCB6DE</span><span class="p">,</span> <span class="mh">0xEBFC7DA1</span><span class="p">,</span> <span class="mh">0xCE591D76</span><span class="p">,</span>
+                <span class="mh">0x6F05E409</span><span class="p">,</span> <span class="mh">0x4B7C0188</span><span class="p">,</span> <span class="mh">0x39720A3D</span><span class="p">,</span> <span class="mh">0x7C927C24</span><span class="p">,</span>
+                <span class="mh">0x86E3725F</span><span class="p">,</span> <span class="mh">0x724D9DB9</span><span class="p">,</span> <span class="mh">0x1AC15BB4</span><span class="p">,</span> <span class="mh">0xD39EB8FC</span><span class="p">,</span>
+                <span class="mh">0xED545578</span><span class="p">,</span> <span class="mh">0x08FCA5B5</span><span class="p">,</span> <span class="mh">0xD83D7CD3</span><span class="p">,</span> <span class="mh">0x4DAD0FC4</span><span class="p">,</span>
+                <span class="mh">0x1E50EF5E</span><span class="p">,</span> <span class="mh">0xB161E6F8</span><span class="p">,</span> <span class="mh">0xA28514D9</span><span class="p">,</span> <span class="mh">0x6C51133C</span><span class="p">,</span>
+                <span class="mh">0x6FD5C7E7</span><span class="p">,</span> <span class="mh">0x56E14EC4</span><span class="p">,</span> <span class="mh">0x362ABFCE</span><span class="p">,</span> <span class="mh">0xDDC6C837</span><span class="p">,</span>
+                <span class="mh">0xD79A3234</span><span class="p">,</span> <span class="mh">0x92638212</span><span class="p">,</span> <span class="mh">0x670EFA8E</span><span class="p">,</span> <span class="mh">0x406000E0</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="mh">0x3A39CE37</span><span class="p">,</span> <span class="mh">0xD3FAF5CF</span><span class="p">,</span> <span class="mh">0xABC27737</span><span class="p">,</span> <span class="mh">0x5AC52D1B</span><span class="p">,</span>
+                <span class="mh">0x5CB0679E</span><span class="p">,</span> <span class="mh">0x4FA33742</span><span class="p">,</span> <span class="mh">0xD3822740</span><span class="p">,</span> <span class="mh">0x99BC9BBE</span><span class="p">,</span>
+                <span class="mh">0xD5118E9D</span><span class="p">,</span> <span class="mh">0xBF0F7315</span><span class="p">,</span> <span class="mh">0xD62D1C7E</span><span class="p">,</span> <span class="mh">0xC700C47B</span><span class="p">,</span>
+                <span class="mh">0xB78C1B6B</span><span class="p">,</span> <span class="mh">0x21A19045</span><span class="p">,</span> <span class="mh">0xB26EB1BE</span><span class="p">,</span> <span class="mh">0x6A366EB4</span><span class="p">,</span>
+                <span class="mh">0x5748AB2F</span><span class="p">,</span> <span class="mh">0xBC946E79</span><span class="p">,</span> <span class="mh">0xC6A376D2</span><span class="p">,</span> <span class="mh">0x6549C2C8</span><span class="p">,</span>
+                <span class="mh">0x530FF8EE</span><span class="p">,</span> <span class="mh">0x468DDE7D</span><span class="p">,</span> <span class="mh">0xD5730A1D</span><span class="p">,</span> <span class="mh">0x4CD04DC6</span><span class="p">,</span>
+                <span class="mh">0x2939BBDB</span><span class="p">,</span> <span class="mh">0xA9BA4650</span><span class="p">,</span> <span class="mh">0xAC9526E8</span><span class="p">,</span> <span class="mh">0xBE5EE304</span><span class="p">,</span>
+                <span class="mh">0xA1FAD5F0</span><span class="p">,</span> <span class="mh">0x6A2D519A</span><span class="p">,</span> <span class="mh">0x63EF8CE2</span><span class="p">,</span> <span class="mh">0x9A86EE22</span><span class="p">,</span>
+                <span class="mh">0xC089C2B8</span><span class="p">,</span> <span class="mh">0x43242EF6</span><span class="p">,</span> <span class="mh">0xA51E03AA</span><span class="p">,</span> <span class="mh">0x9CF2D0A4</span><span class="p">,</span>
+                <span class="mh">0x83C061BA</span><span class="p">,</span> <span class="mh">0x9BE96A4D</span><span class="p">,</span> <span class="mh">0x8FE51550</span><span class="p">,</span> <span class="mh">0xBA645BD6</span><span class="p">,</span>
+                <span class="mh">0x2826A2F9</span><span class="p">,</span> <span class="mh">0xA73A3AE1</span><span class="p">,</span> <span class="mh">0x4BA99586</span><span class="p">,</span> <span class="mh">0xEF5562E9</span><span class="p">,</span>
+                <span class="mh">0xC72FEFD3</span><span class="p">,</span> <span class="mh">0xF752F7DA</span><span class="p">,</span> <span class="mh">0x3F046F69</span><span class="p">,</span> <span class="mh">0x77FA0A59</span><span class="p">,</span>
+                <span class="mh">0x80E4A915</span><span class="p">,</span> <span class="mh">0x87B08601</span><span class="p">,</span> <span class="mh">0x9B09E6AD</span><span class="p">,</span> <span class="mh">0x3B3EE593</span><span class="p">,</span>
+                <span class="mh">0xE990FD5A</span><span class="p">,</span> <span class="mh">0x9E34D797</span><span class="p">,</span> <span class="mh">0x2CF0B7D9</span><span class="p">,</span> <span class="mh">0x022B8B51</span><span class="p">,</span>
+                <span class="mh">0x96D5AC3A</span><span class="p">,</span> <span class="mh">0x017DA67D</span><span class="p">,</span> <span class="mh">0xD1CF3ED6</span><span class="p">,</span> <span class="mh">0x7C7D2D28</span><span class="p">,</span>
+                <span class="mh">0x1F9F25CF</span><span class="p">,</span> <span class="mh">0xADF2B89B</span><span class="p">,</span> <span class="mh">0x5AD6B472</span><span class="p">,</span> <span class="mh">0x5A88F54C</span><span class="p">,</span>
+                <span class="mh">0xE029AC71</span><span class="p">,</span> <span class="mh">0xE019A5E6</span><span class="p">,</span> <span class="mh">0x47B0ACFD</span><span class="p">,</span> <span class="mh">0xED93FA9B</span><span class="p">,</span>
+                <span class="mh">0xE8D3C48D</span><span class="p">,</span> <span class="mh">0x283B57CC</span><span class="p">,</span> <span class="mh">0xF8D56629</span><span class="p">,</span> <span class="mh">0x79132E28</span><span class="p">,</span>
+                <span class="mh">0x785F0191</span><span class="p">,</span> <span class="mh">0xED756055</span><span class="p">,</span> <span class="mh">0xF7960E44</span><span class="p">,</span> <span class="mh">0xE3D35E8C</span><span class="p">,</span>
+                <span class="mh">0x15056DD4</span><span class="p">,</span> <span class="mh">0x88F46DBA</span><span class="p">,</span> <span class="mh">0x03A16125</span><span class="p">,</span> <span class="mh">0x0564F0BD</span><span class="p">,</span>
+                <span class="mh">0xC3EB9E15</span><span class="p">,</span> <span class="mh">0x3C9057A2</span><span class="p">,</span> <span class="mh">0x97271AEC</span><span class="p">,</span> <span class="mh">0xA93A072A</span><span class="p">,</span>
+                <span class="mh">0x1B3F6D9B</span><span class="p">,</span> <span class="mh">0x1E6321F5</span><span class="p">,</span> <span class="mh">0xF59C66FB</span><span class="p">,</span> <span class="mh">0x26DCF319</span><span class="p">,</span>
+                <span class="mh">0x7533D928</span><span class="p">,</span> <span class="mh">0xB155FDF5</span><span class="p">,</span> <span class="mh">0x03563482</span><span class="p">,</span> <span class="mh">0x8ABA3CBB</span><span class="p">,</span>
+                <span class="mh">0x28517711</span><span class="p">,</span> <span class="mh">0xC20AD9F8</span><span class="p">,</span> <span class="mh">0xABCC5167</span><span class="p">,</span> <span class="mh">0xCCAD925F</span><span class="p">,</span>
+                <span class="mh">0x4DE81751</span><span class="p">,</span> <span class="mh">0x3830DC8E</span><span class="p">,</span> <span class="mh">0x379D5862</span><span class="p">,</span> <span class="mh">0x9320F991</span><span class="p">,</span>
+                <span class="mh">0xEA7A90C2</span><span class="p">,</span> <span class="mh">0xFB3E7BCE</span><span class="p">,</span> <span class="mh">0x5121CE64</span><span class="p">,</span> <span class="mh">0x774FBE32</span><span class="p">,</span>
+                <span class="mh">0xA8B6E37E</span><span class="p">,</span> <span class="mh">0xC3293D46</span><span class="p">,</span> <span class="mh">0x48DE5369</span><span class="p">,</span> <span class="mh">0x6413E680</span><span class="p">,</span>
+                <span class="mh">0xA2AE0810</span><span class="p">,</span> <span class="mh">0xDD6DB224</span><span class="p">,</span> <span class="mh">0x69852DFD</span><span class="p">,</span> <span class="mh">0x09072166</span><span class="p">,</span>
+                <span class="mh">0xB39A460A</span><span class="p">,</span> <span class="mh">0x6445C0DD</span><span class="p">,</span> <span class="mh">0x586CDECF</span><span class="p">,</span> <span class="mh">0x1C20C8AE</span><span class="p">,</span>
+                <span class="mh">0x5BBEF7DD</span><span class="p">,</span> <span class="mh">0x1B588D40</span><span class="p">,</span> <span class="mh">0xCCD2017F</span><span class="p">,</span> <span class="mh">0x6BB4E3BB</span><span class="p">,</span>
+                <span class="mh">0xDDA26A7E</span><span class="p">,</span> <span class="mh">0x3A59FF45</span><span class="p">,</span> <span class="mh">0x3E350A44</span><span class="p">,</span> <span class="mh">0xBCB4CDD5</span><span class="p">,</span>
+                <span class="mh">0x72EACEA8</span><span class="p">,</span> <span class="mh">0xFA6484BB</span><span class="p">,</span> <span class="mh">0x8D6612AE</span><span class="p">,</span> <span class="mh">0xBF3C6F47</span><span class="p">,</span>
+                <span class="mh">0xD29BE463</span><span class="p">,</span> <span class="mh">0x542F5D9E</span><span class="p">,</span> <span class="mh">0xAEC2771B</span><span class="p">,</span> <span class="mh">0xF64E6370</span><span class="p">,</span>
+                <span class="mh">0x740E0D8D</span><span class="p">,</span> <span class="mh">0xE75B1357</span><span class="p">,</span> <span class="mh">0xF8721671</span><span class="p">,</span> <span class="mh">0xAF537D5D</span><span class="p">,</span>
+                <span class="mh">0x4040CB08</span><span class="p">,</span> <span class="mh">0x4EB4E2CC</span><span class="p">,</span> <span class="mh">0x34D2466A</span><span class="p">,</span> <span class="mh">0x0115AF84</span><span class="p">,</span>
+                <span class="mh">0xE1B00428</span><span class="p">,</span> <span class="mh">0x95983A1D</span><span class="p">,</span> <span class="mh">0x06B89FB4</span><span class="p">,</span> <span class="mh">0xCE6EA048</span><span class="p">,</span>
+                <span class="mh">0x6F3F3B82</span><span class="p">,</span> <span class="mh">0x3520AB82</span><span class="p">,</span> <span class="mh">0x011A1D4B</span><span class="p">,</span> <span class="mh">0x277227F8</span><span class="p">,</span>
+                <span class="mh">0x611560B1</span><span class="p">,</span> <span class="mh">0xE7933FDC</span><span class="p">,</span> <span class="mh">0xBB3A792B</span><span class="p">,</span> <span class="mh">0x344525BD</span><span class="p">,</span>
+                <span class="mh">0xA08839E1</span><span class="p">,</span> <span class="mh">0x51CE794B</span><span class="p">,</span> <span class="mh">0x2F32C9B7</span><span class="p">,</span> <span class="mh">0xA01FBAC9</span><span class="p">,</span>
+                <span class="mh">0xE01CC87E</span><span class="p">,</span> <span class="mh">0xBCC7D1F6</span><span class="p">,</span> <span class="mh">0xCF0111C3</span><span class="p">,</span> <span class="mh">0xA1E8AAC7</span><span class="p">,</span>
+                <span class="mh">0x1A908749</span><span class="p">,</span> <span class="mh">0xD44FBD9A</span><span class="p">,</span> <span class="mh">0xD0DADECB</span><span class="p">,</span> <span class="mh">0xD50ADA38</span><span class="p">,</span>
+                <span class="mh">0x0339C32A</span><span class="p">,</span> <span class="mh">0xC6913667</span><span class="p">,</span> <span class="mh">0x8DF9317C</span><span class="p">,</span> <span class="mh">0xE0B12B4F</span><span class="p">,</span>
+                <span class="mh">0xF79E59B7</span><span class="p">,</span> <span class="mh">0x43F5BB3A</span><span class="p">,</span> <span class="mh">0xF2D519FF</span><span class="p">,</span> <span class="mh">0x27D9459C</span><span class="p">,</span>
+                <span class="mh">0xBF97222C</span><span class="p">,</span> <span class="mh">0x15E6FC2A</span><span class="p">,</span> <span class="mh">0x0F91FC71</span><span class="p">,</span> <span class="mh">0x9B941525</span><span class="p">,</span>
+                <span class="mh">0xFAE59361</span><span class="p">,</span> <span class="mh">0xCE</span>
+<span class="mi">1</span><span class="n">c40</span>
+<span class="n">B69CEB</span><span class="p">,</span> <span class="mh">0xC2A86459</span><span class="p">,</span> <span class="mh">0x12BAA8D1</span><span class="p">,</span>
+                <span class="mh">0xB6C1075E</span><span class="p">,</span> <span class="mh">0xE3056A0C</span><span class="p">,</span> <span class="mh">0x10D25065</span><span class="p">,</span> <span class="mh">0xCB03A442</span><span class="p">,</span>
+                <span class="mh">0xE0EC6E0E</span><span class="p">,</span> <span class="mh">0x1698DB3B</span><span class="p">,</span> <span class="mh">0x4C98A0BE</span><span class="p">,</span> <span class="mh">0x3278E964</span><span class="p">,</span>
+                <span class="mh">0x9F1F9532</span><span class="p">,</span> <span class="mh">0xE0D392DF</span><span class="p">,</span> <span class="mh">0xD3A0342B</span><span class="p">,</span> <span class="mh">0x8971F21E</span><span class="p">,</span>
+                <span class="mh">0x1B0A7441</span><span class="p">,</span> <span class="mh">0x4BA3348C</span><span class="p">,</span> <span class="mh">0xC5BE7120</span><span class="p">,</span> <span class="mh">0xC37632D8</span><span class="p">,</span>
+                <span class="mh">0xDF359F8D</span><span class="p">,</span> <span class="mh">0x9B992F2E</span><span class="p">,</span> <span class="mh">0xE60B6F47</span><span class="p">,</span> <span class="mh">0x0FE3F11D</span><span class="p">,</span>
+                <span class="mh">0xE54CDA54</span><span class="p">,</span> <span class="mh">0x1EDAD891</span><span class="p">,</span> <span class="mh">0xCE6279CF</span><span class="p">,</span> <span class="mh">0xCD3E7E6F</span><span class="p">,</span>
+                <span class="mh">0x1618B166</span><span class="p">,</span> <span class="mh">0xFD2C1D05</span><span class="p">,</span> <span class="mh">0x848FD2C5</span><span class="p">,</span> <span class="mh">0xF6FB2299</span><span class="p">,</span>
+                <span class="mh">0xF523F357</span><span class="p">,</span> <span class="mh">0xA6327623</span><span class="p">,</span> <span class="mh">0x93A83531</span><span class="p">,</span> <span class="mh">0x56CCCD02</span><span class="p">,</span>
+                <span class="mh">0xACF08162</span><span class="p">,</span> <span class="mh">0x5A75EBB5</span><span class="p">,</span> <span class="mh">0x6E163697</span><span class="p">,</span> <span class="mh">0x88D273CC</span><span class="p">,</span>
+                <span class="mh">0xDE966292</span><span class="p">,</span> <span class="mh">0x81B949D0</span><span class="p">,</span> <span class="mh">0x4C50901B</span><span class="p">,</span> <span class="mh">0x71C65614</span><span class="p">,</span>
+                <span class="mh">0xE6C6C7BD</span><span class="p">,</span> <span class="mh">0x327A140A</span><span class="p">,</span> <span class="mh">0x45E1D006</span><span class="p">,</span> <span class="mh">0xC3F27B9A</span><span class="p">,</span>
+                <span class="mh">0xC9AA53FD</span><span class="p">,</span> <span class="mh">0x62A80F00</span><span class="p">,</span> <span class="mh">0xBB25BFE2</span><span class="p">,</span> <span class="mh">0x35BDD2F6</span><span class="p">,</span>
+                <span class="mh">0x71126905</span><span class="p">,</span> <span class="mh">0xB2040222</span><span class="p">,</span> <span class="mh">0xB6CBCF7C</span><span class="p">,</span> <span class="mh">0xCD769C2B</span><span class="p">,</span>
+                <span class="mh">0x53113EC0</span><span class="p">,</span> <span class="mh">0x1640E3D3</span><span class="p">,</span> <span class="mh">0x38ABBD60</span><span class="p">,</span> <span class="mh">0x2547ADF0</span><span class="p">,</span>
+                <span class="mh">0xBA38209C</span><span class="p">,</span> <span class="mh">0xF746CE76</span><span class="p">,</span> <span class="mh">0x77AFA1C5</span><span class="p">,</span> <span class="mh">0x20756060</span><span class="p">,</span>
+                <span class="mh">0x85CBFE4E</span><span class="p">,</span> <span class="mh">0x8AE88DD8</span><span class="p">,</span> <span class="mh">0x7AAAF9B0</span><span class="p">,</span> <span class="mh">0x4CF9AA7E</span><span class="p">,</span>
+                <span class="mh">0x1948C25C</span><span class="p">,</span> <span class="mh">0x02FB8A8C</span><span class="p">,</span> <span class="mh">0x01C36AE4</span><span class="p">,</span> <span class="mh">0xD6EBE1F9</span><span class="p">,</span>
+                <span class="mh">0x90D4F869</span><span class="p">,</span> <span class="mh">0xA65CDEA0</span><span class="p">,</span> <span class="mh">0x3F09252D</span><span class="p">,</span> <span class="mh">0xC208E69F</span><span class="p">,</span>
+                <span class="mh">0xB74E6132</span><span class="p">,</span> <span class="mh">0xCE77E25B</span><span class="p">,</span> <span class="mh">0x578FDFE3</span><span class="p">,</span> <span class="mh">0x3AC372E6</span>
+            <span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Cycle through the p-boxes and round-robin XOR the</span>
+        <span class="c1"># key with the p-boxes</span>
+        <span class="n">key_len</span> <span class="o">=</span> <span class="nb">len</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">)):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="n">key_len</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> \
+                  <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">key</span><span class="p">[(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">key_len</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> \
+                  <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">key</span><span class="p">[(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="n">key_len</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="nb">ord</span> <span class="p">(</span><span class="n">key</span><span class="p">[(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="n">key_len</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">val</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">4</span>
+
+        <span class="c1"># For the chaining process</span>
+        <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+        <span class="c1"># Begin chain replacing the p-boxes</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENCRYPT</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="c1"># Chain replace the s-boxes</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENCRYPT</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initCTR</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">cipher</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Encryption primitive&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENCRYPT</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">xl</span> <span class="o">=</span> <span class="n">xl</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">xr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__round_func</span> <span class="p">(</span><span class="n">xl</span><span class="p">)</span> <span class="o">^</span> <span class="n">xr</span>
+                <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span><span class="p">,</span> <span class="n">xl</span>
+            <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span><span class="p">,</span> <span class="n">xl</span>
+            <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span>
+            <span class="n">xl</span> <span class="o">=</span> <span class="n">xl</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">xl</span> <span class="o">=</span> <span class="n">xl</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">xr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__round_func</span> <span class="p">(</span><span class="n">xl</span><span class="p">)</span> <span class="o">^</span> <span class="n">xr</span>
+                <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span><span class="p">,</span> <span class="n">xl</span>
+            <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span><span class="p">,</span> <span class="n">xl</span>
+            <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">xl</span> <span class="o">=</span> <span class="n">xl</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_boxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span>
+
+
+    <span class="k">def</span> <span class="nf">__round_func</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xl</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span> <span class="o">&amp;</span> <span class="mh">0xFF000000</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span> <span class="o">&amp;</span> <span class="mh">0x00FF0000</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span> <span class="o">&amp;</span> <span class="mh">0x0000FF00</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">xl</span> <span class="o">&amp;</span> <span class="mh">0x000000FF</span>
+
+        <span class="c1"># Perform all ops as longs then and out the last 32-bits to</span>
+        <span class="c1"># obtain the integer</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="nb">long</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="o">+</span> <span class="nb">long</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">b</span><span class="p">]))</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">modulus</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="o">^</span> <span class="nb">long</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">c</span><span class="p">])</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="nb">long</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s_boxes</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">d</span><span class="p">])</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span>
+
+        <span class="k">return</span> <span class="n">f</span>
+
+
+    <span class="k">def</span> <span class="nf">encrypt</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span> <span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Attempted to encrypt data of invalid block length: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Use big endianess since that&#39;s what everyone else uses</span>
+        <span class="n">xl</span> <span class="o">=</span> <span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span>
+        <span class="n">xr</span> <span class="o">=</span> <span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span>
+
+        <span class="n">cl</span><span class="p">,</span> <span class="n">cr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENCRYPT</span><span class="p">)</span>
+        <span class="n">chars</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span> <span class="p">([</span>
+            <span class="nb">chr</span> <span class="p">((</span><span class="n">cl</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">cl</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">cl</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">(</span><span class="n">cl</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span>
+            <span class="nb">chr</span> <span class="p">((</span><span class="n">cr</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">cr</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">cr</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">(</span><span class="n">cr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">chars</span>
+
+
+    <span class="k">def</span> <span class="nf">decrypt</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span> <span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Attempted to encrypt data of invalid block length: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Use big endianess since that&#39;s what everyone else uses</span>
+        <span class="n">cl</span> <span class="o">=</span> <span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span>
+        <span class="n">cr</span> <span class="o">=</span> <span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">ord</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span>
+
+        <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DECRYPT</span><span class="p">)</span>
+        <span class="n">chars</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span> <span class="p">([</span>
+            <span class="nb">chr</span> <span class="p">((</span><span class="n">xl</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">xl</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">xl</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">(</span><span class="n">xl</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span>
+            <span class="nb">chr</span> <span class="p">((</span><span class="n">xr</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">xr</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">((</span><span class="n">xr</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">),</span> <span class="nb">chr</span> <span class="p">(</span><span class="n">xr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">chars</span>
+
+
+    <span class="c1"># ==== CBC Mode ==www.iplaypy.com==</span>
+    <span class="k">def</span> <span class="nf">initCBC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes CBC mode of the cypher&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbc_iv</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">encryptCBC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Encrypts a buffer of data using CBC mode. Multiple successive buffers</span>
+<span class="sd">        (belonging to the same logical stream of buffers) can be encrypted</span>
+<span class="sd">        with this method one after the other without any intermediate work.</span>
+<span class="sd">        Each buffer must be a multiple of 8-octets (64-bits) in length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">types</span><span class="o">.</span><span class="n">StringType</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Can only work on 8-bit strings&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Can only work with data in 64-bit multiples in CBC mode&quot;</span>
+
+        <span class="n">xor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">ord</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">^</span> <span class="nb">ord</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">block_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">block_size</span><span class="p">):</span>
+            <span class="n">p_block</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">block_size</span><span class="p">]</span>
+            <span class="n">pair</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">p_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cbc_iv</span><span class="p">)</span>
+            <span class="n">j_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">xor</span><span class="p">,</span> <span class="n">pair</span><span class="p">)))</span>
+            <span class="n">c_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">j_block</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">c_block</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cbc_iv</span> <span class="o">=</span> <span class="n">c_block</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+    <span class="k">def</span> <span class="nf">decryptCBC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">types</span><span class="o">.</span><span class="n">StringType</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Can only work on 8-bit strings&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;Can only work with data in 64-bit multiples in CBC mode&quot;</span>
+
+        <span class="n">xor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">ord</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">^</span> <span class="nb">ord</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">block_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">block_size</span><span class="p">):</span>
+            <span class="n">c_block</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">block_size</span><span class="p">]</span>
+            <span class="n">j_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">c_block</span><span class="p">)</span>
+            <span class="n">pair</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">j_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cbc_iv</span><span class="p">)</span>
+            <span class="n">p</span>
+<span class="mi">77</span><span class="n">e</span>
+<span class="n">_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">xor</span><span class="p">,</span> <span class="n">pair</span><span class="p">)))</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">p_block</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cbc_iv</span> <span class="o">=</span> <span class="n">c_block</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+    <span class="c1"># ==== CTR Mode ====</span>
+    <span class="k">def</span> <span class="nf">initCTR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes CTR mode of the cypher&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctr_iv</span> <span class="o">=</span> <span class="n">iv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calcCTRBUF</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">_calcCTRBUF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates one block of CTR keystream&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctr_cks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctr_iv</span><span class="p">))</span> <span class="c1"># keystream block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctr_iv</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctr_pos</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+    <span class="k">def</span> <span class="nf">_nextCTRByte</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns one byte of CTR keystream&quot;&quot;&quot;</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctr_cks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ctr_pos</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctr_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctr_pos</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctr_cks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calcCTRBUF</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">b</span>
+
+
+    <span class="k">def</span> <span class="nf">encryptCTR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Encrypts a buffer of data with CTR mode. Multiple successive buffers</span>
+<span class="sd">        (belonging to the same logical stream of buffers) can be encrypted</span>
+<span class="sd">        with this method one after the other without any intermediate work.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">types</span><span class="o">.</span><span class="n">StringType</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RuntimeException</span><span class="p">,</span> <span class="s2">&quot;Can only work on 8-bit strings&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nextCTRByte</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">decryptCTR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encryptCTR</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">block_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">8</span>
+
+
+    <span class="k">def</span> <span class="nf">key_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">56</span>
+
+
+    <span class="k">def</span> <span class="nf">key_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">56</span> <span class="o">*</span> <span class="mi">8</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">testVectors</span><span class="p">():</span>
+        <span class="kn">import</span> <span class="nn">binascii</span>
+        <span class="c1"># for more vectors see http://www.schneier.com/code/vectors.txt</span>
+        <span class="n">vectors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;0000000000000000&#39;</span><span class="p">,</span>        <span class="s1">&#39;0000000000000000&#39;</span><span class="p">,</span>        <span class="s1">&#39;4EF997456198DD78&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;FFFFFFFFFFFFFFFF&#39;</span><span class="p">,</span>        <span class="s1">&#39;FFFFFFFFFFFFFFFF&#39;</span>
+<span class="mi">2000</span>
+<span class="p">,</span>        <span class="s1">&#39;51866FD5B85ECB8A&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;3000000000000000&#39;</span><span class="p">,</span>        <span class="s1">&#39;1000000000000001&#39;</span><span class="p">,</span>        <span class="s1">&#39;7D856F9A613063F2&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;1111111111111111&#39;</span><span class="p">,</span>        <span class="s1">&#39;1111111111111111&#39;</span><span class="p">,</span>        <span class="s1">&#39;2466DD878B963C9D&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;49E95D6D4CA229BF&#39;</span><span class="p">,</span>        <span class="s1">&#39;02FE55778117F12A&#39;</span><span class="p">,</span>        <span class="s1">&#39;CF9C5D7A4986ADB5&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;E0FEE0FEF1FEF1FE&#39;</span><span class="p">,</span>        <span class="s1">&#39;0123456789ABCDEF&#39;</span><span class="p">,</span>        <span class="s1">&#39;C39E072D9FAC631D&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;07A7137045DA2A16&#39;</span><span class="p">,</span>        <span class="s1">&#39;3BDD119049372802&#39;</span><span class="p">,</span>        <span class="s1">&#39;2EEDDA93FFD39C79&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">Blowfish</span><span class="p">(</span><span class="n">binascii</span><span class="o">.</span><span class="n">a2b_hex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">binascii</span><span class="o">.</span><span class="n">b2a_hex</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">binascii</span><span class="o">.</span><span class="n">a2b_hex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">print</span> <span class="s2">&quot;VECTOR TEST FAIL: expecting </span><span class="si">%s</span><span class="s2">, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">e</span><span class="p">)</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">ok</span>
+
+
+
+<span class="c1">##############################################################</span>
+<span class="c1"># Module testing</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Blowfish</span><span class="o">.</span><span class="n">testVectors</span><span class="p">():</span>
+        <span class="k">print</span> <span class="s2">&quot;WARNING: The implementation doesn&#39;t pass algorithm test vectors!&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;The implementation passes algorithm test vectors (ECB).&quot;</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;This is a test key&#39;</span>
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">Blowfish</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s2">&quot;Testing encryption:&quot;</span>
+    <span class="n">xl</span> <span class="o">=</span> <span class="mi">123456</span>
+    <span class="n">xr</span> <span class="o">=</span> <span class="mi">654321</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Plain text: (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">xr</span><span class="p">)</span>
+    <span class="n">cl</span><span class="p">,</span> <span class="n">cr</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">cipher</span><span class="o">.</span><span class="n">ENCRYPT</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Crypted is: (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">cr</span><span class="p">)</span>
+    <span class="n">dl</span><span class="p">,</span> <span class="n">dr</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">cipher</span> <span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="n">cipher</span><span class="o">.</span><span class="n">DECRYPT</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Unencrypted is: (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">dr</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s2">&quot;Testing block encrypt:&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;testtest&#39;</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Text:</span><span class="se">\t\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">text</span>
+    <span class="n">crypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Encrypted:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="n">decrypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Decrypted:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">decrypted</span>
+
+    <span class="k">print</span> <span class="s2">&quot;Testing CTR encrypt:&quot;</span>
+    <span class="n">cipher</span><span class="o">.</span><span class="n">initCTR</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The quick brown fox jumps over the lazy dog&quot;</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Text:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span>
+    <span class="n">crypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encryptCTR</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Encrypted:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="n">cipher</span><span class="o">.</span><span class="n">initCTR</span><span class="p">()</span>
+    <span class="n">decrypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decryptCTR</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Decrypted:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decrypted</span>
+
+    <span class="k">print</span> <span class="s2">&quot;Testing CBC encrypt:&quot;</span>
+    <span class="n">cipher</span><span class="o">.</span><span class="n">initCBC</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Owen&#39;s Ornery Old Oryx Obstructed Olga&#39;s Optics.&quot;</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Text:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span>
+    <span class="n">crypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encryptCBC</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Encrypted:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="n">cipher</span><span class="o">.</span><span class="n">initCBC</span><span class="p">()</span>
+    <span class="n">decrypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decryptCBC</span><span class="p">(</span><span class="n">crypted</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Decrypted:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decrypted</span>
+
+    <span class="k">print</span> <span class="s2">&quot;Testing speed&quot;</span>
+    <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tlen</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+            <span class="n">tstr</span> <span class="o">=</span> <span class="s2">&quot;The quick brown fox jumps over the lazy dog </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span>
+            <span class="n">enc</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encryptCTR</span><span class="p">(</span><span class="n">tstr</span><span class="p">)</span>
+            <span class="n">tlen</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tstr</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> encryptions in </span><span class="si">%0.1f</span><span class="s2"> seconds: </span><span class="si">%0.1f</span><span class="s2"> enc/s, </span><span class="si">%0.1f</span><span class="s2"> bytes/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n</span> <span class="o">/</span> <span class="n">t</span><span class="p">,</span> <span class="n">tlen</span> <span class="o">/</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

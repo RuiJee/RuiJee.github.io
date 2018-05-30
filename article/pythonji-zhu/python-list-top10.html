@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>关于操作 Python 列表最常见的10个问答</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 关于操作 Python 列表最常见的10个问答">
+                                        关于操作 Python 列表最常见的10个问答
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-09-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Fri 01 September 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/index.html"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/index.html"><i class="icon-tag"></i>python</a>
+
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#21015;&#34920;&#26159;&#26368;&#24120;&#29992;&#30340;&#25968;&#25454;&#31867;&#22411;&#20043;&#19968;&#65292;&#26412;&#25991;&#25972;&#29702;&#20102; StackOverflow &#19978;&#20851;&#20110;&#21015;&#34920;&#25805;&#20316;&#34987;&#35775;&#38382;&#26368;&#22810;&#30340;10&#20010;&#38382;&#31572;&#65292;&#22914;&#26524;&#20320;&#22312;&#24320;&#21457;&#36807;&#31243;&#20013;&#36935;&#21040;&#36825;&#20123;&#38382;&#39064;&#65292;&#19981;&#22952;&#20808;&#24605;&#32771;&#19968;&#19979;&#22914;&#20309;&#35299;&#20915;&#12290;</p>
+<h3>1&#12289;&#36845;&#20195;&#21015;&#34920;&#26102;&#22914;&#20309;&#35775;&#38382;&#21015;&#34920;&#19979;&#26631;&#32034;&#24341;</h3>
+<p>&#26222;&#36890;&#29256;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">45</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">"--&gt;"</span><span class="p">,</span> <span class="n">items</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">0</span> <span class="o">--&gt;</span> <span class="mi">8</span>
+<span class="mi">1</span> <span class="o">--&gt;</span> <span class="mi">23</span>
+<span class="mi">2</span> <span class="o">--&gt;</span> <span class="mi">45</span>
+</pre></div>
+
+
+<p>&#20248;&#38597;&#29256;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">"--&gt;"</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">0</span> <span class="o">--&gt;</span> <span class="mi">8</span>
+<span class="mi">1</span> <span class="o">--&gt;</span> <span class="mi">23</span>
+<span class="mi">2</span> <span class="o">--&gt;</span> <span class="mi">45</span>
+</pre></div>
+
+
+<p><code>enumerate</code> &#36824;&#21487;&#20197;&#25351;&#23450;&#20803;&#32032;&#30340;&#31532;&#19968;&#20010;&#20803;&#32032;&#20174;&#20960;&#24320;&#22987;&#65292;&#40664;&#35748;&#26159;0&#65292;&#20063;&#21487;&#20197;&#25351;&#23450;&#20174;1&#24320;&#22987;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">"--&gt;"</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">1</span> <span class="o">--&gt;</span> <span class="mi">8</span>
+<span class="mi">2</span> <span class="o">--&gt;</span> <span class="mi">23</span>
+<span class="mi">3</span> <span class="o">--&gt;</span> <span class="mi">45</span>
+</pre></div>
+
+
+<h3>2&#12289;append &#19982; extend &#26041;&#27861;&#26377;&#20160;&#20040;&#21306;&#21035;</h3>
+<p><code>append</code>&#34920;&#31034;&#25226;&#26576;&#20010;&#25968;&#25454;&#24403;&#20570;&#26032;&#20803;&#32032;<strong>&#36861;&#21152;</strong>&#21040;&#21015;&#34920;&#30340;&#26368;&#21518;&#38754;&#65292;&#23427;&#30340;&#21442;&#25968;&#21487;&#20197;&#26159;&#20219;&#24847;&#23545;&#35937;</p>
+<div class="highlight"><pre><span/><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
+</pre></div>
+
+
+<p><code>extend</code> &#30340;&#21442;&#25968;&#24517;&#39035;&#26159;&#19968;&#20010;&#21487;&#36845;&#20195;&#23545;&#35937;&#65292;&#34920;&#31034;&#25226;&#35813;&#23545;&#35937;&#37324;&#38754;&#30340;&#25152;&#26377;&#20803;&#32032;&#36880;&#20010;&#22320;&#36861;&#21152;&#21040;&#21015;&#34920;&#30340;&#21518;&#38754;</p>
+<div class="highlight"><pre><span/><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">x</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="c1"># &#31561;&#20215;&#20110;&#65306;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>3&#12289;&#26816;&#26597;&#21015;&#34920;&#26159;&#21542;&#20026;&#31354;</h3>
+<p>&#26222;&#36890;&#29256;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"&#31354;&#21015;&#34920;"</span><span class="p">)</span>
+
+<span class="err">&#25110;&#32773;</span>
+
+<span class="k">if</span> <span class="n">items</span> <span class="o">==</span> <span class="p">[]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"&#31354;&#21015;&#34920;"</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#20248;&#38597;&#29256;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">if</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"&#31354;&#21015;&#34920;"</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>4&#12289;&#22914;&#20309;&#29702;&#35299;&#20999;&#29255;</h3>
+<p>&#20999;&#29255;&#29992;&#20110;&#33719;&#21462;&#21015;&#34920;&#20013;&#25351;&#23450;&#33539;&#30340;&#23376;&#38598;&#65292;&#35821;&#27861;&#38750;&#24120;&#31616;&#21333;</p>
+<div class="highlight"><pre><span/>items[start:end:step]
+</pre></div>
+
+
+<p>&#20174; start &#21040; end-1 &#20301;&#32622;&#20043;&#38388;&#30340;&#20803;&#32032;&#12290;step &#34920;&#31034;&#27493;&#38271;&#65292;&#40664;&#35748;&#20026;1&#65292;&#34920;&#31034;&#36830;&#32493;&#33719;&#21462;&#65292;&#22914;&#26524; step &#20026; 2 &#23601;&#34920;&#31034;&#27599;&#38548;&#19968;&#20010;&#20803;&#32032;&#33719;&#21462;&#12290;</p>
+<div class="highlight"><pre><span/><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="c1"># &#31532;3&#21040;&#31532;8&#20301;&#32622;&#20043;&#38388;&#30340;&#20803;&#32032;</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">8</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># &#31532;3&#21040;&#31532;8&#20301;&#32622;&#20043;&#38388;&#30340;&#20803;&#32032;&#65292;&#27599;&#38548;&#19968;&#20010;&#20803;&#32032;&#33719;&#21462;</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>   <span class="c1"># &#30465;&#30053;start&#34920;&#31034;&#20174;&#31532;0&#20010;&#20803;&#32032;&#24320;&#22987;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>  <span class="c1"># &#30465;&#30053;end&#34920;&#31034;&#21040;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[::]</span>  <span class="c1"># &#37117;&#30465;&#30053;&#30456;&#24403;&#20110;&#25335;&#36125;&#19968;&#20010;&#21015;&#34920;&#65292;&#36825;&#31181;&#25335;&#36125;&#23646;&#20110;&#27973;&#25335;&#36125;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>5&#12289;&#22914;&#20309;&#25335;&#36125;&#19968;&#20010;&#21015;&#34920;&#23545;&#35937;</h3>
+<p>&#31532;&#19968;&#31181;&#26041;&#27861;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">new_list</span> <span class="o">=</span> <span class="n">old_list</span><span class="p">[:]</span>
+</pre></div>
+
+
+<p>&#31532;&#20108;&#31181;&#26041;&#27861;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">new_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">old_list</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#31532;&#19977;&#31181;&#26041;&#27861;&#65306;</p>
+<div class="highlight"><pre><span/><span class="kn">import</span> <span class="nn">copy</span>
+<span class="c1"># &#27973;&#25335;&#36125;</span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">old_list</span><span class="p">)</span>
+<span class="c1"># &#28145;&#25335;&#36125;</span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">old_list</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>6&#12289;&#22914;&#20309;&#33719;&#21462;&#21015;&#34920;&#20013;&#30340;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;</h3>
+<p>&#32034;&#24341;&#21015;&#34920;&#20013;&#30340;&#20803;&#32032;&#19981;&#20165;&#25903;&#25345;&#27491;&#25968;&#36824;&#25903;&#25345;&#36127;&#25968;&#65292;&#27491;&#25968;&#34920;&#31034;&#20174;&#21015;&#34920;&#30340;&#24038;&#36793;&#24320;&#22987;&#32034;&#24341;&#65292;&#36127;&#25968;&#34920;&#31034;&#20174;&#21015;&#34920;&#30340;&#21491;&#36793;&#24320;&#22987;&#32034;&#24341;&#65292;&#33719;&#21462;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;&#26377;&#20004;&#31181;&#26041;&#27861;&#12290;</p>
+<div class="highlight"><pre><span/><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="mi">10</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="mi">10</span>
+</pre></div>
+
+
+<h3>7&#12289;&#22914;&#20309;&#23545;&#21015;&#34920;&#36827;&#34892;&#25490;&#24207;</h3>
+<p>&#21015;&#34920;&#25490;&#24207;&#26377;&#20004;&#31181;&#26041;&#24335;&#65292;&#19968;&#31181;&#26159;&#21015;&#34920;&#33258;&#24102;&#30340;&#26041;&#24335; <code>sort</code>&#65292;&#19968;&#31181;&#26159;&#20869;&#24314;&#20989;&#25968; <code>sorted</code>&#12290;&#22797;&#26434;&#30340;&#25968;&#25454;&#31867;&#22411;&#21487;&#36890;&#36807;&#25351;&#23450; <code>key</code>&#21442;&#25968;&#36827;&#34892;&#25490;&#24207;&#12290;&#30001;&#23383;&#20856;&#26500;&#25104;&#30340;&#21015;&#34920;&#65292;&#26681;&#25454;&#23383;&#20856;&#20803;&#32032;&#20013;&#30340;age&#23383;&#27573;&#36827;&#34892;&#25490;&#24207;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">items</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">},</span>
+         <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+         <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">}]</span>
+
+<span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"age"</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[{</span><span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>&#21015;&#34920;&#26377; <code>sort</code>&#26041;&#27861;&#65292;&#29992;&#20110;&#23545;&#21407;&#21015;&#34920;&#36827;&#34892;&#37325;&#26032;&#25490;&#24207;&#65292;&#25351;&#23450; key &#21442;&#25968;&#65292;key &#26159;&#21311;&#21517;&#20989;&#25968;&#65292;item &#26159;&#21015;&#34920;&#20013;&#30340;&#23383;&#20856;&#20803;&#32032;&#65292;&#25105;&#20204;&#26681;&#25454;&#23383;&#20856;&#20013;&#30340;age&#36827;&#34892;&#25490;&#24207;&#65292;&#40664;&#35748;&#26159;&#25353;&#21319;&#24207;&#25490;&#21015;&#65292;&#25351;&#23450; reverse=True &#25353;&#38477;&#24207;&#25490;&#21015;</p>
+<div class="highlight"><pre><span/><span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"age"</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>&#22914;&#26524;&#19981;&#24076;&#26395;&#25913;&#21464;&#21407;&#21015;&#34920;&#65292;&#32780;&#26159;&#29983;&#25104;&#19968;&#20010;&#26032;&#30340;&#26377;&#24207;&#21015;&#34920;&#23545;&#35937;&#65292;&#37027;&#20040;&#21487;&#20197;&#20869;&#32622;&#20989;&#25968; sorted &#65292;&#35813;&#20989;&#25968;&#36820;&#22238;&#26032;&#21015;&#34920;</p>
+<div class="highlight"><pre><span/><span class="n">items</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">},</span>
+         <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+         <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">}]</span>
+
+<span class="n">new_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"age"</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">}]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">new_items</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Bart'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'cater'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Homer'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">39</span><span class="p">}]</span>
+</pre></div>
+
+
+<h3>8&#12289;&#22914;&#20309;&#31227;&#38500;&#21015;&#34920;&#20013;&#30340;&#20803;&#32032;</h3>
+<p>&#21024;&#38500;&#21015;&#34920;&#20013;&#30340;&#20803;&#32032;&#26377;&#19977;&#31181;&#26041;&#24335;</p>
+<p>remove &#31227;&#38500;&#26576;&#20010;&#20803;&#32032;&#65292;&#32780;&#19988;&#21482;&#33021;&#31227;&#38500;&#31532;&#19968;&#27425;&#20986;&#29616;&#30340;&#20803;&#32032;</p>
+<div class="highlight"><pre><span/><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="c1"># &#22914;&#26524;&#35201;&#31227;&#38500;&#30340;&#20803;&#32032;&#19981;&#22312;&#21015;&#34920;&#20013;&#65292;&#21017;&#25243;&#20986; ValueError &#24322;&#24120;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="nb">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="err">&#183;</span>      
+</pre></div>
+
+
+<p>del &#26681;&#25454;&#25351;&#23450;&#30340;&#20301;&#32622;&#31227;&#38500;&#26576;&#20803;&#32032;</p>
+<div class="highlight"><pre><span/><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="c1"># &#31227;&#38500;&#31532;&#19968;&#20010;&#20803;&#32032;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># &#24403;&#36229;&#20986;&#21015;&#34920;&#30340;&#19979;&#34920;&#32034;&#24341;&#26102;&#65292;&#25243;&#20986;IndexError&#30340;&#24322;&#24120;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">IndexError</span><span class="p">:</span> <span class="nb">list</span> <span class="n">assignment</span> <span class="n">index</span> <span class="n">out</span> <span class="n">of</span> <span class="nb">range</span>
+</pre></div>
+
+
+<p>pop &#19982;del &#31867;&#20284;&#65292;&#20294;&#26159; pop &#26041;&#27861;&#21487;&#20197;&#36820;&#22238;&#31227;&#38500;&#30340;&#20803;&#32032;</p>
+<div class="highlight"><pre><span/>&gt;&gt;&gt; a = [4, 3, 5]
+&gt;&gt;&gt; a.pop(1)
+3
+&gt;&gt;&gt; a
+[4, 5]
+
+# &#21516;&#26679;&#65292;&#24403;&#36229;&#20986;&#21015;&#34920;&#30340;&#19979;&#34920;&#32034;&#24341;&#26102;&#65292;&#25243;&#20986;IndexError&#30340;&#24322;&#24120;
+&gt;&gt;&gt; a.pop(7)
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+IndexError: pop index out of range
+</pre></div>
+
+
+<h3>9&#12289;&#22914;&#20309;&#36830;&#25509;&#20004;&#20010;&#21015;&#34920;</h3>
+<div class="highlight"><pre><span/>listone = [1, 2, 3]
+listtwo = [4, 5, 6]
+
+mergedlist = listone + listtwo
+
+print(mergelist)
+&gt;&gt;&gt;
+[1, 2, 3, 4, 5, 6]
+</pre></div>
+
+
+<p>&#21015;&#34920;&#23454;&#29616;&#20102; <code>+</code> &#30340;&#36816;&#31639;&#31526;&#37325;&#36733;&#65292;&#20351;&#24471; <code>+</code> &#19981;&#20165;&#25903;&#25345;&#25968;&#20540;&#30456;&#21152;&#65292;&#36824;&#25903;&#25345;&#20004;&#20010;&#21015;&#34920;&#30456;&#21152;&#65292;&#21482;&#35201;&#20320;&#23454;&#29616;&#20102; &#23545;&#35937;&#30340; <code>__add__</code>&#25805;&#20316;&#65292;&#20219;&#20309;&#23545;&#35937;&#37117;&#21487;&#20197;&#23454;&#29616; <code>+</code> &#25805;&#20316;&#65292;&#20363;&#22914;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'User(</span><span class="si">%d</span><span class="s1">)'</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">age</span>
+        <span class="k">return</span> <span class="n">User</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+
+
+<span class="n">user_a</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">user_b</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">user_a</span> <span class="o">+</span> <span class="n">user_b</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="n">User</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>10&#12289;&#22914;&#20309;&#38543;&#26426;&#33719;&#21462;&#21015;&#34920;&#20013;&#30340;&#26576;&#20010;&#20803;&#32032;</h3>
+<div class="highlight"><pre><span/><span class="kn">import</span> <span class="nn">random</span>
+<span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">78</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<span class="mi">78</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<span class="mi">45</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<span class="mi">12</span>
+</pre></div>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/python-list-top10.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

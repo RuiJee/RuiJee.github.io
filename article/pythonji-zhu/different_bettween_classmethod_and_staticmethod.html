@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>如何正确理解@classmethod与@staticmethod</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 如何正确理解@classmethod与@staticmethod">
+                                        如何正确理解@classmethod与@staticmethod
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-07-19T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 19 July 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/index.html"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/index.html"><i class="icon-tag"></i>python</a>
+
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>Python&#38754;&#21521;&#23545;&#35937;&#32534;&#31243;&#20013;&#65292;&#31867;&#20013;&#23450;&#20041;&#30340;&#26041;&#27861;&#21487;&#20197;&#26159; @classmethod &#35013;&#39280;&#30340;<strong>&#31867;&#26041;&#27861;</strong>&#65292;&#20063;&#21487;&#20197;&#26159; @staticmethod &#35013;&#39280;&#30340;<strong>&#38745;&#24577;&#26041;&#27861;</strong>&#65292;&#29992;&#30340;&#26368;&#22810;&#30340;&#36824;&#26159;&#19981;&#24102;&#35013;&#39280;&#22120;&#30340;<strong>&#23454;&#20363;&#26041;&#27861;</strong>&#65292;&#22914;&#26524;&#25226;&#36825;&#20960;&#20010;&#26041;&#27861;&#25918;&#19968;&#22359;&#65292;&#23545;&#21021;&#23398;&#32773;&#26469;&#35828;&#26080;&#30097;&#26159;&#19968;&#22836;&#38654;&#27700;&#65292;&#37027;&#25105;&#20204;&#35813;&#22914;&#20309;&#27491;&#30830;&#22320;&#20351;&#29992;&#23427;&#20204;&#21602;&#65311;</p>
+<p>&#20808;&#26469;&#30475;&#19968;&#20010;&#31616;&#21333;&#31034;&#20363;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">m1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"self:"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">m2</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"cls:"</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">m3</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">m1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># self: &lt;__main__.A object at 0x000001E596E41A90&gt;</span>
+<span class="n">A</span><span class="o">.</span><span class="n">m2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># cls: &lt;class '__main__.A'&gt;</span>
+<span class="n">A</span><span class="o">.</span><span class="n">m3</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#25105;&#22312;&#31867;&#20013;&#19968;&#20849;&#23450;&#20041;&#20102;3&#20010;&#26041;&#27861;&#65292;m1 &#26159;&#23454;&#20363;&#26041;&#27861;&#65292;&#31532;&#19968;&#20010;&#21442;&#25968;&#24517;&#39035;&#26159; self&#65288;&#32422;&#23450;&#20439;&#25104;&#30340;&#65289;&#12290;m2 &#26159;&#31867;&#26041;&#27861;&#65292;&#31532;&#19968;&#20010;&#21442;&#25968;&#24517;&#39035;&#26159;cls&#65288;&#21516;&#26679;&#26159;&#32422;&#23450;&#20439;&#25104;&#65289;&#65292;m3 &#26159;&#38745;&#24577;&#26041;&#27861;&#65292;&#21442;&#25968;&#26681;&#25454;&#19994;&#21153;&#38656;&#27714;&#23450;&#65292;&#21487;&#26377;&#21487;&#26080;&#12290;&#24403;&#31243;&#24207;&#36816;&#34892;&#26102;&#65292;&#22823;&#27010;&#21457;&#29983;&#20102;&#36825;&#20040;&#20960;&#20214;&#20107;&#65288;&#32467;&#21512;&#19979;&#38754;&#30340;&#22270;&#26469;&#30475;&#65289;&#12290;</p>
+<ul>
+<li>&#31532;&#19968;&#27493;&#65306;&#20195;&#30721;&#20174;&#31532;&#19968;&#34892;&#24320;&#22987;&#25191;&#34892; <code>class</code> &#21629;&#20196;&#65292;&#27492;&#26102;&#20250;&#21019;&#24314;&#19968;&#20010;&#31867; A &#23545;&#35937;&#65288;&#27809;&#38169;&#65292;&#31867;&#20063;&#26159;&#23545;&#35937;&#65292;&#19968;&#20999;&#30342;&#23545;&#35937;&#22043;&#65289;&#21516;&#26102;&#21021;&#22987;&#21270;&#31867;&#37324;&#38754;&#30340;&#23646;&#24615;&#21644;&#26041;&#27861;&#65292;&#35760;&#20303;&#65292;&#27492;&#21051;&#23454;&#20363;&#23545;&#35937;&#36824;&#27809;&#21019;&#24314;&#20986;&#26469;&#12290;</li>
+<li>&#31532;&#20108;&#12289;&#19977;&#27493;&#65306;&#25509;&#30528;&#25191;&#34892; <code>a=A()</code>&#65292;&#31995;&#32479;&#33258;&#21160;&#35843;&#29992;&#31867;&#30340;&#26500;&#36896;&#22120;&#65292;&#26500;&#36896;&#20986;&#23454;&#20363;&#23545;&#35937; a</li>
+<li>&#31532;&#22235;&#27493;&#65306;&#25509;&#30528;&#35843;&#29992; <code>a.m1(1)</code> &#65292;m1 &#26159;&#23454;&#20363;&#26041;&#27861;&#65292;&#20869;&#37096;&#20250;&#33258;&#21160;&#25226;&#23454;&#20363;&#23545;&#35937;&#20256;&#36882;&#32473; self &#21442;&#25968;&#36827;&#34892;&#32465;&#23450;&#65292;&#20063;&#23601;&#26159;&#35828;&#65292; self &#21644; a &#25351;&#21521;&#30340;&#37117;&#26159;&#21516;&#19968;&#20010;&#23454;&#20363;&#23545;&#35937;&#12290;</li>
+<li>&#31532;&#20116;&#27493;&#65306;&#35843;&#29992;<code>A.m2(1)</code>&#26102;&#65292;python&#20869;&#37096;&#38544;&#24335;&#22320;&#25226;&#31867;&#23545;&#35937;&#20256;&#36882;&#32473; cls &#21442;&#25968;&#65292;cls &#21644; A &#37117;&#25351;&#21521;&#31867;&#23545;&#35937;&#12290;</li>
+</ul>
+<p><img alt="object-init.jpg" src="../images/object-init.jpg"/></p>
+<p>&#20005;&#26684;&#24847;&#20041;&#19978;&#26469;&#35828;&#65292;&#24038;&#36793;&#30340;&#37117;&#26159;&#21464;&#37327;&#21517;&#65292;&#26159;&#23545;&#35937;&#30340;&#24341;&#29992;&#65292;&#21491;&#36793;&#25165;&#26159;&#30495;&#27491;&#30340;&#23545;&#20687;&#65292;&#20026;&#20102;&#25551;&#36848;&#26041;&#20415;&#65292;&#25105;&#30452;&#25509;&#25226; a &#31216;&#20026;&#23545;&#35937;&#65292;&#20320;&#24212;&#35813;&#26126;&#30333;&#25105;&#35828;&#23545;&#35937;&#20854;&#23454;&#26159;&#23427;&#25152;&#24341;&#29992;&#21491;&#36793;&#30340;&#37027;&#20010;&#30495;&#27491;&#30340;&#23545;&#35937;&#12290;</p>
+<p>&#20877;&#26469;&#30475;&#30475;&#27599;&#20010;&#26041;&#27861;&#21508;&#26377;&#20160;&#20040;&#29305;&#24615;</p>
+<h3>&#23454;&#20363;&#26041;&#27861;</h3>
+<div class="highlight"><pre><span/><span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">m1</span><span class="p">)</span>
+<span class="c1"># A.m1&#22312;py2&#20013;&#26174;&#31034;&#20026;&lt;unbound method A.m1&gt;</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="n">A</span><span class="o">.</span><span class="n">m1</span> <span class="n">at</span> <span class="mh">0x000002BF7FF9A488</span><span class="o">&gt;</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">m1</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">A</span><span class="o">.</span><span class="n">m1</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">A</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x000002BF7FFA2BE0</span><span class="o">&gt;&gt;</span>
+</pre></div>
+
+
+<p>A.m1&#26159;&#19968;&#20010;&#36824;&#27809;&#26377;&#32465;&#23450;&#23454;&#20363;&#23545;&#35937;&#30340;&#26041;&#27861;&#65292;&#23545;&#20110;&#26410;&#32465;&#23450;&#26041;&#27861;&#65292;&#35843;&#29992; A.m1 &#26102;&#24517;&#39035;&#26174;&#31034;&#22320;&#20256;&#20837;&#19968;&#20010;&#23454;&#20363;&#23545;&#35937;&#36827;&#21435;&#65292;&#32780; a.m1&#26159;&#24050;&#32463;&#32465;&#23450;&#20102;&#23454;&#20363;&#30340;&#26041;&#27861;&#65292;python&#38544;&#24335;&#22320;&#25226;&#23545;&#35937;&#20256;&#36882;&#32473;&#20102;self&#21442;&#25968;&#65292;&#25152;&#20197;&#19981;&#20877;&#25163;&#21160;&#20256;&#36882;&#21442;&#25968;&#65292;&#36825;&#26159;&#35843;&#29992;&#23454;&#20363;&#26041;&#27861;&#30340;&#36807;&#31243;&#12290;</p>
+<div class="highlight"><pre><span/><span class="n">A</span><span class="o">.</span><span class="n">m1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># &#31561;&#20215;  </span>
+<span class="n">a</span><span class="o">.</span><span class="n">m1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#22914;&#26524;&#26410;&#32465;&#23450;&#30340;&#26041;&#27861; A.m1 &#19981;&#20256;&#23454;&#20363;&#23545;&#35937;&#32473; self &#26102;&#65292;&#23601;&#20250;&#25253;&#21442;&#25968;&#32570;&#22833;&#38169;&#35823;&#65292;&#22312; py3 &#19982; py2 &#20013;&#65292;&#20004;&#32773;&#25253;&#30340;&#38169;&#35823;&#19981;&#19968;&#33268;&#65292;python2 &#35201;&#27714;&#31532;&#19968;&#20010;&#21442;&#25968;self&#26159;&#23454;&#20363;&#23545;&#35937;&#65292;&#32780;python3&#20013;&#21487;&#20197;&#26159;&#20219;&#24847;&#23545;&#35937;&#12290;</p>
+<div class="highlight"><pre><span/><span class="n">A</span><span class="o">.</span><span class="n">m1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">m1</span><span class="p">()</span> <span class="n">missing</span> <span class="mi">1</span> <span class="n">required</span> <span class="n">positional</span> <span class="n">argument</span><span class="p">:</span> <span class="s1">'n'</span>
+</pre></div>
+
+
+<h3>&#31867;&#26041;&#27861;</h3>
+<div class="highlight"><pre><span/><span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">A</span><span class="o">.</span><span class="n">m2</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">__main__</span><span class="o">.</span><span class="n">A</span><span class="s1">'&gt;&gt;</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">m2</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">A</span><span class="o">.</span><span class="n">m2</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">__main__</span><span class="o">.</span><span class="n">A</span><span class="s1">'&gt;&gt;</span>
+</pre></div>
+
+
+<p>m2&#26159;&#31867;&#26041;&#27861;&#65292;&#19981;&#31649;&#26159; A.m2 &#36824;&#26159; a.m2&#65292;&#37117;&#26159;&#24050;&#32463;&#33258;&#21160;&#32465;&#23450;&#20102;&#31867;&#23545;&#35937;A&#30340;&#26041;&#27861;&#65292;&#23545;&#20110;&#21518;&#32773;&#65292;&#22240;&#20026;python&#21487;&#20197;&#36890;&#36807;&#23454;&#20363;&#23545;&#35937;a&#25214;&#21040;&#23427;&#25152;&#23646;&#30340;&#31867;&#26159;A&#65292;&#25214;&#21040;A&#20043;&#21518;&#33258;&#21160;&#32465;&#23450;&#21040; cls&#12290;</p>
+<div class="highlight"><pre><span/> <span class="n">A</span><span class="o">.</span><span class="n">m2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+ <span class="c1"># &#31561;&#20215;</span>
+ <span class="n">a</span><span class="o">.</span><span class="n">m2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+</pre></div>
+
+
+<p>&#36825;&#20351;&#24471;&#25105;&#20204;&#21487;&#20197;&#22312;&#23454;&#20363;&#26041;&#27861;&#20013;&#36890;&#36807;&#20351;&#29992; self.m2()&#36825;&#31181;&#26041;&#24335;&#26469;&#35843;&#29992;&#31867;&#26041;&#27861;&#21644;&#38745;&#24577;&#26041;&#27861;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">m1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"self:"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">m2</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>&#38745;&#24577;&#26041;&#27861;</h3>
+<div class="highlight"><pre><span/><span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">m3</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="n">A</span><span class="o">.</span><span class="n">m3</span> <span class="n">at</span> <span class="mh">0x000002BF7FF9A840</span><span class="o">&gt;</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">m3</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="n">A</span><span class="o">.</span><span class="n">m3</span> <span class="n">at</span> <span class="mh">0x000002BF7FF9A840</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>m3&#26159;&#31867;&#37324;&#38754;&#30340;&#19968;&#20010;&#38745;&#24577;&#26041;&#27861;&#65292;&#36319;&#26222;&#36890;&#20989;&#25968;&#27809;&#20160;&#20040;&#21306;&#21035;&#65292;&#19982;&#31867;&#21644;&#23454;&#20363;&#37117;&#27809;&#26377;&#25152;&#35859;&#30340;&#32465;&#23450;&#20851;&#31995;&#65292;&#23427;&#21482;&#19981;&#36807;&#26159;&#30896;&#24039;&#23384;&#22312;&#31867;&#20013;&#30340;&#19968;&#20010;&#20989;&#25968;&#32780;&#24050;&#12290;&#19981;&#35770;&#26159;&#36890;&#36807;&#31867;&#36824;&#26159;&#23454;&#20363;&#37117;&#21487;&#20197;&#24341;&#29992;&#35813;&#26041;&#27861;&#12290;</p>
+<div class="highlight"><pre><span/> <span class="n">A</span><span class="o">.</span><span class="n">m3</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+ <span class="c1"># &#31561;&#20215;</span>
+ <span class="n">a</span><span class="o">.</span><span class="n">m3</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+ <span class="sb">``</span><span class="err">`</span>
+
+<span class="err">&#20197;&#19978;&#23601;&#26159;&#20960;&#20010;&#26041;&#27861;&#30340;&#22522;&#26412;&#20171;&#32461;&#12290;&#29616;&#22312;&#25226;&#20960;&#20010;&#22522;&#26412;&#30340;&#27010;&#24565;&#29702;&#28165;&#26970;&#20102;&#65292;&#37027;&#20040;&#29616;&#22312;&#26469;&#35828;&#35828;&#20960;&#20010;&#26041;&#27861;&#20043;&#38388;&#30340;&#20351;&#29992;&#22330;&#26223;&#20197;&#21450;&#20182;&#20204;&#20043;&#38388;&#30340;&#20248;&#32570;&#28857;&#12290;</span>
+
+<span class="c1">### &#24212;&#29992;&#22330;&#26223;</span>
+
+<span class="err">&#38745;&#24577;&#26041;&#27861;&#30340;&#20351;&#29992;&#22330;&#26223;&#65306;</span>
+
+<span class="err">&#22914;&#26524;&#22312;&#26041;&#27861;&#20013;&#19981;&#38656;&#35201;&#35775;&#38382;&#20219;&#20309;&#23454;&#20363;&#26041;&#27861;&#21644;&#23646;&#24615;&#65292;&#32431;&#31929;&#22320;&#36890;&#36807;&#20256;&#20837;&#21442;&#25968;&#24182;&#36820;&#22238;&#25968;&#25454;&#30340;&#21151;&#33021;&#24615;&#26041;&#27861;&#65292;&#37027;&#20040;&#23427;&#23601;&#36866;&#21512;&#29992;&#38745;&#24577;&#26041;&#27861;&#26469;&#23450;&#20041;&#65292;&#23427;&#33410;&#30465;&#20102;&#23454;&#20363;&#21270;&#23545;&#35937;&#30340;&#24320;&#38144;&#25104;&#26412;&#65292;&#24448;&#24448;&#36825;&#31181;&#26041;&#27861;&#25918;&#22312;&#31867;&#22806;&#38754;&#30340;&#27169;&#22359;&#23618;&#20316;&#20026;&#19968;&#20010;&#20989;&#25968;&#23384;&#22312;&#20063;&#26159;&#27809;&#38382;&#39064;&#30340;&#65292;&#32780;&#25918;&#22312;&#31867;&#20013;&#65292;&#20165;&#20026;&#36825;&#20010;&#31867;&#26381;&#21153;&#12290;&#20363;&#22914;&#19979;&#38754;&#26159;&#24494;&#20449;&#20844;&#20247;&#21495;&#24320;&#21457;&#20013;&#39564;&#35777;&#24494;&#20449;&#31614;&#21517;&#30340;&#19968;&#20010;&#20363;&#23376;&#65292;&#23427;&#27809;&#26377;&#24341;&#29992;&#20219;&#20309;&#31867;&#25110;&#32773;&#23454;&#20363;&#30456;&#20851;&#30340;&#23646;&#24615;&#21644;&#26041;&#27861;&#12290;</span>
+
+<span class="sb">``</span><span class="err">`</span><span class="n">python</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha1</span>
+<span class="kn">import</span> <span class="nn">tornado.web</span>
+
+<span class="k">class</span> <span class="nc">SignatureHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">         &#26681;&#25454;&#31614;&#21517;&#21028;&#26029;&#35831;&#27714;&#26159;&#21542;&#26469;&#33258;&#24494;&#20449;</span>
+<span class="sd">        """</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_argument</span><span class="p">(</span><span class="s2">"signature"</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">echostr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_argument</span><span class="p">(</span><span class="s2">"echostr"</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_argument</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">nonce</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_argument</span><span class="p">(</span><span class="s2">"nonce"</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_sign</span><span class="p">(</span><span class="n">TOKEN</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">nonce</span><span class="p">,</span> <span class="n">signature</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"&#24494;&#20449;&#31614;&#21517;&#26657;&#39564;&#25104;&#21151;"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">echostr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&#20320;&#19981;&#26159;&#24494;&#20449;&#21457;&#36807;&#26469;&#30340;&#35831;&#27714;"</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_sign</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">nonce</span><span class="p">,</span> <span class="n">signature</span><span class="p">):</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">nonce</span><span class="p">]</span>
+        <span class="n">sign</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="n">sha1</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sign</span> <span class="o">==</span> <span class="n">signature</span>
+</pre></div>
+
+
+<p>&#31867;&#26041;&#27861;&#30340;&#20351;&#29992;&#22330;&#26223;&#26377;&#65306;</p>
+<p>&#20316;&#20026;&#24037;&#21378;&#26041;&#27861;&#21019;&#24314;&#23454;&#20363;&#23545;&#35937;&#65292;&#20363;&#22914;&#20869;&#32622;&#27169;&#22359; datetime.date &#31867;&#20013;&#23601;&#26377;&#22823;&#37327;&#20351;&#29992;&#31867;&#26041;&#27861;&#20316;&#20026;&#24037;&#21378;&#26041;&#27861;&#65292;&#20197;&#27492;&#26469;&#21019;&#24314;date&#23545;&#35937;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="nc">date</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_year</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_month</span> <span class="o">=</span> <span class="n">month</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">=</span> <span class="n">day</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromtimestamp</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span><span class="p">,</span> <span class="n">weekday</span><span class="p">,</span> <span class="n">jday</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">today</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#22914;&#26524;&#24076;&#26395;&#22312;&#26041;&#27861;&#35041;&#38754;&#35843;&#29992;&#38745;&#24577;&#31867;&#65292;&#37027;&#20040;&#25226;&#26041;&#27861;&#23450;&#20041;&#25104;&#31867;&#26041;&#27861;&#26159;&#21512;&#36866;&#30340;&#65292;&#22240;&#20026;&#35201;&#26159;&#23450;&#20041;&#25104;&#38745;&#24577;&#26041;&#27861;&#65292;&#37027;&#20040;&#20320;&#23601;&#35201;&#26174;&#31034;&#22320;&#24341;&#29992;&#31867;A&#65292;&#36825;&#23545;&#32487;&#25215;&#26469;&#35828;&#21487;&#19981;&#26159;&#19968;&#20214;&#22909;&#20107;&#24773;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">m1</span><span class="p">()</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">m2</span><span class="p">():</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">m1</span><span class="p">()</span> <span class="c1"># bad</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">m3</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">m1</span><span class="p">()</span> <span class="c1"># good</span>
+</pre></div>
+
+
+<p>&#20854;&#23454;&#20063;&#19981;&#31639;&#26159;&#20160;&#20040;&#28145;&#20837;&#29702;&#35299;&#21543;&#65292;&#26368;&#22810;&#31639;&#26159;&#26126;&#30333;&#24590;&#20040;&#29992;&#65292;&#30495;&#35201;&#28145;&#20837;&#29702;&#35299;&#24656;&#24597;&#36824;&#35201;&#21478;&#20889;&#19968;&#31687;&#25991;&#31456;&#65292;&#26377;&#20852;&#36259;&#30340;&#21487;&#20197;&#21435;&#20102;&#35299;&#19968;&#19979;Python&#30340;&#25551;&#36848;&#31526;&#12290;</p>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/different_bettween_classmethod_and_staticmethod.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

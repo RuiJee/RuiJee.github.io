@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>使用 Python 计算 π 值</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 使用 Python 计算 π 值">
+                                        使用 Python 计算 π 值
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 使用 Python 计算 π 值</span>
+
+<span class="err">π是一个无数人追随的真正的神奇数字。我不是很清楚一个永远重复的无理数的迷人之处。在我看来，我乐于计算π，也就是计算π的值。因为π是一个无理数，它是无限的。这</span>
+<span class="err">就意味着任何对π的计算都仅仅是个近似值。如果你计算</span><span class="mi">100</span><span class="err">位，我可以计算</span><span class="mi">101</span><span class="err">位并且更精确。迄今为止，有些人已经选拔出超级计算机来试图计算最精确的π。一些极值</span>
+<span class="err">包括</span> <span class="err">计算π的</span><span class="mi">5</span><span class="err">亿位。你甚至能从网上找到包含</span> <span class="err">π的一百亿位的文本文件（注意啦！下载这个文件可能得花一会儿时间，并且没法用你平时使用的记事本应用程序打开。）。</span>
+<span class="err">对于我而言，如何用几行简单的</span><span class="n">Python</span><span class="err">来计算π才是我的兴趣所在。</span>
+
+<span class="err">!</span><span class="p">[](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095925291.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">你总是可以</span> <span class="err">使用</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="err">变量的</span> <span class="err">。它被</span> <span class="err">包含在</span> <span class="err">标准库中，</span> <span class="err">在你试图自己</span> <span class="err">计算它之前，你应该去使用它</span> <span class="err">。</span> <span class="err">事实上</span> <span class="err">，</span> <span class="err">我们将</span> <span class="err">用它来计算</span> <span class="err">精度</span>
+<span class="err">。作为</span> <span class="err">开始，</span> <span class="err">让我们看</span> <span class="err">一个</span> <span class="err">非常直截了当的</span> <span class="err">计算</span><span class="n">Pi</span><span class="err">的</span> <span class="err">方法</span> <span class="err">。像往常一样，我将使用</span><span class="n">Python</span>
+<span class="mf">2.7</span><span class="err">，同样的想法和代码可能应用于不同的版本。我们将要使用的大部分算法来自</span> <span class="n">Pi</span> <span class="n">WikiPedia</span> <span class="n">page</span><span class="err">并加以实现。让我们看看下面的代码：</span>
+
+
+
+    <span class="n">importsys</span>
+    <span class="n">importmath</span>
+
+    <span class="n">defmain</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+
+        <span class="n">iflen</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s1">&#39;Usage: calc_pi.py &lt;n&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Computing Pi v.01</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span>
+        <span class="n">b</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">4.0</span>
+        <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span>
+
+        <span class="n">foriinrange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="n">at</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="n">bt</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">tt</span><span class="o">=</span><span class="n">t</span><span class="o">-</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">at</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">pt</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span>
+
+            <span class="n">a</span><span class="o">=</span><span class="n">at</span><span class="p">;</span><span class="n">b</span><span class="o">=</span><span class="n">bt</span><span class="p">;</span><span class="n">t</span><span class="o">=</span><span class="n">tt</span><span class="p">;</span><span class="n">p</span><span class="o">=</span><span class="n">pt</span>
+
+        <span class="n">my_pi</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">accuracy</span><span class="o">=</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">-</span><span class="n">my_pi</span><span class="p">)</span><span class="o">/</span><span class="n">my_pi</span>
+
+        <span class="k">print</span><span class="s2">&quot;Pi is approximately: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">my_pi</span><span class="p">)</span>
+        <span class="k">print</span><span class="s2">&quot;Accuracy with math.pi: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+
+    <span class="n">if__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+
+<span class="err">这是个非常简单的脚本，你可以下载，运行，修改，和随意分享给别人。你能够看到类似下面的输出结果：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">simple_python_pi_calculation</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span>
+<span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095925735.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">你会发现，尽管</span> <span class="n">n</span> <span class="err">大于</span><span class="mi">4</span> <span class="p">,</span><span class="err">我们逼近</span> <span class="n">Pi</span> <span class="err">精度却没有多大的提升。</span> <span class="err">我们可以猜到即使</span>
+<span class="n">n</span><span class="err">的值更大，同样的事情（</span><span class="n">pi</span><span class="err">的逼近精度没有提升）依旧会发生。幸运的是，有不止一种方法来揭开这个谜。使用</span> <span class="n">Python</span> <span class="n">Decimal</span>
+<span class="err">（十进制）库，我们可以就可以得到更高精度的值来逼近</span><span class="n">Pi</span><span class="err">。让我们来看看库函数是如何使用的。这个简化的版本，可以得到多于</span><span class="mi">11</span><span class="err">位的数字</span> <span class="err">通常情况小</span><span class="n">Python</span>
+<span class="err">浮点数给出的精度。下面是</span><span class="n">Python</span> <span class="n">Decimal</span> <span class="err">库中的一个例子</span> <span class="err">：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">python_decimal_example</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">u</span>
+<span class="n">ploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095925610.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">看到这些数字。不对！</span> <span class="err">我们输入的仅是</span> <span class="mf">3.14</span><span class="err">，为什么我们得到了一些垃圾</span><span class="p">(</span><span class="n">junk</span><span class="p">)</span><span class="err">？</span> <span class="err">这是内存垃圾</span><span class="p">(</span><span class="n">memory</span> <span class="n">junk</span><span class="p">)</span><span class="err">。</span>
+<span class="err">在坚果壳，</span><span class="n">Python</span><span class="err">给你你想要的十进制数，再加上一点点额外的值。</span> <span class="err">只要精度小于垃圾号码开始时，它不会影响任何计算只要精度小于前面的垃圾号码</span><span class="p">(</span><span class="n">junk</span>
+<span class="n">number</span><span class="p">)</span><span class="err">开始时。</span> <span class="err">您可以指定你想要多少位数的通过设置</span><span class="n">getcontext</span><span class="p">()</span><span class="o">.</span><span class="n">prec</span> <span class="err">。我们试试。</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">python_decimal_example_6_digits</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">python</span>
+<span class="n">tab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095925998.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">很好。</span> <span class="err">现在让我们</span> <span class="err">试着用这个</span> <span class="err">来</span> <span class="err">看看我们是否能</span> <span class="err">与我们以前的</span> <span class="err">代码</span> <span class="err">有更好的</span> <span class="err">逼近</span> <span class="err">。</span> <span class="err">现在，</span> <span class="err">我通常</span> <span class="err">是反对</span> <span class="err">使用“</span> <span class="kn">from</span> <span class="nn">library</span>
+<span class="kn">import</span> <span class="o">*</span> <span class="err">”</span> <span class="err">，</span> <span class="err">但在这种情况下，</span> <span class="err">它会</span> <span class="err">使代码</span> <span class="err">看起来更漂亮</span> <span class="err">。</span>
+
+
+
+    <span class="n">importsys</span>
+    <span class="n">importmath</span>
+    <span class="n">fromdecimalimport</span><span class="o">*</span>
+
+    <span class="n">defmain</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+
+        <span class="n">iflen</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s1">&#39;Usage: calc_pi.py &lt;n&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Computing Pi v.01</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="n">a</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">t</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">foriinrange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="n">at</span><span class="o">=</span><span class="n">Decimal</span><span class="p">((</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">bt</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">))</span>
+            <span class="n">tt</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">at</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">pt</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+
+            <span class="n">a</span><span class="o">=</span><span class="n">at</span><span class="p">;</span><span class="n">b</span><span class="o">=</span><span class="n">bt</span><span class="p">;</span><span class="n">t</span><span class="o">=</span><span class="n">tt</span><span class="p">;</span><span class="n">p</span><span class="o">=</span><span class="n">pt</span>
+
+        <span class="n">my_pi</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">accuracy</span><span class="o">=</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">my_pi</span><span class="p">)</span><span class="o">/</span><span class="n">my_pi</span>
+
+        <span class="k">print</span><span class="s2">&quot;Pi is approximately: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">my_pi</span><span class="p">)</span>
+        <span class="k">print</span><span class="s2">&quot;Accuracy with math.pi: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+
+    <span class="n">if__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+
+<span class="err">输出结果</span><span class="p">:</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">python_pi_accuracy</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploa</span>
+<span class="n">dfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095925515.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">好了。我们更准确了，但看起来似乎有一些舍入。从</span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span><span class="err">和</span><span class="n">n</span> <span class="o">=</span>
+<span class="mi">1000</span><span class="err">，我们有相同的精度。现在怎么办？好吧，现在我们来求助于公式。到目前为止，我们计算</span><span class="n">Pi</span><span class="err">的方式是通过对几部分加在一起。我从</span><span class="n">DAN</span> <span class="err">的关于</span>
+<span class="n">Calculating</span> <span class="n">Pi</span> <span class="err">的文章中发现一些代码。他建议我们用以下</span><span class="mi">3</span><span class="err">个公式：</span>
+
+<span class="n">Bailey</span><span class="err">–</span><span class="n">Borwein</span><span class="err">–</span><span class="n">Plouffe</span> <span class="err">公式</span>
+
+<span class="n">Bellard</span><span class="err">的公式</span>
+
+<span class="n">Chudnovsky</span> <span class="err">算法</span>
+
+<span class="err">让我们从</span><span class="n">Bailey</span><span class="err">–</span><span class="n">Borwein</span><span class="err">–</span><span class="n">Plouffe</span> <span class="err">公式开始。它看起来是这个样子：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="mi">48</span><span class="n">f7653d58f4ad747327d271ed789415</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pytho</span>
+<span class="n">ntab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095926710.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">在代码中我们可以这样编写它：</span>
+
+
+
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+    <span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="o">*</span>
+
+    <span class="k">def</span> <span class="nf">bbp</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">pi</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">while</span> <span class="n">k</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">pi</span><span class="o">+=</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">16</span><span class="o">**</span><span class="n">k</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">4</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">5</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">6</span><span class="p">)))</span>
+            <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">pi</span>
+
+    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s1">&#39;Usage: BaileyBorweinPlouffe.py &lt;prec&gt; &lt;n&gt;&#39;</span><span class="p">)</span>
+
+        <span class="n">getcontext</span><span class="p">()</span><span class="o">.</span><span class="n">prec</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">my_pi</span><span class="o">=</span><span class="n">bbp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">accuracy</span><span class="o">=</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">my_pi</span><span class="p">)</span><span class="o">/</span><span class="n">my_pi</span>
+
+        <span class="k">print</span><span class="s2">&quot;Pi is approximately &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">my_pi</span><span class="p">)</span>
+        <span class="k">print</span><span class="s2">&quot;Accuracy with math.pi: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+
+<span class="err">抛开“</span> <span class="err">包装”的代码，</span><span class="n">BBP</span><span class="err">（</span><span class="n">N</span><span class="err">）的功能是你真正想要的。你给它越大的</span><span class="n">N</span><span class="err">和给</span> <span class="n">getcontext</span><span class="p">()</span><span class="o">.</span><span class="n">prec</span>
+<span class="err">设置越大的值，你就会使计算越精确。让我们看看一些代码结果：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">python_BaileyBorweinPlouffe</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span>
+<span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095926345.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">这有许多数字位。你可以看出，我们并没有比以前更准确。所以我们需要前进到下一个公式，贝拉公式，希望能获得更好的精度。它看起来像这样：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">dbf2d4355c108f6b3388985be4976799</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pytho</span>
+<span class="n">ntab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095926718.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">我们将只改变我们的变换公式，其余的代码将保持不变。</span><span class="p">[</span><span class="err">点击这里下载</span><span class="n">Python</span><span class="err">实现的贝拉公式</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">thelivingpearl</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span>
+<span class="mo">05</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="n">computing</span><span class="o">-</span><span class="n">pi</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">python</span><span class="o">/</span><span class="n">download</span><span class="o">%</span><span class="mi">20</span><span class="n">Bellard</span><span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">80</span><span class="o">%</span><span class="mi">99</span><span class="n">s</span><span class="o">%</span><span class="mi">20</span><span class="n">formula</span><span class="o">%</span><span class="mi">20</span><span class="ow">in</span><span class="o">%</span><span class="mi">20</span><span class="n">p</span>
+<span class="n">ython</span><span class="p">)</span><span class="err">。让我们看一看</span><span class="n">bellards</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="err">：</span>
+
+
+
+    <span class="k">def</span> <span class="nf">bellard</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+       <span class="n">pi</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+       <span class="n">k</span><span class="o">=</span><span class="mi">0</span>
+       <span class="k">while</span> <span class="n">k</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">n</span><span class="p">:</span>
+           <span class="n">pi</span><span class="o">+=</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">k</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="n">k</span><span class="p">))</span><span class="o">*</span><span class="p">(</span> <span class="n">Decimal</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">9</span><span class="p">)</span><span class="o">-</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">-</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span><span class="o">-</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">7</span><span class="p">)</span><span class="o">-</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
+           <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+       <span class="n">pi</span><span class="o">=</span><span class="n">pi</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
+       <span class="k">return</span> <span class="n">pi</span>
+
+
+
+<span class="err">输出结果：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">bellards_pi_run</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfi</span>
+<span class="n">le</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095927473.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">哦，不，我们得到的是同样的精度。好吧，让我们试试第三个公式，</span> <span class="n">Chudnovsky</span> <span class="err">算法，它看起来是这个样子：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="mi">826</span><span class="n">dc7788dba249ee86fc0135e06b035</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pytho</span>
+<span class="n">ntab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095928544.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">再一次，让我们看一下这个计算公式（假设我们有一个阶乘公式）。</span><span class="p">[</span> <span class="err">点击这里可下载用</span> <span class="n">python</span> <span class="err">实现的</span> <span class="n">Chudnovsky</span>
+<span class="err">公式</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">thelivingpearl</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">05</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="n">computing</span><span class="o">-</span><span class="n">pi</span><span class="o">-</span><span class="k">with</span><span class="o">-</span>
+<span class="n">python</span><span class="o">/</span><span class="n">download</span><span class="o">%</span><span class="mi">20</span><span class="n">Chudnovsky</span><span class="o">%</span><span class="mi">20</span><span class="n">formula</span><span class="o">%</span><span class="mi">20</span><span class="ow">in</span><span class="o">%</span><span class="mi">20</span><span class="n">python</span><span class="p">)</span><span class="err">。</span>
+
+<span class="err">下面是程序和输出结果：</span>
+
+
+
+    <span class="k">def</span> <span class="nf">chudnovsky</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">pi</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">while</span> <span class="n">k</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">pi</span><span class="o">+=</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">k</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">k</span><span class="p">))</span><span class="o">/</span><span class="p">((</span><span class="n">factorial</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">k</span><span class="p">)))</span><span class="o">*</span><span class="p">(</span><span class="mi">13591409</span><span class="o">+</span><span class="mi">545140134</span><span class="o">*</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">640320</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">k</span><span class="p">)))</span>
+            <span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">pi</span><span class="o">=</span><span class="n">pi</span><span class="o">*</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">10005</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">/</span><span class="mi">4270934400</span>
+        <span class="n">pi</span><span class="o">=</span><span class="n">pi</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pi</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">wpid</span><span class="o">-</span><span class="n">chudnovsky_pyhton</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mf">54.</span><span class="n">png</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">upload</span>
+<span class="nb">file</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0604</span><span class="o">/</span><span class="mf">20130604095928766.</span><span class="n">png</span><span class="p">)</span>
+
+<span class="err">所以我们有了什么结论？花哨的算法不会使机器浮点世界达到更高标准。我真的很期待能有一个比我们用求和公式时所能得到的更好的精度。我猜那是过分的要求。如果你真的需</span>
+<span class="err">要用</span><span class="n">PI</span><span class="err">，就只需使用</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="err">变量了。然而，作为乐趣和测试你的计算机真的能有多快，你总是可以尝试第一个计算出</span><span class="n">Pi</span><span class="err">的百万位或者更多位是几。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

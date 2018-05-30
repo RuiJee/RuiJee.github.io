@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>成人网站性能提升 20 倍之经验谈 [Python]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 成人网站性能提升 20 倍之经验谈 [Python]">
+                                        成人网站性能提升 20 倍之经验谈 [Python]
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 成人网站性能提升 20 倍之经验谈 [Python]</span>
+
+<span class="err">色情业是个大行业。互联网上没有多少网站的流量能和最大的色情网站相匹敌。</span>
+
+<span class="err">要搞定这巨大的流量很难。更困难的是，在色情网站上提供的很多内容都是低延迟的实时流媒体而不是简单的静态视频。但是对于所有碰到过的挑战，我很少看到有搞定过它们的</span>
+<span class="err">开发人员写的东西。所以我决定把自己在这方面的经验写出来。</span>
+
+<span class="err">问题是什么？</span>
+
+<span class="err">几年前，我正在为当时全世界访问量排名</span><span class="mi">26</span><span class="err">的网站工作</span> <span class="err">—</span> <span class="err">这里不是说的色情网站排名，而是全世界排名。</span>
+
+<span class="err">当时，该网站通过</span><span class="n">RTMP</span><span class="p">(</span><span class="n">Real</span> <span class="n">Time</span> <span class="n">Messaging</span>
+<span class="n">protocol</span><span class="p">)</span><span class="err">协议响应对色情流媒体的请求。更具体地说，它使用了</span><span class="n">Adobe</span><span class="err">的</span><span class="n">FMS</span><span class="p">(</span><span class="n">Flash</span> <span class="n">Media</span>
+<span class="n">Server</span><span class="p">)</span><span class="err">技术为用户提供实时流媒体。基本过程是这样的：</span>
+
+<span class="err">用户请求访问某个实时流媒体</span>
+
+<span class="err">服务器通过一个</span><span class="n">RTMP</span> <span class="n">session</span><span class="err">响应，播放请求的视频片段</span>
+
+<span class="err">因为某些原因，</span><span class="n">FMS</span><span class="err">对我们并不是一个好的选择，首先是它的成本，包括了购买以下两者：</span>
+
+<span class="err">为每一台运行</span><span class="n">FMS</span><span class="err">的服务器购买</span><span class="n">Windows</span><span class="err">的版权</span>
+
+<span class="err">大约</span><span class="mi">4000</span><span class="err">美元一个的</span><span class="n">FMS</span><span class="err">特定版权，由于我们的规模，我们必须购买的版权量数以百计，而且每天都在增加。</span>
+
+<span class="err">所有这些费用开始不断累积。撇开成本不提，</span><span class="n">FMS</span><span class="err">也是一个比较挫的产品，特别是在它的功能方面（我过一会再详细说这个问题）。所以我决定抛弃</span><span class="n">FMS</span><span class="err">，自己从头开始写一</span>
+<span class="err">个自己的</span><span class="n">RTMP</span><span class="err">解析器。</span>
+
+<span class="err">最后，我终于把我们的服务效率提升了大约</span><span class="mi">20</span><span class="err">倍。</span>
+
+<span class="err">开始</span>
+
+<span class="err">这里涉及到两个核心问题：首先，</span><span class="n">RTMP</span><span class="err">和其他的</span><span class="n">Adobe</span><span class="err">协议及格式都不是开放的，这就很难使用它们。要是对文件格式都一无所知，你如何能对它进</span>
+<span class="err">行反向工程或者解析它呢？幸运的是，有一些反向工程的尝试已经在公开领域出现了（并不是</span><span class="n">Adobe</span><span class="err">出品的，而是</span><span class="n">osflash</span><span class="o">.</span><span class="n">org</span><span class="err">，它破解了一些协</span>
+<span class="err">议），我们的工作就是基于这些成果。</span>
+
+<span class="err">注：</span><span class="n">Adobe</span><span class="err">后来发布了所谓的“规格说明书”，比起在非</span><span class="n">Adobe</span><span class="err">提供的反向工程</span><span class="n">wiki</span><span class="err">和文档中披露的内容，这个说明书里也没有啥新东西。他们</span>
+<span class="err">给的规格说明书的质量之低劣达到了荒谬的境地，近乎不可能通过该说明书来使用它们的库。而且，协议本身看起来常常也是有意做成具有误导性的。例如：</span>
+
+<span class="err">他们使用</span><span class="mi">29</span><span class="err">字节的整形数。</span>
+
+<span class="err">他们在协议头上所有地方都采用低地址存放最高有效字节</span><span class="p">(</span><span class="n">big</span> <span class="n">endian</span><span class="p">)</span><span class="err">的格式，除了在某一个字段（而且未标明）上采用低地址存放最低有效字节</span><span class="p">(</span><span class="n">little</span>
+<span class="n">endian</span><span class="p">)</span><span class="err">的格式。</span>
+
+<span class="err">他们在传输</span><span class="mi">9</span><span class="n">K</span><span class="err">的视频时，不惜耗费计算能力去压缩数据减少空间，这基本上是没意义的，因为他们这么折腾一次也就是减少几位或几个字节，对这样的一个文件大小可以忽略不</span>
+<span class="err">计了。</span>
+
+<span class="err">还有，</span><span class="n">RTMP</span><span class="err">是高度以</span><span class="n">session</span><span class="err">为导向的，这使得它基本上不可能对流进行组播。理想状态下，如果多个用户要求观看同一个实时视频流，我们可以</span>
+<span class="err">直接向他们传回指向单个</span><span class="n">session</span><span class="err">的指针，在该</span><span class="n">session</span><span class="err">里传输这个视频流（这就是组播的概念）。但是用</span><span class="n">RTMP</span><span class="err">的话，我们必须为每一个要求访问</span>
+<span class="err">特定流的用户创建全新的一个实例。这是完全的浪费。</span>
+
+<span class="err">我的解决办法</span>
+
+<span class="err">想到了这些，我决定把典型的响应流重新打包和解析为</span><span class="n">FLV</span><span class="err">“标签”（这里的“标签”指某个视频、音频或者元数据）。这些</span><span class="n">FLV</span><span class="err">标签可以在</span><span class="n">RTMP</span><span class="err">下顺利地传输。</span>
+
+<span class="err">这样一个方法的好处是：</span>
+
+<span class="err">我们只需要给流重新打包一次（重新打包是一个噩梦，因为缺少规格说明，还有前面说到的恶心协议）。</span>
+
+<span class="err">通过套用一个</span><span class="n">FLV</span><span class="err">头，我们可以在客户端之间顺畅地重用任何流，而用内部的</span><span class="n">FLV</span><span class="err">标签指针（配以某种声明其在流内部确切位置的位移值）就可以访问到真正的内容。</span>
+
+<span class="err">我一开始用我当时最熟悉的</span><span class="n">C</span><span class="err">语言进行开发。一段时间后，这个选择变得麻烦了，所以我开始学习</span><span class="n">Python</span><span class="err">并移植我的</span><span class="n">C</span><span class="err">代码。开发过程加快了，但在做</span>
+<span class="err">了一些演示版本后，我很快遇到了资源枯竭的问题。</span><span class="n">Python</span><span class="err">的</span><span class="n">socket</span><span class="err">处理并不适合处理这些类型的情况，具体说，我们发现在自己的</span><span class="n">Python</span><span class="err">代码</span>
+<span class="err">里，每个</span><span class="n">action</span><span class="err">都进行了多次系统调用和</span><span class="n">context</span><span class="err">切换，这增加了巨大的系统开销。</span>
+
+<span class="err">改进性能：混合使用</span><span class="n">Python</span><span class="err">和</span><span class="n">C</span>
+
+<span class="err">在对代码进行梳理之后，我选择将性能最关键的函数移植到内部完全用</span><span class="n">C</span><span class="err">语言编写的一个</span><span class="n">Python</span><span class="err">模块中。这基本是底层的东西，具体地说，它利用了内核的</span><span class="n">epoll</span><span class="err">机制</span>
+<span class="err">提供了一个</span><span class="n">O</span><span class="p">(</span><span class="n">log</span> <span class="n">n</span><span class="p">)</span><span class="err">的算法复杂度。</span>
+
+<span class="err">在异步</span><span class="n">socket</span><span class="err">编程方面，有一些机制可以提供有关特定</span><span class="n">socket</span><span class="err">是否可读</span><span class="o">/</span><span class="err">可写</span><span class="o">/</span><span class="err">出错之类的信息。过去，开发人员们可以用</span><span class="n">select</span><span class="p">()</span><span class="err">系</span>
+<span class="err">统调用获取这些信息，但很难大规模使用。</span><span class="n">Poll</span><span class="p">()</span><span class="err">是更好的选择，但它仍然不够好，因为你每次调用的时候都要传递一大堆</span><span class="n">socket</span><span class="err">描述符。</span>
+
+<span class="n">Epoll</span><span class="err">的神奇之处在于你只需要登记一个</span><span class="n">socket</span><span class="err">，系统会记住这个特定的</span><span class="n">socket</span><span class="err">并处理所有内部的杂乱的细节。这样在每次调用的时候就没</span>
+<span class="err">有传递参数的开销了。而且它适用的规模也大有可观，它只返回你关心的那些</span><span class="n">socket</span><span class="err">，相比用其他技术时必须从</span><span class="mi">10</span><span class="err">万个</span><span class="n">socket</span><span class="err">描述符列表里挨个检查</span>
+<span class="err">是否有带字节掩码的事件，其优越性真是非同小可啊。</span>
+
+<span class="err">不过，为了性能的提高，我们也付出了代价：这个方法采用了完全和以前不同的设计模式。该网站以前的方法是（如果我没记错的话）单个原始进程，在接收和发送时会阻塞。我</span>
+<span class="err">开发的是一套事件驱动方案，所以为了适应这个新模型，我必须重构其他的代码。</span>
+
+<span class="err">具体地说，在新方法中，我们有一个主循环，它按如下方式处理接收和发送：</span>
+
+<span class="err">接收到的数据（作为消息）被传递到</span><span class="n">RTMP</span><span class="err">层</span>
+
+<span class="n">RTMP</span><span class="err">包被解析，从中提取出</span><span class="n">FLV</span><span class="err">标签</span>
+
+<span class="n">FLV</span><span class="err">数据被传输到缓存和组播层，在该层对流进行组织并填充到底层传输缓存中</span>
+
+<span class="err">发送程序为每个客户端保存一个结构，包含了最后一次发送的索引，并尽可能多地向客户端传送数据</span>
+
+<span class="err">这是一个滚动的数据窗口，并包含了某些试探性算法，当客户端速度太慢无法接收时会丢弃一些帧。总体来说运行的很好。</span>
+
+<span class="err">系统层级，架构和硬件问题</span>
+
+<span class="err">但是我们又遇到另外一个问题：内核的</span><span class="n">context</span><span class="err">切换成为了一个负担。结果，我们选择每</span><span class="mi">100</span><span class="err">毫秒发送一次而不是实时发送。这样可以把小的数据包汇总起来，也避免了</span>
+<span class="n">context</span><span class="err">切换的爆炸式出现。</span>
+
+<span class="err">也许更大的一个问题在于服务器架构方面：我们需要一个具备负载均衡和容错能力的服务器集群，毕竟因为服务器功能异常而失去用户不是件好玩的事情。一</span>
+<span class="err">开始，我们采用了专职总管服务器的方法，它指定一个”总管“负责通过预测需求来产生和消除播放流。这个方法华丽丽地失败了。实际上，我们尝试过的每个方法</span>
+<span class="err">都相当明显地失败了。最后，我们采用了一个相对暴力的方法，在集群的各个节点之间随机地共享播放的流，使流量基本平衡了。</span>
+
+<span class="err">这个方法是有效的，但是也有一些不足：虽然一般情况下它处理的很好，我们也碰到了当所有网站用户（或者相当大比例的用户）观看单个广播流的时候，性</span>
+<span class="err">能会变得非常糟糕。好消息是，除了一次市场宣传活动（</span><span class="n">marketing</span>
+<span class="n">campaign</span><span class="err">）之外，这种情况再也没出现过。我们部署了另外一套单独的集群来处理这种情况，但真实的情况是我们先分析了一番，觉得为了一次市场活动而</span>
+<span class="err">牺牲付费用户的体验是说不过去的，实际上，这个案例也不是一个真实的事件（虽然说能处理所有想象得到的情况也是很好的）。</span>
+
+<span class="err">结论</span>
+
+<span class="err">这里有最后结果的一些统计数字：每天在集群里的流量在峰值时是大约</span><span class="mi">10</span><span class="err">万用户（</span><span class="mi">60</span><span class="o">%</span><span class="err">负载），平均是</span><span class="mi">5</span><span class="err">万。我管理了</span><span class="mi">2</span><span class="err">个集群（匈牙利和美国），每个</span>
+<span class="err">里有大约</span><span class="mi">40</span><span class="err">台服务器共同承担这个负载。这些集群的总带宽大约是</span><span class="mi">50</span> <span class="n">Gbps</span><span class="err">，在负载达到峰值时大约使用了</span><span class="mi">10</span>
+<span class="n">Gbps</span><span class="err">。最后，我努力做到了让每台服务器轻松地能提供</span><span class="mi">10</span> <span class="n">Gbps</span><span class="err">带宽，也就等于一台服务器可以承受</span><span class="mi">30</span><span class="err">万用户同时观看视频流。</span>
+
+<span class="err">已有的</span><span class="n">FMS</span><span class="err">集群包含了超过</span><span class="mi">200</span><span class="err">台服务器，我只需要</span><span class="mi">15</span><span class="err">台就可以取代他们，而且其中只有</span><span class="mi">10</span><span class="err">台在真正提供服务。这就等于</span><span class="mi">200</span><span class="err">除以</span><span class="mi">10</span><span class="err">，等于</span><span class="mi">20</span>
+<span class="err">倍的性能提高。大概我在这个项目里最大的收获就是我不应让自己受阻于学习新技能的困难。具体说来，</span><span class="n">Python</span><span class="err">、转码、面向对象编程，这些都是我在做这个</span>
+<span class="err">项目之前缺少专业经验的概念。</span>
+
+<span class="err">这个信念，以及实现你自己的方案的信心，会给你带来很大的回报。</span>
+
+<span class="err">【</span><span class="mi">1</span><span class="err">】后来，当我们把新代码投入生产，我们又遇到了硬件问题，因为我们使用老的</span><span class="n">sr2500</span> <span class="n">Intel</span><span class="err">架构服务器，由于它们的</span><span class="n">PCI</span><span class="err">总线带宽太低，不能支持</span><span class="mi">10</span>
+<span class="n">Gbit</span><span class="err">的以太网卡。没辙，我们只好把它们用在</span><span class="mi">1</span><span class="o">-</span><span class="mi">4</span><span class="err">×</span><span class="mi">1</span> <span class="n">Gbit</span><span class="err">的以太网池中（把多个网卡的性能汇总为一个虚拟网卡）。最终，我们获得了一些更新的</span><span class="n">sr2600</span>
+<span class="n">i7</span> <span class="n">Intel</span><span class="err">架构服务器，它们通过光纤达到了无性能损耗的</span><span class="mi">10</span> <span class="n">Gbps</span><span class="err">带宽。所有上述汇总的结果都是基于这样的硬件条件来计算的。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

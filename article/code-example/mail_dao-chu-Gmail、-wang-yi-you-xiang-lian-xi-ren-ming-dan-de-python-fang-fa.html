@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>导出Gmail、网易邮箱联系人名单的python方法</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 导出Gmail、网易邮箱联系人名单的python方法">
+                                        导出Gmail、网易邮箱联系人名单的python方法
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_mail/index.html"><i class="icon-tag"></i>code_mail</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#coding=utf-8</span>
+
+<span class="kn">from</span> <span class="nn">BeautifulSoup</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">urllib</span><span class="o">,</span><span class="nn">urllib2</span><span class="o">,</span><span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">cookielib</span>
+<span class="kn">import</span> <span class="nn">httplib</span>
+<span class="kn">import</span> <span class="nn">csv</span><span class="o">,</span><span class="nn">re</span>
+
+<span class="n">GDATA_URL</span> <span class="o">=</span> <span class="s1">&#39;/accounts/ClientLogin&#39;</span>
+
+<span class="k">class</span> <span class="nc">MailContactError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">MailContact</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">get_contact_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">GMailContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to retrieve a users contacts from their Google Account.</span>
+
+<span class="sd">    Dependencies:</span>
+<span class="sd">    -------------</span>
+<span class="sd">    * BeautifulSoup.</span>
+<span class="sd">    * That&#39;s it. :-)</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">    ------</span>
+<span class="sd">    &gt;&gt;&gt; g = GMailContact(&#39;email@example.org&#39;, &#39;password&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.login()</span>
+<span class="sd">    (200, &#39;OK&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.get_contacts()</span>
+<span class="sd">    &gt;&gt;&gt; g.contacts</span>
+<span class="sd">    [(u&#39;Persons Name&#39;, &#39;name@person.com&#39;), ...]</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;test@gmail.com&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="s1">&#39;cp&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="o">=</span><span class="s2">&quot;@gmail.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_type</span> <span class="o">=</span> <span class="s1">&#39;HOSTED_OR_GOOGLE&#39;</span>  <span class="c1"># Allow both Google Domain and Gmail accounts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>                  <span class="c1"># Defaults to cp (contacts)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;google-data-import&#39;</span>      <span class="c1"># Our application name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>                          <span class="c1"># Empty by default, populated by self.login()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span>                      <span class="c1"># Empty list by default, populated by self.get_contacts()</span>
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Login to Google. No arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s1">&#39;accountType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_type</span><span class="p">,</span>
+            <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="s1">&#39;Passwd&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s1">&#39;service&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+            <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span>
+        <span class="p">})</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/plain&#39;</span>
+        <span class="p">}</span>
+
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="s1">&#39;google.com&#39;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">GDATA_URL</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GdataError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t log in. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Auth=&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span>
+
+    <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base function for requesting the contacts. We&#39;ll allow other methods eventually</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/m8/feeds/contacts/</span><span class="si">%s</span><span class="s1">/base/?max-results=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">max_results</span><span class="p">)</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;GoogleLogin auth=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">}</span>
+
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="s1">&#39;www.google.com&#39;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t log in. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+
+        <span class="n">page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">page</span>
+
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Parses the contacts (using BeautifulSoup) from self._request, and then populates self.contacts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">max_results</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">findAll</span><span class="p">([</span><span class="s1">&#39;gd:email&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">findAll</span><span class="p">([</span><span class="s1">&#39;gd:email&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">)))</span>
+
+        <span class="k">return</span>
+
+<span class="k">class</span> <span class="nc">M126Contact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="o">=</span><span class="s2">&quot;@126.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_host</span> <span class="o">=</span> <span class="s1">&#39;entry.mail.126.com&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span> <span class="o">=</span> <span class="s1">&#39;/cgi/login?redirTempName=https.htm&amp;hid=10010102&amp;lightweight=1&amp;verifycookie=1&amp;language=0&amp;style=-1&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s1">&#39;domain&#39;</span><span class="p">:</span><span class="s1">&#39;126.com&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;language&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;bCookie&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;user&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="s1">&#39;pass&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s1">&#39;style&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;remUser&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;secure&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;enter.x&#39;</span><span class="p">:</span><span class="s1">&#39;%B5%C7+%C2%BC&#39;</span>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/xml,text/plain&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Refer&#39;</span><span class="p">:</span><span class="s1">&#39;http://www.126.com/&#39;</span>
+
+<span class="mi">1</span><span class="n">c42</span>
+   <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span> <span class="o">=</span> <span class="s1">&#39;g2a10.mail.126.com&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="s1">&#39;/coremail/fcg/ldvcapp?funcid=prtsearchres&amp;sid=</span><span class="si">%(sid)s</span><span class="s1">&amp;listnum=200&amp;tempname=address</span><span class="si">%%</span><span class="s1">2faddress.htm&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_data</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t log in. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+        <span class="c1">#sc=&quot;Coremail=aaYgsaQsvSmKa%MBgzxnddkKzjPJUTbMddRUIgVwfeiBUd; path=/; domain=.126.com&quot;</span>
+        <span class="c1">#sid=&quot;MBgzxnddkKzjPJUTbMddRUIgVwfeiBUd&quot;</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Set-Cookie&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sc</span> <span class="ow">or</span> <span class="n">sc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Coremail&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1">#用户密码不正确</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Email user </span><span class="si">%s%s</span><span class="s2"> password </span><span class="si">%s</span><span class="s2"> not correct!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
+        <span class="n">cookie</span><span class="o">=</span><span class="n">sc</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coremail</span> <span class="o">=</span> <span class="n">cookie</span><span class="p">[</span><span class="n">cookie</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">cookie</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">coremail</span><span class="p">[</span><span class="n">coremail</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;sid&#39;</span><span class="p">:</span><span class="n">sid</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_headers</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;Cookie&#39;</span><span class="p">:</span><span class="s1">&#39;MAIL126_SSN=</span><span class="si">%(user)s</span><span class="s1">; NETEASE_SSN=</span><span class="si">%(user)s</span><span class="s1">; nts_mail_user=</span><span class="si">%(user)s</span><span class="s1">; logType=df; ntes_mail_firstpage=normal; </span><span class="se">\</span>
+<span class="s1">        Coremail=</span><span class="si">%(coremail)s</span><span class="s1">;mail_host=g2a14.mail.126.com; mail_sid=</span><span class="si">%(sid)s</span><span class="s1">; mail_uid=</span><span class="si">%(user)s</span><span class="s1">@126.com; </span><span class="se">\</span>
+<span class="s1">        mail_style=dm3; oulink_h=520; ntes_mail_noremember=true&#39;</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="s1">&#39;coremail&#39;</span><span class="p">:</span><span class="n">coremail</span><span class="p">,</span><span class="s1">&#39;sid&#39;</span><span class="p">:</span><span class="n">sid</span><span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1">#www.iplaypy.com       </span>
+    <span class="k">def</span> <span class="nf">get_contact_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t getc contact page. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">page</span>
+
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_contact_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        <span class="n">xmps</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;xmp&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xmps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">string</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">M163Contact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="o">=</span><span class="s2">&quot;@163.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_host</span> <span class="o">=</span> <span class="s1">&#39;reg.163.com&#39;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span> <span class="o">=</span> <span class="s1">&#39;/logins.jsp?type=1&amp;url=http://fm163.163.com/coremail/fcg/ntesdoor2?lightweight=1&amp;verifycookie=1&amp;language=-1&amp;style=-1&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s1">&#39;verifycookie&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;style&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;product&#39;</span><span class="p">:</span><span class="s1">&#39;mail163&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="s1">&#39;password&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s1">&#39;selType&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;remUser&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;secure&#39;</span><span class="p">:</span><span class="s1">&#39;on&#39;</span>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/xml,text/plain&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Refer&#39;</span><span class="p">:</span><span class="s1">&#39;http://mail.163.com/&#39;</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span> <span class="o">=</span> <span class="s1">&#39;g2a10.mail.163.com&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_data</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t log in. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+
+        <span class="n">sc1</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Set-Cookie&#39;</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Set-Cookie: NTES_SESS=ohAWkiyj.OCjHdh1BK4ToxPcUvFX2fSLaN3FaU0cRInzLoieELdifjyqnBdk4C8qWIZkirZ7.JF.IPFDuR7BcAtKL; domain=.163.com; path=/</span>
+<span class="sd">            Set-Cookie: NETEASE_SSN=weafriend; domain=.163.com; path=/; expires=Mon, 08-Jun-2009 10:42:26 GMT</span>
+<span class="sd">            Set-Cookie: NETEASE_ADV=11&amp;24&amp;1212921746999; domain=.163.com; path=/; expires=Mon, 08-Jun-2009 10:42:26 GMT</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">ntes_sess</span><span class="p">,</span><span class="n">ntes_adv</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="bp">None</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sc1</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;NTES_SESS&#39;</span><span class="p">):</span>
+                <span class="n">ntes_sess</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;NETEASE_ADV&#39;</span><span class="p">):</span>
+                <span class="n">ntes_adv</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ntes_sess</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ntes_adv</span><span class="p">:</span>
+            <span class="c1">#用户密码不正确</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Email user </span><span class="si">%s%s</span><span class="s2"> password </span><span class="si">%s</span><span class="s2"> not correct!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/coremail/fcg/ntesdoor2?lightweight=1&amp;verifycookie=1&amp;language=-1&amp;style=-1&amp;username=weafriend&#39;</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cookie&#39;</span><span class="p">:</span><span class="n">sc1</span><span class="p">}</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="s1">&#39;fm163.163.com&#39;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="n">url</span><span class="p">,{},</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="n">sc2</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Set-Cookie&#39;</span><span class="p">)</span>
+        <span class="n">coremail</span> <span class="o">=</span> <span class="n">sc2</span><span class="p">[</span><span class="n">sc2</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">sc2</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">coremail</span><span class="p">[</span><span class="n">coremail</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="s1">&#39;/coremail/fcg/ldvcapp?funcid=prtsearchres&amp;sid=&#39;</span> <span class="o">+</span> <span class="n">sid</span> <span class="o">+</span><span class="s1">&#39;&amp;listnum=200&amp;tempname=address</span><span class="si">%2f</span><span class="s1">address.htm&#39;</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Cookie&#39;</span><span class="p">:</span><span class="s1">&#39;MAIL163_SSN=</span><span class="si">%(user)s</span><span class="s1">; vjlast=1212911118; vjuids=-99d7a91f6.1156a6ea3cd.0.9e6d0e6f029e78; </span><span class="se">\</span>
+<span class="s1">        _ntes_nuid=7118c6a1c9d16ee59a045a2e66186af8;  NTES_adMenuNum=3; </span><span class="se">\</span>
+<span class="s1">        _ntes_nnid=7118c6a1c9d16ee59a045a2e66186af8,0|www|urs|163mail|news|ent|sports|digi|lady|tech|stock|travel|music|2008|;</span><span class="se">\</span>
+<span class="s1">        NTES_UFC=9110001100010000000000000000000000100000000000000002331026300000; logType=-1; nts_mail_user=weafriend:-1:1; </span><span class="se">\</span>
+<span class="s1">        Province=010; _ntes_nvst=1212911122953,|www|urs|; Coremail=</span><span class="si">%(coremail)s</span><span class="s1">; </span><span class="se">\</span>
+<span class="s1">        wmsvr_domain=g1a109.mail.163.com; ntes_mail_truename=; ntes_mail_province=; ntes_mail_sex=; mail_style=js3; </span><span class="se">\</span>
+<span class="s1">        mail_host=g1a109.mail.163.com; mail_sid=</span><span class="si">%(sid)s</span><span class="s1">; USERTRACK=58.31.69.214.1212911333143304; </span><span class="se">\</span>
+<span class="s1">        ntes_mail_firstpage=normal; NTES_SESS=</span><span class="si">%(ntes_sess)s</span><span class="s1">; </span><span class="se">\</span>
+<span class="s1">        NETEASE_SSN=</span><span class="si">%(user)s</span><span class="s1">; NETEASE_ADV=</span><span class="si">%(ntes_adv)s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span><span class="s1">&#39;coremail&#39;</span><span class="p">:</span><span class="n">coremail</span><span class="p">,</span><span class="s1">&#39;sid&#39;</span><span class="p">:</span><span class="n">sid</span><span class="p">,</span><span class="s1">&#39;ntes_sess&#39;</span><span class="p">:</span><span class="n">ntes_sess</span><span class="p">,</span><span class="s1">&#39;ntes_adv&#39;</span><span class="p">:</span><span class="n">ntes_adv</span><span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+
+
+    <span class="k">def</span> <span class="nf">get_contact_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t getc contact page. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">page</span>
+
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_contact_page</span><span class="p">()</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        <span class="n">xmps</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;xmp&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xmps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">string</span><span class="p">))</span>
+
+
+
+
+<span class="k">class</span> <span class="nc">SohuContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="o">=</span><span class="s2">&quot;@sohu.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+
+<span class="mi">14</span><span class="n">b6</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_host</span> <span class="o">=</span> <span class="s1">&#39;passport.sohu.com&#39;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span> <span class="o">=</span> <span class="s1">&#39;http://passport.sohu.com/login.jsp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s1">&#39;loginid&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="p">,</span>
+            <span class="s1">&#39;passwd&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s1">&#39;sg&#39;</span><span class="p">:</span><span class="s1">&#39;5175b065623bb194e85903f5e8c43386&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;eru&#39;</span><span class="p">:</span><span class="s1">&#39;http://login.mail.sohu.com/login.php&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ru&#39;</span><span class="p">:</span><span class="s1">&#39;http://login.mail.sohu.com/login_comm.php&#39;</span><span class="p">,</span>   
+            <span class="s1">&#39;appid&#39;</span><span class="p">:</span><span class="mi">1000</span><span class="p">,</span>
+            <span class="s1">&#39;fl&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ct&#39;</span><span class="p">:</span><span class="mi">1126084880</span><span class="p">,</span>
+            <span class="s1">&#39;vr&#39;</span><span class="p">:</span><span class="s1">&#39;1|1&#39;</span>       
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;User-agent&#39;</span><span class="p">:</span><span class="s1">&#39;Opera/9.23&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/xml,text/plain&#39;</span>           
+        <span class="p">}</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cookielib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()))</span>
+        <span class="n">urllib2</span><span class="o">.</span><span class="n">install_opener</span><span class="p">(</span><span class="n">opener</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span> <span class="o">=</span> <span class="s1">&#39;www50.mail.sohu.com&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="s1">&#39;/webapp/contact&#39;</span>
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login_url</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_data</span><span class="p">)</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">geturl</span><span class="p">())</span><span class="o">+</span><span class="s1">&#39;/contact&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span><span class="p">)</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">simplejson</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;listString&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]))</span>
+
+<span class="k">class</span> <span class="nc">HotmailContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="o">=</span><span class="s2">&quot;@hotmail.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_host</span> <span class="o">=</span> <span class="s1">&#39;login.live.com&#39;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span> <span class="o">=</span> <span class="s1">&#39;/ppsecure/post.srf?id=2&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s1">&#39;login&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">mail_type</span><span class="p">,</span>
+            <span class="s1">&#39;passwd&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s1">&#39;PPSX&#39;</span><span class="p">:</span><span class="s1">&#39;Pass&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;LoginOption&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;PwdPad&#39;</span><span class="p">:</span><span class="s1">&#39;IfYouAreReadingThisYouHaveTooMuchFreeTime&#39;</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">)],</span>
+            <span class="s1">&#39;PPFT&#39;</span><span class="p">:</span><span class="s1">&#39;B1S2dWnsGTFLpX9h8fxfE*ym5OABStpt0fjo%21YICXQOy1b</span><span class="si">%21x</span><span class="s1">P4dRx8F1h1w6tR8ZyLP4h3TYGS8gSZGku3j7CxQ4poqr&#39;</span>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/xml,text/plain&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Cookie&#39;</span><span class="p">:</span> <span class="s1">&#39;CkTst=G1213457870062; MobileProf=2AV3mTOwJEE8smIfIyq69wbCn08y6UX7910BtLhqTto2MYrNSBW5hhlEuGlMJdMwwGq1WcxtENCAI1JSyTNfrS23ArFLxDjBNk!xtbIj0iglbu8DQVg9TnSTPtHj975deR; MUID=C2DC0F9324AA47DCB05CE14B989D89C2; ANON=A=E81AEA51F927860B07BBA712FFFFFFFF&amp;E=69f&amp;W=2; s_lastvisit=1213455335875; MH=MSFT; wlidperf=throughput=2087.201125175809&amp;latency=1.422; MSPRequ=lt=1213455763&amp;co=1&amp;id=2; MSPOK=uuid-d75c4c53-1b6e-433c-af95-c3c0175a48cd; CkTst=G1213455761093; MSPPre=fenyon@hotmail.com; MSPCID=0f45e10de2ad38c9; NAP=V=1.7&amp;E=6b4&amp;C=bKkGf4IbC96JLFhsoKyccKm1Kf7jjhX5I3C1ofjvyMoY3iI9j0b6gg&amp;W=2; MSPSoftVis=@:@; BrowserSense=Win=1&amp;Downlevel=0&amp;WinIEOnly=0&amp;Firefox=1&amp;FirefoxVersion=2.0; mktstate=U=&amp;E=en-us; mkt1=norm=en-us; s_cc=true; s_sq=%5B%5BB%5D%5D; MSPP3RD=3688532421&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="s1">&#39;https://login.live.com/ppsecure/post.srf?id=2&amp;bk=1213455763&#39;</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span> <span class="o">=</span> <span class="s1">&#39;by120w.bay120.mail.live.com&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span> <span class="o">=</span> <span class="s1">&#39;/mail/GetContacts.aspx&#39;</span>
+
+    <span class="k">def</span> <span class="nf">getInputValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">content</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#登录过程见http://blog.jiexoo.com/2008/05/21/%e7%94%a8httpclient%e8%8e%b7%e5%8f%96hotmail%e8%81%94%e7%b3%bb%e4%ba%ba%e5%88%97%e8%a1%a8/</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;login.srf?id=2&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_url</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_data</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">login_headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t getc contact page. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">page</span>
+
+
+    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_host</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">contact_url</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;200&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MailContactError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t getc contact page. HTTP Code: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">))</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">page</span>
+
+<span class="k">class</span> <span class="nc">SinaContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+
+<span class="k">class</span> <span class="nc">YahooContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">MsnContact</span><span class="p">(</span><span class="n">MailContact</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">get_mailcontact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">,</span><span class="n">mailtype</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;126.com&quot;</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">M126Contact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;163.com&quot;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">M163Contact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;sohu.com&quot;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">SohuContact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;hotmail.com&quot;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">HotmailContact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;sina.com&quot;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">SinaContact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>   
+    <span class="k">elif</span> 
+<span class="n">f08</span>
+<span class="n">mailtype</span> <span class="o">==</span> <span class="s2">&quot;gmail.com&quot;</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">GMailContact</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">contacts</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">get_csvcontact</span><span class="p">(</span><span class="nb">iter</span><span class="p">):</span>
+    <span class="n">contact</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="p">[],</span><span class="bp">None</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+                <span class="k">continue</span>
+            <span class="n">m</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;\w+@\w+(?:\.\w+)+&#39;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">name</span><span class="p">,</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">contact</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="k">return</span> <span class="n">contact</span>
+
+<span class="k">def</span> <span class="nf">get_imcontact</span><span class="p">(</span><span class="nb">iter</span><span class="p">):</span>
+    <span class="n">contact</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;\w+@\w+(?:\.\w+)+&#39;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">m</span>
+                <span class="n">contact</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">m</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">contact</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+    <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="o">.</span><span class="n">debuglevel</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="o">.</span><span class="n">debuglevel</span><span class="o">=</span><span class="mi">1</span>   
+    <span class="n">g</span> <span class="o">=</span> <span class="n">GMailContact</span><span class="p">(</span><span class="s1">&#39;***&#39;</span><span class="p">,</span> <span class="s1">&#39;***&#39;</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">g</span><span class="o">.</span><span class="n">contacts</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">M163ContactContact</span><span class="p">(</span><span class="s1">&#39;***&#39;</span><span class="p">,</span> <span class="s1">&#39;***&#39;</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">g</span><span class="o">.</span><span class="n">contacts</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

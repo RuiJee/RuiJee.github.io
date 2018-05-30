@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>深入探究Python中的字典容器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 深入探究Python中的字典容器">
+                                        深入探究Python中的字典容器
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 深入探究Python中的字典容器</span>
+
+<span class="c1">### 字典（dictionary）</span>
+
+<span class="err">我们都曾经使用过语言词典来查找不认识的单词的定义。语言词典针对给定的单词（比如</span>
+<span class="n">python</span><span class="err">）提供一组标准的信息。这种系统将定义和其他信息与实际的单词关联（映射）起来。使用单词作为键定位器来寻找感兴趣的信息。这种概念延伸到</span> <span class="n">Python</span>
+<span class="err">编程语言中，就成了特殊的容器类型，称为</span> <span class="err">字典（</span><span class="n">dictionary</span><span class="err">）。</span>
+
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">）</span> <span class="err">数据类型在许多语言中都存在。它有时候称为关联</span> <span class="err">数组（因为数据与一个键值相关联），或者作为散列表。但是在</span> <span class="n">Python</span>
+<span class="err">中，字典（</span><span class="n">dictionary</span><span class="err">）</span> <span class="err">是一个很好的对象，因此即使是编程新手也很容易在自己的程序中使用它。按照正式的说法，</span><span class="n">Python</span> <span class="err">中的</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">）</span> <span class="err">是一种异构的、易变的映射容器数据类型。</span>
+
+<span class="c1">### 创建字典</span>
+
+<span class="err">本系列中前面的文章介绍了</span> <span class="n">Python</span> <span class="err">编程语言中的一些容器数据类型，包括</span> <span class="nb">tuple</span><span class="err">、</span><span class="n">string</span> <span class="err">和</span> <span class="nb">list</span><span class="err">（参见</span>
+<span class="err">参考资料）。这些容器的相似之处是它们都是基于序列的。这意味着要根据元素在序列中的位置访问这些集合中的元素。所以，给定一个名为</span> <span class="n">a</span>
+<span class="err">的序列，就可以使用数字索引（比如</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">）或片段（比如</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="err">）来访问元素。</span><span class="n">Python</span> <span class="err">中的</span> <span class="err">字典（</span><span class="n">dictionary</span><span class="err">）</span>
+<span class="err">容器类型与这三种容器类型的不同之处在于，它是一个无序的集合。不是按照索引号，而是使用键值来访问集合中的元素。这意味着构造字典（</span><span class="n">dictionary</span><span class="err">）容器比</span>
+<span class="nb">tuple</span><span class="err">、</span><span class="n">string</span> <span class="err">或</span> <span class="nb">list</span> <span class="err">要复杂一些，因为必须同时提供键和相应的值，如清单</span> <span class="mi">1</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 1. 在 Python 中创建字典，第 1 部分</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="err">     </span><span class="c1"># Base object is the dict class</span>
+    <span class="o">&lt;</span><span class="nb">type</span><span class="err"> </span><span class="s1">&#39;dict&#39;</span><span class="o">&gt;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{}</span><span class="err">      </span><span class="c1"># Create an empty dictionary</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">1</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">}</span><span class="err"> </span><span class="c1"># Create a single item dictionary</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span><span class="err"> </span><span class="c1"># The key value can be non-numeric</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="err"> </span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">6</span><span class="p">,</span><span class="err"> </span><span class="mi">7</span><span class="p">,</span><span class="err"> </span><span class="mi">8</span><span class="p">,</span><span class="err"> </span><span class="mi">9</span><span class="p">]}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">6</span><span class="p">,</span><span class="err"> </span><span class="mi">7</span><span class="p">,</span><span class="err"> </span><span class="mi">8</span><span class="p">,</span><span class="err"> </span><span class="mi">9</span><span class="p">]}</span>
+
+
+
+<span class="err">如这个例子所示，在</span> <span class="n">Python</span> <span class="err">中创建字典（</span><span class="n">dictionary</span><span class="err">）要使用花括号和以冒号分隔的键</span><span class="o">-</span><span class="err">值组合。如果没有提供键</span><span class="o">-</span><span class="err">值组合，那么就会创建一个空的</span>
+<span class="n">dictionary</span><span class="err">。使用一个键</span><span class="o">-</span><span class="err">值组合，就会创建具有一个元素的</span> <span class="n">dictionary</span><span class="err">，以此类推，直至您需要的任何规模。与任何容器类型一样，可以使用内置的</span>
+<span class="nb">len</span> <span class="err">方法查明集合中元素的数量。</span>
+
+<span class="err">前面的示例还演示了关于字典（</span><span class="n">dictionary</span><span class="err">）容器的另一个重要问题。键并不限制为整数；它可以是任何不易变的数据类型，包括</span>
+<span class="n">integer</span><span class="err">、</span><span class="nb">float</span><span class="err">、</span><span class="nb">tuple</span> <span class="err">或</span> <span class="n">string</span><span class="err">。因为</span> <span class="nb">list</span>
+<span class="err">是易变的，所以它不能作为字典（</span><span class="n">dictionary</span><span class="err">）中的键。但是字典（</span><span class="n">dictionary</span><span class="err">）中的值可以是任何数据类型的。</span>
+
+<span class="err">最后，这个示例说明了</span> <span class="n">Python</span> <span class="err">中字典（</span><span class="n">dictionary</span><span class="err">）的底层数据类型是</span> <span class="nb">dict</span> <span class="err">对象。要进一步了解如何使用</span> <span class="n">Python</span> <span class="err">中的</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">），可以使用内置的帮助解释器来了解</span> <span class="nb">dict</span> <span class="err">类，如清单</span> <span class="mi">2</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 2. 获得关于字典（dictionary）的帮助</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">help</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span><span class="n">on</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="nb">dict</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">module</span><span class="err"> </span><span class="n">__builtin__</span><span class="p">:</span>
+    <span class="err">   </span><span class="nb">dict</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="o">|</span><span class="err"> </span><span class="nb">dict</span><span class="p">()</span><span class="err"> </span><span class="o">-&gt;</span><span class="err"> </span><span class="n">new</span><span class="err"> </span><span class="n">empty</span><span class="err"> </span><span class="n">dictionary</span><span class="o">.</span>
+    <span class="o">|</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="err"> </span><span class="o">-&gt;</span><span class="err"> </span><span class="n">new</span><span class="err"> </span><span class="n">dictionary</span><span class="err"> </span><span class="n">initialized</span><span class="err"> </span><span class="n">from</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="n">mapping</span><span class="err"> </span><span class="nb">object</span><span class="s1">&#39;s</span>
+    <span class="o">|</span><span class="err">   </span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="n">pairs</span><span class="o">.</span>
+    <span class="o">|</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="err"> </span><span class="o">-&gt;</span><span class="err"> </span><span class="n">new</span><span class="err"> </span><span class="n">dictionary</span><span class="err"> </span><span class="n">initialized</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="n">via</span><span class="p">:</span>
+    <span class="o">|</span><span class="err">   </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{}</span>
+    <span class="o">|</span><span class="err">   </span><span class="k">for</span><span class="err"> </span><span class="n">k</span><span class="p">,</span><span class="err"> </span><span class="n">v</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">seq</span><span class="p">:</span>
+    <span class="o">|</span><span class="err">     </span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">v</span>
+    <span class="o">|</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="err"> </span><span class="o">-&gt;</span><span class="err"> </span><span class="n">new</span><span class="err"> </span><span class="n">dictionary</span><span class="err"> </span><span class="n">initialized</span><span class="err"> </span><span class="k">with</span><span class="err"> </span><span class="n">the</span><span class="err"> </span><span class="n">name</span><span class="o">=</span><span class="n">value</span><span class="err"> </span><span class="n">pairs</span>
+    <span class="o">|</span><span class="err">   </span><span class="ow">in</span><span class="err"> </span><span class="n">the</span><span class="err"> </span><span class="n">keyword</span><span class="err"> </span><span class="n">argument</span><span class="err"> </span><span class="nb">list</span><span class="o">.</span><span class="err"> </span><span class="n">For</span><span class="err"> </span><span class="n">example</span><span class="p">:</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">one</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">two</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">|</span><span class="err"> </span>
+    <span class="o">|</span><span class="err"> </span><span class="n">Methods</span><span class="err"> </span><span class="n">defined</span><span class="err"> </span><span class="n">here</span><span class="p">:</span>
+    <span class="o">|</span><span class="err"> </span>
+    <span class="o">|</span><span class="err"> </span><span class="fm">__cmp__</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">|</span><span class="err">   </span><span class="n">x</span><span class="o">.</span><span class="fm">__cmp__</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="err"> </span><span class="o">&lt;==&gt;</span><span class="err"> </span><span class="nb">cmp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="o">|</span><span class="err"> </span>
+    <span class="o">|</span><span class="err"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">|</span><span class="err">   </span><span class="n">x</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="err"> </span><span class="o">&lt;==&gt;</span><span class="err"> </span><span class="n">y</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">x</span>
+    <span class="o">|</span><span class="err"> </span>
+    <span class="o">|</span><span class="err"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">|</span><span class="err">   </span><span class="n">x</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="err"> </span><span class="o">&lt;==&gt;</span><span class="err"> </span><span class="k">del</span><span class="err"> </span><span class="n">x</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+    <span class="o">...</span>
+
+
+
+<span class="err">关于</span> <span class="nb">dict</span> <span class="err">类的帮助指出，可以使用构造函数直接创建字典（</span><span class="n">dictionary</span><span class="err">），而不使用花括号。既然与其他容器数据类型相比，在创建字典（</span><span class="n">dictiona</span>
+<span class="n">ry</span><span class="err">）时必须提供更多的数据，那么这些创建方法比较复杂也就不足为奇了。但是，在实践中使用字典（</span><span class="n">dictionary</span><span class="err">）并不难，如清单</span> <span class="mi">3</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 3. 在 Python 中创建字典（dictionary），第 2 部分</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">l</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="err"> </span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">6</span><span class="p">,</span><span class="err"> </span><span class="mi">7</span><span class="p">,</span><span class="err"> </span><span class="mi">8</span><span class="p">,</span><span class="err"> </span><span class="mi">9</span><span class="p">]</span><span class="err"> </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="p">)(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err"> </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> ?</span><span class="p">:</span><span class="err"> </span><span class="n">can</span><span class="s1">&#39;t convert dictionary </span>
+    <span class="err"> </span><span class="n">update</span><span class="err"> </span><span class="n">sequence</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="c1">#0 to a sequence</span>
+    <span class="err">  </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">l</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">),</span><span class="err"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">),</span><span class="err"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">),</span><span class="err"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">)]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">l</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">],</span><span class="err"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">],</span><span class="err"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">],</span><span class="err"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">]]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">zero</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="n">one</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">two</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="n">three</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="err"> </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="s1">&#39;zero&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="mi">0</span><span class="o">=</span><span class="n">zero</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="o">=</span><span class="n">one</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="o">=</span><span class="n">two</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="o">=</span><span class="n">three</span><span class="p">):</span><span class="err"> </span><span class="n">keyword</span><span class="err"> </span><span class="n">can</span><span class="s1">&#39;t be an expression</span>
+
+
+
+<span class="err">可以看到，创建字典（</span><span class="n">dictionary</span><span class="err">）需要键值和数据值。第一次从</span> <span class="nb">list</span> <span class="err">创建字典（</span><span class="n">dictionary</span><span class="err">）的尝试失败了，这是因为没有匹配的键</span><span class="o">-</span>
+<span class="err">数据值对。第二个和第三个示例演示了如何正确地创建</span> <span class="err">字典（</span><span class="n">dictionary</span><span class="err">）：在第一种情况下，使用一个</span> <span class="nb">list</span><span class="err">，其中的每个元素都是一个</span>
+<span class="nb">tuple</span><span class="err">；在第二种情况下，也使用一个</span> <span class="nb">list</span><span class="err">，但是其中的每个元素是另一个</span> <span class="nb">list</span><span class="err">。在这两种情况下，内层容器都用于获得键到数据值的映射。</span>
+
+<span class="err">直接创建</span> <span class="nb">dict</span> <span class="err">容器的另一个方法是直接提供键到数据值的映射。这种技术允许显式地定义键和与其对应的值。这个方法其实用处不大，因为可以使用花括号完成相同的任</span>
+<span class="err">务。另外，如前面的例子所示，在采用这种方式时对于键不能使用数字，否则会导致抛出一个异常。</span>
+
+<span class="err">访问和修改字典（</span><span class="n">dictionary</span><span class="err">）</span>
+
+<span class="err">创建了</span> <span class="n">dictionary</span> <span class="err">之后，需要访问其中包含的数据。访问方式与访问任何</span> <span class="n">Python</span> <span class="err">容器数据类型中的数据相似，如清单</span> <span class="mi">4</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 4. 访问 dictionary 中的元素</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">(</span><span class="n">zero</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="n">one</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">two</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="n">three</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="s1">&#39;zero&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;zero&#39;</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;three&#39;</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="s1">&#39;zero&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="s1">&#39;four&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">6</span><span class="p">](</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err"> </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> ?</span><span class="p">:</span><span class="err"> </span><span class="mi">6</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err"> </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> ?</span><span class="p">:</span><span class="err"> </span><span class="n">unhashable</span><span class="err"> </span><span class="nb">type</span>
+
+<span class="err">可以看到，从字典（</span><span class="n">dictionary</span><span class="err">）中获取数据值的过程几乎与从任何容器类型中获取数据完全一样。在容器名后面的方括号中放上键值。当然，字典（</span><span class="n">diction</span>
+<span class="n">ary</span><span class="err">）可以具有非数字的键值，如果您以前没有使用过这种数据类型，那么适应这一点需要些时间。因为在字典（</span><span class="n">dictionary</span><span class="err">）中次序是不重要的（</span><span class="n">diction</span>
+<span class="n">ary</span> <span class="err">中数据的次序是任意的），所以可以对其他容器数据类型使用的片段功能，对于</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">）是不可用的。试图使用片段或者试图从不存在的键访问数据就会抛出异常，指出相关的错误。</span>
+
+<span class="n">Python</span> <span class="err">中的字典（</span><span class="n">dictionary</span><span class="err">）容器也是易变的数据类型，这意味着在创建它之后可以修改它。如清单</span> <span class="mi">5</span>
+<span class="err">所示，可以添加新的键到数据值的映射，可以修改现有的映射，还可以删除映射。</span>
+
+<span class="c1">### 清单 5. 修改字典（dictionary）</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="s1">&#39;zero&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;Zero&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;Zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;four&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;five&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;Zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">del</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;three&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;five&#39;</span><span class="p">}</span>
+
+
+
+<span class="err">清单</span> <span class="mi">5</span> <span class="err">演示了几个重点。首先，修改数据值是很简单的：将新的值分配给适当的键。其次，添加新的键到数据值的映射也很简单：将相关数据分配给新的键值。</span><span class="n">Python</span>
+<span class="err">自动进行所有处理。不需要调用</span> <span class="n">append</span> <span class="err">这样的特殊方法。对于</span> <span class="n">dictionary</span>
+<span class="err">容器，次序是不重要的，所以这应该好理解，因为不是在字典（</span><span class="n">dictionary</span><span class="err">）后面附加映射，而是将它添加到容器中。最后，删除映射的办法是使用</span> <span class="k">del</span>
+<span class="err">操作符以及应该从容器中删除的键。</span>
+
+<span class="err">在清单</span> <span class="mi">5</span> <span class="err">中有一个情况看起来有点儿怪，键值是按照数字次序显示的，而且这个次序与插入映射的次序相同。不要误解</span> <span class="err">——</span> <span class="err">情况不总是这样的。</span><span class="n">Python</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">）中映射的次序是任意的，对于不同的</span> <span class="n">Python</span> <span class="err">安装可能会有变化，甚至多次使用同一</span> <span class="n">Python</span>
+<span class="err">解释器运行相同代码也会有变化。如果在一个字典（</span><span class="n">dictionary</span><span class="err">）中使用不同类型的键和数据值，那么就很容易看出这一点，如清单</span> <span class="mi">6</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 6. 异构的容器</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span><span class="err">   </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="s1">&#39;zero&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="o">&lt;</span><span class="nb">type</span><span class="err"> </span><span class="s1">&#39;str&#39;</span><span class="o">&gt;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">])</span>
+    <span class="o">&lt;</span><span class="nb">type</span><span class="err"> </span><span class="s1">&#39;int&#39;</span><span class="o">&gt;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;two&#39;</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span><span class="err"> </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">],</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">),</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">],</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;a tuple&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;a tuple&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">],</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+
+
+
+<span class="err">如这个例子所示，可以在一个字典（</span><span class="n">dictionary</span><span class="err">）中使用不同数据类型的键和数据值。还可以通过修改字典（</span><span class="n">dictionary</span><span class="err">）添加新的类型。最后，产生的</span>
+<span class="n">dictionary</span> <span class="err">的次序并不与插入数据的次序匹配。本质上，字典（</span><span class="n">dictionary</span><span class="err">）中元素的次序是由</span> <span class="n">Python</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">）数据类型的实际实现控制的。新的</span> <span class="n">Python</span>
+<span class="err">解释器很容易改变这一次序，所以一定不要依赖于元素在字典（</span><span class="n">dictionary</span><span class="err">）中的特定次序。</span>
+
+<span class="c1">### 用字典（dictionary）进行编程</span>
+
+<span class="err">作为正式的</span> <span class="n">Python</span> <span class="err">数据类型，字典（</span><span class="n">dictionary</span><span class="err">）支持其他较简单数据类型所支持的大多数操作。这些操作包括一般的关系操作符，比如</span> <span class="o">&lt;</span><span class="err">、</span><span class="o">&gt;</span> <span class="err">和</span>
+<span class="o">==</span><span class="err">，如清单</span> <span class="mi">7</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 7. 一般关系操作符</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d1</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;zero&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d1</span><span class="err"> </span><span class="o">&lt;</span><span class="err"> </span><span class="n">d2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">d1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d1</span><span class="err"> </span><span class="o">&lt;</span><span class="err"> </span><span class="n">d2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d1</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="n">d2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">d1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d1</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="n">d2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+
+<span class="err">前面的示例创建两个字典（</span><span class="n">dictionary</span><span class="err">）并使用它们测试</span> <span class="o">&lt;</span>
+<span class="err">关系操作符。尽管很少以这种方式比较两个字典（</span><span class="n">dictionary</span><span class="err">）；但是如果需要，可以这样做。</span>
+
+<span class="err">然后，这个示例将赋值给变量</span> <span class="n">d1</span> <span class="err">的字典（</span><span class="n">dictionary</span><span class="err">）赋值给另一个变量</span> <span class="n">d2</span><span class="err">。注意，内置的</span> <span class="nb">id</span><span class="p">()</span> <span class="err">方法对于</span> <span class="n">d1</span> <span class="err">和</span> <span class="n">d2</span>
+<span class="err">返回相同的标识符值，这说明这不是复制操作。要想复制字典（</span><span class="n">dictionary</span><span class="err">）</span> <span class="err">，可以使用</span> <span class="n">copy</span><span class="p">()</span>
+<span class="err">方法。从这个示例中的最后几行可以看出，副本与原来的字典（</span><span class="n">dictionary</span><span class="err">）完全相同，但是容纳这字典（</span><span class="n">dictionary</span><span class="err">）的变量具有不同的标识符。</span>
+
+<span class="err">在</span> <span class="n">Python</span> <span class="err">程序中使用字典（</span><span class="n">dictionary</span><span class="err">）时，很可能希望检查字典（</span><span class="n">dictionary</span><span class="err">）中是否包含特定的键或值。如清单</span> <span class="mi">8</span>
+<span class="err">所示，这些检查很容易执行。</span>
+
+<span class="c1">### 清单 8. 条件测试和字典（dictionary）</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;a tuple&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">],</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="mi">0</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s1">&#39;True&#39;</span>
+    <span class="o">...</span><span class="err"> </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="p">:</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s1">&#39;True&#39;</span>
+    <span class="o">...</span><span class="err"> </span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="s1">&#39;four&#39;</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="p">:</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s1">&#39;Dictionary contains four&#39;</span>
+    <span class="o">...</span><span class="err"> </span><span class="k">elif</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="p">:</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s1">&#39;Dictionary contains two&#39;</span>
+    <span class="o">...</span><span class="err"> </span><span class="n">contains</span><span class="err"> </span><span class="n">two</span>
+
+
+
+<span class="err">测试字典（</span><span class="n">dictionary</span><span class="err">）中键或数据值的成员关系是很简单的。</span><span class="n">dictionary</span> <span class="err">容器数据类型提供几个内置方法，包括</span> <span class="n">keys</span><span class="p">()</span> <span class="err">方法和</span>
+<span class="n">values</span><span class="p">()</span> <span class="err">方法（这里没有演示）。这些方法返回一个列表，其中分别包含进行调用的字典（</span><span class="n">dictionary</span><span class="err">）中的键或数据值。</span>
+
+<span class="err">因此，要判断某个值是否是字典（</span><span class="n">dictionary</span><span class="err">）中的键，应该使用</span> <span class="ow">in</span> <span class="err">操作符检查这个值是否在调用</span> <span class="n">keys</span><span class="p">()</span>
+<span class="err">方法所返回的键值列表中。可以使用相似的操作检查某个值是否在调用</span> <span class="n">values</span><span class="p">()</span> <span class="err">方法所返回的数据值列表中。但是，可以使用字典（</span><span class="n">dictionary</span><span class="err">）名作为</span>
+<span class="err">简写表示法。这是有意义的，因为一般希望知道某个数据值（而不是键值）是否在字典（</span><span class="n">dictionary</span><span class="err">）中。</span>
+
+<span class="err">在</span> <span class="err">“</span><span class="n">Discover</span> <span class="n">Python</span><span class="p">,</span> <span class="n">Part</span> <span class="mi">6</span><span class="err">”</span> <span class="err">中，您看到了使用</span> <span class="k">for</span> <span class="err">循环遍历容器中的元素是多么容易。同样的技术也适用于</span> <span class="n">Python</span>
+<span class="err">字典（</span><span class="n">dictionary</span><span class="err">），如清单</span> <span class="mi">9</span> <span class="err">所示。</span>
+
+<span class="c1">### 清单 9. 迭代和字典（dictionary）</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">d</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;zero&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;a tuple&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;two&#39;</span><span class="p">:</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">],</span><span class="err"> </span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">k</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="o">...</span><span class="err"> </span><span class="nb">tuple</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">v</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="n">v</span>
+    <span class="o">...</span><span class="err"> </span><span class="nb">tuple</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">k</span><span class="p">,</span><span class="err"> </span><span class="n">v</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">d</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s1">&#39;d[&#39;</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;] = &#39;</span><span class="p">,</span><span class="n">v</span>
+    <span class="o">...</span><span class="err"> </span><span class="p">[</span><span class="err"> </span><span class="mi">0</span><span class="err"> </span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">zero</span><span class="p">[</span><span class="err"> </span><span class="mi">3</span><span class="err"> </span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="nb">tuple</span><span class="p">[</span><span class="err"> </span><span class="n">two</span><span class="err"> </span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">][</span><span class="err"> </span><span class="n">one</span><span class="err"> </span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1</span>
+
+<span class="err">这个示例演示了遍历字典（</span><span class="n">dictionary</span><span class="err">）的三种方式：使用从</span> <span class="n">iterkeys</span><span class="p">()</span><span class="err">、</span><span class="n">itervalues</span><span class="p">()</span> <span class="err">或</span> <span class="n">iteritems</span><span class="p">()</span> <span class="err">方法返回的</span>
+<span class="n">Python</span> <span class="err">迭代器。（顺便说一下，可以通过在字典（</span><span class="n">dictionary</span><span class="err">）上直接调用适当方法，比如</span>
+<span class="n">d</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">()</span><span class="err">，从而检查这些方法是否返回一个迭代器而不是容器数据类型。）</span><span class="n">iterkeys</span><span class="p">()</span> <span class="err">方法允许遍历字典（</span><span class="n">dictionary</span><span class="err">）的键，而</span>
+<span class="n">itervalues</span><span class="p">()</span> <span class="err">方法允许遍历字典（</span><span class="n">dictionary</span><span class="err">）包含的数据值。另一方面，</span><span class="n">iteritems</span><span class="p">()</span> <span class="err">方法允许同时遍历键到数据值的映射。</span>
+
+<span class="c1">### 字典（dictionary）：另一种强大的 Python 容器</span>
+
+<span class="err">本文讨论了</span> <span class="n">Python</span> <span class="err">字典（</span><span class="n">dictionary</span><span class="err">）数据类型。字典（</span><span class="n">dictionary</span><span class="err">）是一种异构的、易变的容器，依赖键到数据值的映射（而不是特定的数字</span>
+<span class="err">次序）来访问容器中的元素。访问、添加和删除字典（</span><span class="n">dictionary</span><span class="err">）中的元素都很简单，而且字典（</span><span class="n">dictionary</span><span class="err">）很容易用于复合语句，比如</span> <span class="k">if</span>
+<span class="err">语句或</span> <span class="k">for</span> <span class="err">循环。可以在字典（</span><span class="n">dictionary</span><span class="err">）中存储所有不同类型的数据，可以按照名称或其他复合键值（比如</span> <span class="nb">tuple</span><span class="err">）访问这些数据，所以</span>
+<span class="n">Python</span> <span class="err">字典（</span><span class="n">dictionary</span><span class="err">）使开发人员能够编写简洁而又强大的编程语句。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

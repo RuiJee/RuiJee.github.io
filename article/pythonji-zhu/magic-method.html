@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>简述 __init__、__new__、__call__ 方法</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 简述 __init__、__new__、__call__ 方法">
+                                        简述 __init__、__new__、__call__ 方法
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-07-12T00:00:00+08:00">
+        <i class="icon-calendar"></i>Wed 12 July 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/index.html"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/python/index.html"><i class="icon-tag"></i>python</a>
+
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#20219;&#20309;&#20107;&#29289;&#37117;&#26377;&#19968;&#20010;&#20174;&#21019;&#24314;&#65292;&#34987;&#20351;&#29992;&#65292;&#20877;&#21040;&#28040;&#20129;&#30340;&#36807;&#31243;&#65292;&#22312;&#31243;&#24207;&#35821;&#35328;&#38754;&#21521;&#23545;&#35937;&#32534;&#31243;&#27169;&#22411;&#20013;&#65292;&#23545;&#35937;&#20063;&#26377;&#30456;&#20284;&#30340;&#21629;&#36816;&#65306;&#21019;&#24314;&#12289;&#21021;&#22987;&#21270;&#12289;&#20351;&#29992;&#12289;&#22403;&#22334;&#22238;&#25910;&#65292;&#19981;&#21516;&#30340;&#38454;&#27573;&#30001;&#19981;&#21516;&#30340;&#26041;&#27861;&#65288;&#35282;&#33394;&#65289;&#36127;&#36131;&#25191;&#34892;&#12290;</p>
+<p>&#23450;&#20041;&#19968;&#20010;&#31867;&#26102;&#65292;&#22823;&#23478;&#29992;&#24471;&#26368;&#22810;&#30340;&#23601;&#26159; <code>__init__</code> &#26041;&#27861;&#65292;&#32780; <code>__new__</code> &#21644; <code>__call__</code> &#20351;&#29992;&#24471;&#27604;&#36739;&#23569;&#65292;&#36825;&#31687;&#25991;&#31456;&#35797;&#22270;&#24110;&#21161;&#22823;&#23478;&#25226;&#36825;3&#20010;&#26041;&#27861;&#30340;&#27491;&#30830;&#20351;&#29992;&#26041;&#24335;&#21644;&#24212;&#29992;&#22330;&#26223;&#20998;&#21035;&#35299;&#37322;&#19968;&#19979;&#12290;</p>
+<p>&#20851;&#20110; Python &#26032;&#24335;&#31867;&#21644;&#32769;&#24335;&#31867;&#22312;&#36825;&#31687;&#25991;&#31456;&#19981;&#20570;&#36807;&#22810;&#35752;&#35770;&#65292;&#22240;&#20026;&#32769;&#24335;&#31867;&#26159; Python2 &#20013;&#30340;&#27010;&#24565;&#65292;&#29616;&#22312;&#22522;&#26412;&#27809;&#20154;&#20877;&#20250;&#21435;&#29992;&#32769;&#24335;&#31867;&#65292;&#26032;&#24335;&#31867;&#24517;&#39035;&#26174;&#31034;&#22320;&#32487;&#25215; object&#65292;&#32780; Python3 &#20013;&#65292;&#21482;&#26377;&#26032;&#24335;&#31867;&#65292;&#40664;&#35748;&#32487;&#25215;&#20102; object&#65292;&#26080;&#38656;&#26174;&#31034;&#25351;&#23450;&#65292;&#26412;&#25991;&#20195;&#30721;&#37117;&#26159;&#22522;&#20110; Python3 &#26469;&#35752;&#35770;&#12290;</p>
+<h3>__init__&#26041;&#27861;</h3>
+<p><code>__init__</code>&#26041;&#27861;&#36127;&#36131;&#23545;&#35937;&#30340;&#21021;&#22987;&#21270;&#65292;&#31995;&#32479;&#25191;&#34892;&#35813;&#26041;&#27861;&#21069;&#65292;&#20854;&#23454;&#35813;&#23545;&#35937;&#24050;&#32463;&#23384;&#22312;&#20102;&#65292;&#35201;&#19981;&#28982;&#21021;&#22987;&#21270;&#20160;&#20040;&#19996;&#35199;&#21602;&#65311;&#20808;&#30475;&#20363;&#23376;&#65306;</p>
+<div class="highlight"><pre><span/><span class="c1"># class A(object): python2 &#24517;&#39035;&#26174;&#31034;&#22320;&#32487;&#25215;object</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"__init__ "</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"__new__ "</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># &#21487;&#20197;&#23450;&#20041;&#20219;&#24847;&#21442;&#25968;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'__call__ '</span><span class="p">)</span>
+
+<span class="n">A</span><span class="p">()</span>
+</pre></div>
+
+
+<p>&#36755;&#20986;</p>
+<div class="highlight"><pre><span/>__new__
+__init__
+</pre></div>
+
+
+<p>&#20174;&#36755;&#20986;&#32467;&#26524;&#26469;&#30475;&#65292; <code>__new__</code>&#26041;&#27861;&#20808;&#34987;&#35843;&#29992;&#65292;&#36820;&#22238;&#19968;&#20010;&#23454;&#20363;&#23545;&#35937;&#65292;&#25509;&#30528; <code>__init__</code> &#34987;&#35843;&#29992;&#12290; <code>__call__</code>&#26041;&#27861;&#24182;&#27809;&#26377;&#34987;&#35843;&#29992;&#65292;&#36825;&#20010;&#25105;&#20204;&#25918;&#21040;&#26368;&#21518;&#35828;&#65292;&#20808;&#26469;&#35828;&#35828;&#21069;&#38754;&#20004;&#20010;&#26041;&#27861;&#65292;&#31245;&#24494;&#25913;&#20889;&#25104;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"__init__ "</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">"__new__ "</span><span class="p">)</span>
+    <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+
+<p>&#36755;&#20986;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">__new__</span> 
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">A</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1007a95f8</span><span class="o">&gt;</span>
+<span class="n">__init__</span> 
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">A</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1007a95f8</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>&#20174;&#36755;&#20986;&#32467;&#26524;&#26469;&#30475;&#65292;<code>__new__</code> &#26041;&#27861;&#30340;&#36820;&#22238;&#20540;&#23601;&#26159;&#31867;&#30340;&#23454;&#20363;&#23545;&#35937;&#65292;&#36825;&#20010;&#23454;&#20363;&#23545;&#35937;&#20250;&#20256;&#36882;&#32473; <code>__init__</code> &#26041;&#27861;&#20013;&#23450;&#20041;&#30340; self &#21442;&#25968;&#65292;&#20197;&#20415;&#23454;&#20363;&#23545;&#35937;&#21487;&#20197;&#34987;&#27491;&#30830;&#22320;&#21021;&#22987;&#21270;&#12290;</p>
+<p>&#22914;&#26524; <code>__new__</code> &#26041;&#27861;&#19981;&#36820;&#22238;&#20540;&#65288;&#25110;&#32773;&#35828;&#36820;&#22238; None&#65289;&#37027;&#20040; <code>__init__</code> &#23558;&#19981;&#20250;&#24471;&#21040;&#35843;&#29992;&#65292;&#36825;&#20010;&#20063;&#35828;&#24471;&#36890;&#65292;&#22240;&#20026;&#23454;&#20363;&#23545;&#35937;&#37117;&#27809;&#21019;&#24314;&#20986;&#26469;&#65292;&#35843;&#29992; init &#20063;&#27809;&#20160;&#20040;&#24847;&#20041;&#65292;&#27492;&#22806;&#65292;Python &#36824;&#35268;&#23450;&#65292;<code>__init__</code> &#21482;&#33021;&#36820;&#22238; None &#20540;&#65292;&#21542;&#21017;&#25253;&#38169;&#65292;&#36825;&#20010;&#30041;&#32473;&#22823;&#23478;&#21435;&#35797;&#12290;</p>
+<p><code>__init__</code>&#26041;&#27861;&#21487;&#20197;&#29992;&#26469;&#20570;&#19968;&#20123;&#21021;&#22987;&#21270;&#24037;&#20316;&#65292;&#27604;&#22914;&#32473;&#23454;&#20363;&#23545;&#35937;&#30340;&#29366;&#24577;&#36827;&#34892;&#21021;&#22987;&#21270;&#65306;</p>
+<div class="highlight"><pre><span/>def __init__(self, a, b):
+    self.a = a
+    self.b = b
+    super(A, self).__init__()
+</pre></div>
+
+
+<p>&#21478;&#22806;&#65292;<code>__init__</code>&#26041;&#27861;&#20013;&#38500;&#20102;self&#20043;&#22806;&#23450;&#20041;&#30340;&#21442;&#25968;&#65292;&#37117;&#23558;&#19982;<code>__new__</code>&#26041;&#27861;&#20013;&#38500;cls&#21442;&#25968;&#20043;&#22806;&#30340;&#21442;&#25968;&#26159;&#24517;&#39035;&#20445;&#25345;&#19968;&#33268;&#25110;&#32773;&#31561;&#25928;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"init"</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">"new"</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+
+<span class="n">B</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># &#36755;&#20986;</span>
+
+<span class="n">new</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{}</span>
+<span class="n">init</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{}</span>
+</pre></div>
+
+
+<h3>__new__ &#26041;&#27861;</h3>
+<p>&#19968;&#33324;&#25105;&#20204;&#19981;&#20250;&#21435;&#37325;&#20889;&#35813;&#26041;&#27861;&#65292;&#38500;&#38750;&#20320;&#30830;&#20999;&#30693;&#36947;&#24590;&#20040;&#20570;&#65292;&#20160;&#20040;&#26102;&#20505;&#20320;&#20250;&#21435;&#20851;&#24515;&#23427;&#21602;&#65292;&#23427;&#20316;&#20026;&#26500;&#36896;&#20989;&#25968;&#29992;&#20110;&#21019;&#24314;&#23545;&#35937;&#65292;&#26159;&#19968;&#20010;&#24037;&#21378;&#20989;&#25968;&#65292;&#19987;&#29992;&#20110;&#29983;&#20135;&#23454;&#20363;&#23545;&#35937;&#12290;&#33879;&#21517;&#30340;&#35774;&#35745;&#27169;&#24335;&#20043;&#19968;&#65292;&#21333;&#20363;&#27169;&#24335;&#65292;&#23601;&#21487;&#20197;&#36890;&#36807;&#27492;&#26041;&#27861;&#26469;&#23454;&#29616;&#12290;&#22312;&#33258;&#24049;&#20889;&#26694;&#26550;&#32423;&#30340;&#20195;&#30721;&#26102;&#65292;&#21487;&#33021;&#20320;&#20250;&#29992;&#21040;&#23427;&#65292;&#25105;&#20204;&#20063;&#21487;&#20197;&#20174;&#24320;&#28304;&#20195;&#30721;&#20013;&#25214;&#21040;&#23427;&#30340;&#24212;&#29992;&#22330;&#26223;&#65292;&#20363;&#22914;&#24494;&#22411; Web &#26694;&#26550; Bootle &#23601;&#29992;&#21040;&#20102;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="n">BaseController</span>(<span class="n">object</span>):
+    <span class="n">_singleton</span> = <span class="n">None</span>
+    <span class="n">def</span> <span class="n">__new__</span>(<span class="n">cls</span>, *<span class="n">a</span>, **<span class="n">k</span>):
+        <span class="k">if</span> <span class="nb">not</span> <span class="n">cls</span>.<span class="n">_singleton:</span>
+            <span class="n">cls</span>.<span class="n">_singleton</span> = <span class="n">object</span>.<span class="n">__new__</span>(<span class="n">cls</span>, *<span class="n">a</span>, **<span class="n">k</span>)
+        <span class="k">return</span> <span class="n">cls</span>.<span class="n">_singleton</span>
+</pre></div>
+
+
+<p>&#36825;&#27573;&#20195;&#30721;&#20986;&#33258; https://github.com/bottlepy/bottle/blob/release-0.6/bottle.py</p>
+<p>&#36825;&#23601;&#26159;&#36890;&#36807; <code>__new__</code> &#26041;&#27861;&#26159;&#23454;&#29616;&#21333;&#20363;&#27169;&#24335;&#30340;&#30340;&#19968;&#31181;&#26041;&#24335;&#65292;&#22914;&#26524;&#23454;&#20363;&#23545;&#35937;&#23384;&#22312;&#20102;&#23601;&#30452;&#25509;&#36820;&#22238;&#35813;&#23454;&#20363;&#21363;&#21487;&#65292;&#22914;&#26524;&#36824;&#27809;&#26377;&#65292;&#37027;&#20040;&#23601;&#20808;&#21019;&#24314;&#19968;&#20010;&#23454;&#20363;&#65292;&#20877;&#36820;&#22238;&#12290;&#24403;&#28982;&#65292;&#23454;&#29616;&#21333;&#20363;&#27169;&#24335;&#30340;&#26041;&#27861;&#19981;&#21482;&#19968;&#31181;&#65292;Python&#20043;&#31109;&#26377;&#35828;&#65306;</p>
+<blockquote>
+<p>There should be one-- and preferably only one --obvious way to do it.  </p>
+<p>&#29992;&#19968;&#31181;&#26041;&#27861;&#65292;&#26368;&#22909;&#26159;&#21482;&#26377;&#19968;&#31181;&#26041;&#27861;&#26469;&#20570;&#19968;&#20214;&#20107;</p>
+</blockquote>
+<h3>__call__ &#26041;&#27861;</h3>
+<p>&#20851;&#20110; <code>__call__</code> &#26041;&#27861;&#65292;&#19981;&#24471;&#19981;&#20808;&#25552;&#21040;&#19968;&#20010;&#27010;&#24565;&#65292;&#23601;&#26159;<em>&#21487;&#35843;&#29992;&#23545;&#35937;&#65288;callable&#65289;</em>&#65292;&#25105;&#20204;&#24179;&#26102;&#33258;&#23450;&#20041;&#30340;&#20989;&#25968;&#12289;&#20869;&#32622;&#20989;&#25968;&#21644;&#31867;&#37117;&#23646;&#20110;&#21487;&#35843;&#29992;&#23545;&#35937;&#65292;&#20294;&#20961;&#26159;&#21487;&#20197;&#25226;&#19968;&#23545;&#25324;&#21495;<code>()</code>&#24212;&#29992;&#21040;&#26576;&#20010;&#23545;&#35937;&#36523;&#19978;&#37117;&#21487;&#31216;&#20043;&#20026;&#21487;&#35843;&#29992;&#23545;&#35937;&#65292;&#21028;&#26029;&#23545;&#35937;&#26159;&#21542;&#20026;&#21487;&#35843;&#29992;&#23545;&#35937;&#21487;&#20197;&#29992;&#20989;&#25968; <code>callable</code></p>
+<p>&#22914;&#26524;&#22312;&#31867;&#20013;&#23454;&#29616;&#20102; <code>__call__</code> &#26041;&#27861;&#65292;&#37027;&#20040;&#23454;&#20363;&#23545;&#35937;&#20063;&#23558;&#25104;&#20026;&#19968;&#20010;&#21487;&#35843;&#29992;&#23545;&#35937;&#65292;&#25105;&#20204;&#22238;&#21040;&#26368;&#24320;&#22987;&#30340;&#37027;&#20010;&#20363;&#23376;&#65306;</p>
+<div class="highlight"><pre><span/>a = A()
+print(callable(a))  # True
+</pre></div>
+
+
+<p><code>a</code>&#26159;&#23454;&#20363;&#23545;&#35937;&#65292;&#21516;&#26102;&#36824;&#26159;&#21487;&#35843;&#29992;&#23545;&#35937;&#65292;&#37027;&#20040;&#25105;&#23601;&#21487;&#20197;&#20687;&#20989;&#25968;&#19968;&#26679;&#35843;&#29992;&#23427;&#12290;&#35797;&#35797;&#65306;</p>
+<div class="highlight"><pre><span/>a()  # __call__
+</pre></div>
+
+
+<p>&#24456;&#31070;&#22855;&#19981;&#26159;&#65292;&#23454;&#20363;&#23545;&#35937;&#20063;&#21487;&#20197;&#20687;&#20989;&#25968;&#19968;&#26679;&#20316;&#20026;&#21487;&#35843;&#29992;&#23545;&#35937;&#26469;&#29992;&#65292;&#37027;&#20040;&#65292;&#36825;&#20010;&#29305;&#28857;&#22312;&#20160;&#20040;&#22330;&#26223;&#29992;&#24471;&#19978;&#21602;&#65311;&#36825;&#20010;&#35201;&#32467;&#21512;&#31867;&#30340;&#29305;&#24615;&#26469;&#35828;&#65292;&#31867;&#21487;&#20197;&#35760;&#24405;&#25968;&#25454;&#65288;&#23646;&#24615;&#65289;&#65292;&#32780;&#20989;&#25968;&#19981;&#34892;&#65288;&#38381;&#21253;&#26576;&#31181;&#24847;&#20041;&#19978;&#20063;&#21487;&#34892;&#65289;&#65292;&#21033;&#29992;&#36825;&#31181;&#29305;&#24615;&#21487;&#20197;&#23454;&#29616;&#22522;&#20110;&#31867;&#30340;&#35013;&#39280;&#22120;&#65292;&#22312;&#31867;&#37324;&#38754;&#35760;&#24405;&#29366;&#24577;&#65292;&#27604;&#22914;&#65292;&#19979;&#38754;&#36825;&#20010;&#20363;&#23376;&#29992;&#20110;&#35760;&#24405;&#20989;&#25968;&#34987;&#35843;&#29992;&#30340;&#27425;&#25968;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">class</span> <span class="n">Counter:</span>
+    <span class="n">def</span> <span class="n">__init__</span>(<span class="k">self</span>, <span class="n">func</span>):
+        <span class="k">self</span>.<span class="n">func</span> = <span class="n">func</span>
+        <span class="k">self</span>.<span class="nb">count</span> = <span class="mi">0</span>
+
+    <span class="n">def</span> <span class="n">__call__</span>(<span class="k">self</span>, *<span class="n">args</span>, **<span class="n">kwargs</span>):
+        <span class="k">self</span>.<span class="nb">count</span> += <span class="mi">1</span>
+        <span class="k">return</span> <span class="k">self</span>.<span class="n">func</span>(*<span class="n">args</span>, **<span class="n">kwargs</span>)
+
+<span class="nv">@Counter</span>
+<span class="n">def</span> <span class="n">foo</span>():
+    <span class="nb">pass</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span>(<span class="mi">10</span>):
+    <span class="n">foo</span>()
+
+<span class="nb">print</span>(<span class="n">foo</span>.<span class="nb">count</span>)  <span class="c c-Singleline"># 10</span>
+</pre></div>
+
+
+<p>&#22312; Bottle &#20013;&#20063;&#26377; call &#26041;&#27861; &#30340;&#20351;&#29992;&#26696;&#20363;&#65292;&#21478;&#22806;&#65292;<a href="https://stackoverflow.com/questions/5824881/python-call-special-method-practical-example">stackoverflow</a> &#20063;&#26377;&#19968;&#20123;&#20851;&#20110; call &#30340;&#23454;&#36341;&#20363;&#23376;&#65292;&#25512;&#33616;&#30475;&#30475;&#65292;&#22914;&#26524;&#20320;&#30340;&#39033;&#30446;&#20013;&#65292;&#38656;&#35201;&#26356;&#21152;&#25277;&#35937;&#21270;&#12289;&#26694;&#26550;&#20195;&#30721;&#65292;&#37027;&#20040;&#36825;&#20123;&#39640;&#32423;&#29305;&#24615;&#24448;&#24448;&#33021;&#21457;&#25381;&#20986;&#23427;&#20316;&#29992;&#12290;</p>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/magic-method.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

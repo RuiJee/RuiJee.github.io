@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>深刻理解Python中的元类(metaclass)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 深刻理解Python中的元类(metaclass)">
+                                        深刻理解Python中的元类(metaclass)
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 深刻理解Python中的元类(metaclass)</span>
+
+<span class="err">译注：这是一篇在</span><span class="n">Stack</span> <span class="n">overflow</span><span class="err">上很热的帖子。提问者自称已经掌握了有关</span><span class="n">Python</span> <span class="n">OOP</span><span class="err">编程中的各种概念，但始终觉得元类</span><span class="p">(</span><span class="n">metaclass</span><span class="p">)</span>
+<span class="err">难以理解。他知道这肯定和自省有关，但仍然觉得不太明白，希望大家可以给出一些实际的例子和代码片段以帮助理解，以及在什么情况下需要进行元编程。于是</span><span class="n">e</span><span class="o">-</span>
+<span class="n">satis</span><span class="err">同学给出了神一般的回复，该回复获得了</span><span class="mi">985</span><span class="err">点的赞同点数，更有人评论说这段回复应该加入到</span><span class="n">Python</span><span class="err">的官方文档中去。而</span><span class="n">e</span><span class="o">-</span>
+<span class="n">satis</span><span class="err">同学本人在</span><span class="n">Stack</span> <span class="n">Overflow</span><span class="err">中的声望积分也高达</span><span class="mi">64271</span><span class="err">分。以下就是这篇精彩的回复（提示：非常长）</span>
+
+<span class="c1">### 类也是对象</span>
+
+<span class="err">在理解元类之前，你需要先掌握</span><span class="n">Python</span><span class="err">中的类。</span><span class="n">Python</span><span class="err">中类的概念借鉴于</span><span class="n">Smalltalk</span><span class="err">，这显得有些奇特。在大多数编程语言中，类就是一组用来描述如何生</span>
+<span class="err">成一个对象的代码段。在</span><span class="n">Python</span><span class="err">中这一点仍然成立：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">pass</span>
+    <span class="err">…</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">my_object</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">my_object</span>
+
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">objectcreator</span> <span class="nb">object</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="n">at</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="mh">0x8974f2c</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span>
+
+<span class="err">但是，</span><span class="n">Python</span><span class="err">中的类还远不止如此。类同样也是一种对象。是的，没错，就是对象。只要你使用关键字</span><span class="n">class</span><span class="err">，</span><span class="n">Python</span><span class="err">解释器在执行的时候就会创建一个对象。</span>
+<span class="err">下面的代码段：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">pass</span>
+    <span class="err">…</span>
+
+<span class="err">将在内存中创建一个对象，名字就是</span><span class="n">ObjectCreator</span><span class="err">。这个对象（类）自身拥有创建对象（类实例）的能力，而这就是为什么它是一个类的原因。但是，它的本质仍</span>
+<span class="err">然是一个对象，于是乎你可以对它做如下的操作：</span>
+
+<span class="mi">1</span><span class="p">)</span> <span class="err"> </span> <span class="err">你可以将它赋值给一个变量</span>
+
+<span class="mi">2</span><span class="p">)</span> <span class="err"> </span> <span class="err">你可以拷贝它</span>
+
+<span class="mi">3</span><span class="p">)</span> <span class="err"> </span> <span class="err">你可以为它增加属性</span>
+
+<span class="mi">4</span><span class="p">)</span> <span class="err"> </span> <span class="err">你可以将它作为函数参数进行传递</span>
+
+<span class="err">下面是示例：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="err">     </span>
+    <span class="c1"># 你可以打印一个类，因为它其实也是一个对象</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">echo</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">print</span><span class="err"> </span><span class="n">o</span>
+    <span class="err">…</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">echo</span><span class="p">(</span><span class="n">ObjectCreator</span><span class="p">)</span>
+    <span class="err">            </span>
+    <span class="c1"># 你可以将类做为参数传给函数</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ObjectCreator</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;new_attribute&#39;</span><span class="p">)</span>
+    <span class="n">Fasle</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="o">.</span><span class="n">new_attribute</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;foo&#39;</span><span class="err"> </span>
+    <span class="c1">#  你可以为类增加属性</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ObjectCreator</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;new_attribute&#39;</span><span class="p">)</span>
+    <span class="bp">True</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="o">.</span><span class="n">new_attribute</span>
+    <span class="n">foo</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">ObjectCreatorMirror</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">ObjectCreator</span><span class="err"> </span>
+    <span class="c1"># 你可以将类赋值给一个变量</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">ObjectCreatorMirror</span><span class="p">()</span>
+    <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">objectcreator</span><span class="err"> </span><span class="nb">object</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="n">at</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="mh">0x8997b4c</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span>
+
+<span class="c1">### 动态地创建类</span>
+
+<span class="err">因为类也是对象，你可以在运行时动态的创建它们，就像其他任何对象一样。首先，你可以在函数中创建类，使用</span><span class="n">class</span><span class="err">关键字即可。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">choose_class</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">if</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="s1">&#39;foo&#39;</span><span class="p">:</span>
+    <span class="err">…           </span><span class="n">class</span><span class="err"> </span><span class="n">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…               </span><span class="k">pass</span>
+    <span class="err">…           </span><span class="k">return</span><span class="err"> </span><span class="n">Foo</span><span class="err">     </span>
+    <span class="c1"># 返回的是类，不是类的实例</span>
+    <span class="err">…       </span><span class="k">else</span><span class="p">:</span>
+    <span class="err">…           </span><span class="n">class</span><span class="err"> </span><span class="n">Bar</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…               </span><span class="k">pass</span>
+    <span class="err">…           </span><span class="k">return</span><span class="err"> </span><span class="n">Bar</span>
+    <span class="err">…</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">MyClass</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">choose_class</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">MyClass</span><span class="err">              </span>
+    <span class="c1"># 函数返回的是类，不是类的实例&gt;&gt;&gt; print MyClass()            </span>
+    <span class="c1"># 你可以通过这个类创建类实例，也就是对象</span>
+    <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">foo</span><span class="err"> </span><span class="nb">object</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="n">at</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="mh">0x89c6d4c</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span>
+
+<span class="err">但这还不够动态，因为你仍然需要自己编写整个类的代码。由于类也是对象，所以它们必须是通过什么东西来生成的才对。当你使用</span><span class="n">class</span><span class="err">关键字时，</span><span class="n">Python</span><span class="err">解释器自</span>
+<span class="err">动创建这个对象。但就和</span><span class="n">Python</span><span class="err">中的大多数事情一样，</span><span class="n">Python</span><span class="err">仍然提供给你手动处理的方法。还记得内建函数</span><span class="nb">type</span><span class="err">吗？这个古老但强大的函数能够让你知道一个</span>
+<span class="err">对象的类型是什么，就像这样：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">ObjectCreator</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">ObjectCreator</span><span class="p">())</span>
+
+<span class="err">这里，</span><span class="nb">type</span><span class="err">有一种完全不同的能力，它也能动态的创建类。</span><span class="nb">type</span><span class="err">可以接受一个类的描述作为参数，然后返回一个类。（我知道，根据传入参数的不同，同一个函数拥有两</span>
+<span class="err">种完全不同的用法是一件很傻的事情，但这在</span><span class="n">Python</span><span class="err">中是为了保持向后兼容性）</span>
+
+<span class="nb">type</span><span class="err">可以像这样工作：</span>
+
+<span class="nb">type</span><span class="p">(</span><span class="err">类名</span><span class="p">,</span> <span class="err">父类的元组（针对继承的情况，可以为空），包含属性的字典（名称和值）</span><span class="p">)</span>
+
+<span class="err">比如下面的代码：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">MyShinyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">pass</span>
+
+<span class="err">可以手动像这样创建：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">MyShinyClass</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;MyShinyClass&#39;</span><span class="p">,</span><span class="err"> </span><span class="p">(),</span><span class="err"> </span><span class="p">{})</span><span class="err">  </span>
+    <span class="c1"># 返回一个类对象</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">MyShinyClass</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">MyShinyClass</span><span class="p">()</span><span class="err">  </span>
+    <span class="c1">#  创建一个该类的实例</span>
+    <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">myshinyclass</span><span class="err"> </span><span class="nb">object</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="n">at</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="mh">0x8997cec</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span>
+
+<span class="err">你会发现我们使用“</span><span class="n">MyShinyClass</span><span class="err">”作为类名，并且也可以把它当做一个变量来作为类的引用。类和变量是不同的，这里没有任何理由把事情弄的复杂。</span>
+
+<span class="nb">type</span> <span class="err">接受一个字典来为类定义属性，因此</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">…       </span><span class="n">bar</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">True</span>
+
+<span class="err">可以翻译为：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">Foo</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;Foo&#39;</span><span class="p">,</span><span class="err"> </span><span class="p">(),</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;bar&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">})</span>
+
+<span class="err">并且可以将</span><span class="n">Foo</span><span class="err">当成一个普通的类一样使用：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">Foo</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">Foo</span><span class="o">.</span><span class="n">bar</span>
+    <span class="bp">True</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">f</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Foo</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">f</span>
+    <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">foo</span><span class="err"> </span><span class="nb">object</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="n">at</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="err"> </span><span class="mh">0x8a9b84c</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">f</span><span class="o">.</span><span class="n">bar</span>
+    <span class="bp">True</span>
+
+<span class="err">当然，你可以向这个类继承，所以，如下的代码：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">FooChild</span><span class="p">(</span><span class="n">Foo</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">pass</span>
+
+<span class="err">就可以写成：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">FooChild</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;FooChild&#39;</span><span class="p">,</span><span class="err"> </span><span class="p">(</span><span class="n">Foo</span><span class="p">,),{})</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">FooChild</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">FooChild</span><span class="o">.</span><span class="n">bar</span><span class="err">   </span>
+    <span class="c1"># bar属性是由Foo继承而来</span>
+    <span class="bp">True</span>
+
+<span class="err">最终你会希望为你的类增加方法。只需要定义一个有着恰当签名的函数并将其作为属性赋值就可以了。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">echo_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">…       </span><span class="k">print</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">bar</span>
+    <span class="err">…</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">FooChild</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;FooChild&#39;</span><span class="p">,</span><span class="err"> </span><span class="p">(</span><span class="n">Foo</span><span class="p">,),</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;echo_bar&#39;</span><span class="p">:</span><span class="err"> </span><span class="n">echo_bar</span><span class="p">})</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">Foo</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;echo_bar&#39;</span><span class="p">)</span>
+    <span class="bp">False</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">FooChild</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;echo_bar&#39;</span><span class="p">)</span>
+    <span class="bp">True</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">my_foo</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">FooChild</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">my_foo</span><span class="o">.</span><span class="n">echo_bar</span><span class="p">()</span>
+    <span class="bp">True</span>
+
+<span class="err">你可以看到，在</span><span class="n">Python</span><span class="err">中，类也是对象，你可以动态的创建类。这就是当你使用关键字</span><span class="n">class</span><span class="err">时</span><span class="n">Python</span><span class="err">在幕后做的事情，而这就是通过元类来实现的。</span>
+
+
+
+<span class="c1">### 到底什么是元类（终于到主题了）</span>
+
+<span class="err">元类就是用来创建类的“东西”。你创建类就是为了创建类的实例对象，不是吗？但是我们已经学习到了</span><span class="n">Python</span><span class="err">中的类也是对象。好吧，元类就是用来创建这些类（对象）</span>
+<span class="err">的，元类就是类的类，你可以这样理解</span> <span class="err">为：</span>
+
+
+
+    <span class="n">MyClass</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">MetaClass</span><span class="p">()</span>
+    <span class="n">MyObject</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">MyClass</span><span class="p">()</span>
+
+<span class="err">你已经看到了</span><span class="nb">type</span><span class="err">可以让你像这样做：</span>
+
+
+
+    <span class="n">MyClass</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">,</span><span class="err"> </span><span class="p">(),</span><span class="err"> </span><span class="p">{})</span>
+
+<span class="err">这是因为函数</span><span class="nb">type</span><span class="err">实际上是一个元类。</span><span class="nb">type</span><span class="err">就是</span><span class="n">Python</span><span class="err">在背后用来创建所有类的元类。现在你想知道那为什么</span><span class="nb">type</span><span class="err">会全部采用小写形式而不是</span><span class="n">Type</span><span class="err">呢？好</span>
+<span class="err">吧，我猜这是为了和</span><span class="nb">str</span><span class="err">保持一致性，</span><span class="nb">str</span><span class="err">是用来创建字符串对象的类，而</span><span class="nb">int</span><span class="err">是用来创建整数对象的类。</span><span class="nb">type</span><span class="err">就是创建类对象的类。你可以通过检查</span><span class="n">__class</span>
+<span class="n">__</span><span class="err">属性来看到这一点。</span><span class="n">Python</span><span class="err">中所有的东西，注意，我是指所有的东西——都是对象。这包括整数、字符串、函数以及类。它们全部都是对象，而且它们都是从一个类创</span>
+<span class="err">建而来。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">age</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">35</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">age</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;bob&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span><span class="err"> </span><span class="k">pass</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="n">foo</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">class</span><span class="err"> </span><span class="n">Bar</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span><span class="err"> </span><span class="k">pass</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">b</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Bar</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">b</span><span class="o">.</span><span class="vm">__class__</span>
+
+<span class="err">现在，对于任何一个</span><span class="vm">__class__</span><span class="err">的</span><span class="vm">__class__</span><span class="err">属性又是什么呢？</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">a</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">age</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">b</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__class__</span>
+
+<span class="err">因此，元类就是创建类这种对象的东西。如果你喜欢的话，可以把元类称为“类工厂”（不要和工厂类搞混了</span><span class="p">:</span><span class="n">D</span><span class="err">）</span>
+<span class="nb">type</span><span class="err">就是</span><span class="n">Python</span><span class="err">的内建元类，当然了，你也可以创建自己的元类。</span>
+
+
+
+<span class="c1">### __metaclass__属性</span>
+
+<span class="err">你可以在写一个类的时候为其添加</span><span class="vm">__metaclass__</span><span class="err">属性。</span>
+
+
+
+    <span class="n">class</span><span class="err"> </span><span class="n">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">    </span><span class="vm">__metaclass__</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">something</span><span class="err">…</span>
+    <span class="p">[</span><span class="err">…</span><span class="p">]</span>
+
+<span class="err">如果你这么做了，</span><span class="n">Python</span><span class="err">就会用元类来创建类</span><span class="n">Foo</span><span class="err">。小心点，这里面有些技巧。你首先写下</span><span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span><span class="err">，但是类对象</span><span class="n">Foo</span><span class="err">还没有在内存中创</span>
+<span class="err">建。</span><span class="n">Python</span><span class="err">会在类的定义中寻找</span><span class="vm">__metaclass__</span><span class="err">属性，如果找到了，</span><span class="n">Python</span><span class="err">就会用它来创建类</span><span class="n">Foo</span><span class="err">，如果没有找到，就会用内建的</span><span class="nb">type</span><span class="err">来创建这</span>
+<span class="err">个类。把下面这段话反复读几次。当你写如下代码时</span> <span class="p">:</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Bar</span><span class="p">):</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="n">Python</span><span class="err">做了如下的操作：</span>
+
+<span class="n">Foo</span><span class="err">中有</span><span class="vm">__metaclass__</span><span class="err">这个属性吗？如果是，</span><span class="n">Python</span><span class="err">会在内存中通过</span><span class="vm">__metaclass__</span><span class="err">创建一个名字为</span><span class="n">Foo</span><span class="err">的类对象（我说的是类对象，请</span>
+<span class="err">紧跟我的思路）。如果</span><span class="n">Python</span><span class="err">没有找到</span><span class="vm">__metaclass__</span><span class="err">，它会继续在</span><span class="n">Bar</span><span class="err">（父类）中寻找</span><span class="vm">__metaclass__</span><span class="err">属性，并尝试做和前面同样的操作。</span>
+<span class="err">如果</span><span class="n">Python</span><span class="err">在任何父类中都找不到</span><span class="vm">__metaclass__</span><span class="err">，它就会在模块层次中去寻找</span><span class="vm">__metaclass__</span><span class="err">，并尝试做同样的操作。如果还是找不到</span><span class="n">__m</span>
+<span class="n">etaclass__</span><span class="p">,</span><span class="n">Python</span><span class="err">就会用内置的</span><span class="nb">type</span><span class="err">来创建这个类对象。</span>
+
+<span class="err">现在的问题就是，你可以在</span><span class="vm">__metaclass__</span><span class="err">中放置些什么代码呢？答案就是：可以创建一个类的东西。那么什么可以用来创建一个类呢？</span><span class="nb">type</span><span class="err">，或者任何使用到</span>
+<span class="nb">type</span><span class="err">或者子类化</span><span class="nb">type</span><span class="err">的东东都可以。</span>
+
+
+
+<span class="c1">### 自定义元类</span>
+
+<span class="err">元类的主要目的就是为了当创建类时能够自动地改变类。通常，你会为</span><span class="n">API</span><span class="err">做这样的事情，你希望可以创建符合当前上下文的类。假想一个很傻的例子，你决定在你的模块里所</span>
+<span class="err">有的类的属性都应该是大写形式。有好几种方法可以办到，但其中一种就是通过在模块级别设定</span><span class="vm">__metaclass__</span><span class="err">。采用这种方法，这个模块中的所有类都会通过这个</span>
+<span class="err">元类来创建，我们只需要告诉元类把所有的属性都改成大写形式就万事大吉了。</span>
+
+<span class="err">幸运的是，</span><span class="vm">__metaclass__</span><span class="err">实际上可以被任意调用，它并不需要是一个正式的类（我知道，某些名字里带有‘</span><span class="n">class</span><span class="err">’的东西并不需要是一个</span><span class="n">class</span><span class="err">，画画</span>
+<span class="err">图理解下，这很有帮助）。所以，我们这里就先以一个简单的函数作为例子开始。</span>
+
+<span class="c1"># 元类会自动将你通常传给‘type’的参数作为自己的参数传入</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">upper_attr</span><span class="p">(</span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_attr</span><span class="p">):</span>
+    <span class="err">    </span>
+    <span class="sd">&#39;&#39;&#39;返回一个类对象，将属性都转为大写形式&#39;&#39;&#39;</span>
+    <span class="err">    </span>
+    <span class="c1">#  选择所有不以&#39;__&#39;开头的属性</span>
+    <span class="err">    </span><span class="n">attrs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">future_class_attr</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">))</span>
+    <span class="err">    </span>
+    <span class="c1"># 将它们转为大写形式</span>
+    <span class="err">    </span><span class="n">uppercase_attr</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">attrs</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="err">    </span>
+    <span class="c1"># 通过&#39;type&#39;来做类对象的创建</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">uppercase_attr</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="vm">__metaclass__</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">upper_attr</span><span class="err">  </span>
+    <span class="c1">#  这会作用到这个模块中的所有类</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">    </span>
+    <span class="c1"># 我们也可以只在这里定义__metaclass__，这样就只会作用于这个类中</span>
+    <span class="err">    </span><span class="n">bar</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;bip&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">Foo</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+    <span class="c1"># 输出: False</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">Foo</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;BAR&#39;</span><span class="p">)</span>
+    <span class="c1"># 输出:True</span>
+    <span class="err"> </span>
+    <span class="n">f</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Foo</span><span class="p">()</span>
+    <span class="k">print</span><span class="err"> </span><span class="n">f</span><span class="o">.</span><span class="n">BAR</span>
+    <span class="c1"># 输出:&#39;bip&#39;</span>
+
+<span class="err">现在让我们再做一次，这一次用一个真正的</span><span class="n">class</span><span class="err">来当做元类。</span>
+
+
+
+    <span class="c1"># 请记住，&#39;type&#39;实际上是一个类，就像&#39;str&#39;和&#39;int&#39;一样</span>
+    <span class="c1"># 所以，你可以从type继承</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">UpperAttrMetaClass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="err">    </span>
+    <span class="c1"># __new__ 是在__init__之前被调用的特殊方法</span>
+    <span class="err">    </span>
+    <span class="c1"># __new__是用来创建对象并返回之的方法</span>
+    <span class="err">    </span>
+    <span class="c1"># 而__init__只是用来将传入的参数初始化给对象</span>
+    <span class="err">    </span>
+    <span class="c1"># 你很少用到__new__，除非你希望能够控制对象的创建</span>
+    <span class="err">    </span>
+    <span class="c1"># 这里，创建的对象是类，我们希望能够自定义它，所以我们这里改写__new__</span>
+    <span class="err">    </span>
+    <span class="c1"># 如果你希望的话，你也可以在__init__中做些事情</span>
+    <span class="err">    </span>
+    <span class="c1"># 还有一些高级的用法会涉及到改写__call__特殊方法，但是我们这里不用</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__new__</span><span class="p">(</span><span class="n">upperattr_metaclass</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_attr</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">attrs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">future_class_attr</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">))</span>
+    <span class="err">        </span><span class="n">uppercase_attr</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">attrs</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">type</span><span class="p">(</span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">uppercase_attr</span><span class="p">)</span>
+    <span class="err">但是，这种方式其实不是</span><span class="n">OOP</span><span class="err">。我们直接调用了</span><span class="nb">type</span><span class="err">，而且我们没有改写父类的</span><span class="fm">__new__</span><span class="err">方法。现在让我们这样去处理</span><span class="p">:</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">UpperAttrMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__new__</span><span class="p">(</span><span class="n">upperattr_metaclass</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_attr</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">attrs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">future_class_attr</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">))</span>
+    <span class="err">        </span><span class="n">uppercase_attr</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">attrs</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="err">        </span>
+    <span class="c1"># 复用type.__new__方法</span>
+    <span class="err">        </span>
+    <span class="c1"># 这就是基本的OOP编程，没什么魔法</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">upperattr_metaclass</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_name</span><span class="p">,</span><span class="err"> </span><span class="n">future_class_parents</span><span class="p">,</span><span class="err"> </span><span class="n">uppercase_attr</span><span class="p">)</span>
+
+<span class="err">你可能已经注意到了有个额外的参数</span><span class="n">upperattr_metaclass</span><span class="err">，这并没有什么特别的。类方法的第一个参数总是表示当前的实例，就像在普通的类方法中的</span><span class="n">se</span>
+<span class="n">lf</span><span class="err">参数一样。当然了，为了清晰起见，这里的名字我起的比较长。但是就像</span><span class="bp">self</span><span class="err">一样，所有的参数都有它们的传统名称。因此，在真实的产品代码中一个元类应该是像这样</span>
+<span class="err">的：</span>
+
+
+
+    <span class="n">class</span><span class="err"> </span><span class="n">UpperAttrMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">bases</span><span class="p">,</span><span class="err"> </span><span class="n">dct</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">attrs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">dct</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)</span>
+    <span class="err">        </span><span class="n">uppercase_attr</span><span class="err">  </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">attrs</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">bases</span><span class="p">,</span><span class="err"> </span><span class="n">uppercase_attr</span><span class="p">)</span>
+    <span class="err">如果使用</span><span class="nb">super</span><span class="err">方法的话，我们还可以使它变得更清晰一些，这会缓解继承（是的，你可以拥有元类，从元类继承，从</span><span class="nb">type</span><span class="err">继承）</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">UpperAttrMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">bases</span><span class="p">,</span><span class="err"> </span><span class="n">dct</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">attrs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">dct</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">))</span>
+    <span class="err">        </span><span class="n">uppercase_attr</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="err"> </span><span class="n">value</span><span class="p">)</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">value</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">attrs</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">super</span><span class="p">(</span><span class="n">UpperAttrMetaclass</span><span class="p">,</span><span class="err"> </span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="err"> </span><span class="n">name</span><span class="p">,</span><span class="err"> </span><span class="n">bases</span><span class="p">,</span><span class="err"> </span><span class="n">uppercase_attr</span><span class="p">)</span>
+
+<span class="err">就是这样，除此之外，关于元类真的没有别的可说的了。使用到元类的代码比较复杂，这背后的原因倒并不是因为元类本身，而是因为你通常会使用元类去做一些晦涩的事情，依</span>
+<span class="err">赖于自省，控制继承等等。确实，用元类来搞些“黑暗魔法”是特别有用的，因而会搞出些复杂的东西来。但就元类本身而言，它们其实是很简单的：</span>
+
+<span class="mi">1</span><span class="p">)</span> <span class="err"> </span> <span class="err">拦截类的创建</span>
+
+<span class="mi">2</span><span class="p">)</span> <span class="err"> </span> <span class="err">修改类</span>
+
+<span class="mi">3</span><span class="p">)</span> <span class="err"> </span> <span class="err">返回修改之后的类</span>
+
+
+
+<span class="err">为什么要用</span><span class="n">metaclass</span><span class="err">类而不是函数?</span>
+
+<span class="err">由于</span><span class="vm">__metaclass__</span><span class="err">可以接受任何可调用的对象，那为何还要使用类呢，因为很显然使用类会更加复杂啊？这里有好几个原因：</span>
+
+<span class="mi">1</span><span class="err">）</span> <span class="err"> 意图会更加清晰。当你读到</span><span class="n">UpperAttrMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="err">时，你知道接下来要发生什么。</span>
+
+<span class="mi">2</span><span class="err">）</span> <span class="err">你可以使用</span><span class="n">OOP</span><span class="err">编程。元类可以从元类中继承而来，改写父类的方法。元类甚至还可以使用元类。</span>
+
+<span class="mi">3</span><span class="err">）</span> <span class="err"> 你可以把代码组织的更好。当你使用元类的时候肯定不会是像我上面举的这种简单场景，通常都是针对比较复杂的问题。将多个方法归总到一个类中会很有帮助，也会使</span>
+<span class="err">得代码更容易阅读。</span>
+
+<span class="mi">4</span><span class="err">）</span> <span class="err">你可以使用</span><span class="fm">__new__</span><span class="p">,</span> <span class="fm">__init__</span><span class="err">以及</span><span class="fm">__call__</span><span class="err">这样的特殊方法。它们能帮你处理不同的任务。就算通常你可以把所有的东西都在</span><span class="fm">__new__</span>
+<span class="err">里处理掉，有些人还是觉得用</span><span class="fm">__init__</span><span class="err">更舒服些。</span>
+
+<span class="mi">5</span><span class="err">）</span> <span class="err">哇哦，这东西的名字是</span><span class="n">metaclass</span><span class="err">，肯定非善类，我要小心！</span>
+
+
+
+<span class="err">究竟为什么要使用元类？</span>
+
+<span class="err">现在回到我们的大主题上来，究竟是为什么你会去使用这样一种容易出错且晦涩的特性？好吧，一般来说，你根本就用不上它：</span>
+
+<span class="err">“元类就是深度的魔法，</span><span class="mi">99</span><span class="o">%</span><span class="err">的用户应该根本不必为此操心。如果你想搞清楚究竟是否需要用到元类，那么你就不需要它。那些实际用到元类的人都非常清楚地知道他们需要做</span>
+<span class="err">什么，而且根本不需要解释为什么要用元类。”</span> <span class="err"> ——</span> <span class="n">Python</span><span class="err">界的领袖</span> <span class="n">Tim</span> <span class="n">Peters</span>
+
+<span class="err">元类的主要用途是创建</span><span class="n">API</span><span class="err">。一个典型的例子是</span><span class="n">Django</span> <span class="n">ORM</span><span class="err">。它允许你像这样定义：</span>
+
+
+
+    <span class="n">class</span><span class="err"> </span><span class="n">Person</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">name</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">age</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+
+<span class="err">但是如果你像这样做的话：</span>
+
+
+
+    <span class="n">guy</span><span class="err">  </span><span class="o">=</span><span class="err"> </span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span><span class="err"> </span><span class="n">age</span><span class="o">=</span><span class="s1">&#39;35&#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="err"> </span><span class="n">guy</span><span class="o">.</span><span class="n">age</span>
+
+<span class="err">这并不会返回一个</span><span class="n">IntegerField</span><span class="err">对象，而是会返回一个</span><span class="nb">int</span><span class="err">，甚至可以直接从数据库中取出数据。这是有可能的，因为</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="err">定义了</span><span class="n">__me</span>
+<span class="n">taclass__</span><span class="err">，</span> <span class="err">并且使用了一些魔法能够将你刚刚定义的简单的</span><span class="n">Person</span><span class="err">类转变成对数据库的一个复杂</span><span class="n">hook</span><span class="err">。</span><span class="n">Django</span><span class="err">框架将这些看起来很复杂的东西通过</span>
+<span class="err">暴露出一个简单的使用元类的</span><span class="n">API</span><span class="err">将其化简，通过这个</span><span class="n">API</span><span class="err">重新创建代码，在背后完成真正的工作。</span>
+
+
+
+<span class="err">结语</span>
+
+<span class="err">首先，你知道了类其实是能够创建出类实例的对象。好吧，事实上，类本身也是实例，当然，它们是元类的实例。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="n">class</span><span class="err"> </span><span class="n">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span><span class="err"> </span><span class="k">pass</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span>
+
+<span class="n">Python</span><span class="err">中的一切都是对象，它们要么是类的实例，要么是元类的实例，除了</span><span class="nb">type</span><span class="err">。</span><span class="nb">type</span><span class="err">实际上是它自己的元类，在纯</span><span class="n">Python</span><span class="err">环境中这可不是你能够做到的，</span>
+<span class="err">这是通过在实现层面耍一些小手段做到的。其次，元类是很复杂的。对于非常简单的类，你可能不希望通过使用元类来对类做修改。你可以通过其他两种技术来修改类：</span>
+
+<span class="mi">1</span><span class="err">）</span> <span class="n">Monkey</span> <span class="n">patching</span>
+
+<span class="mi">2</span><span class="p">)</span> <span class="err"> </span> <span class="k">class</span> <span class="nc">decorators</span>
+
+<span class="err">当你需要动态修改类时，</span><span class="mi">99</span><span class="o">%</span><span class="err">的时间里你最好使用上面这两种技术。当然了，其实在</span><span class="mi">99</span><span class="o">%</span><span class="err">的时间里你根本就不需要动态修改类</span> <span class="p">:</span><span class="n">D</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

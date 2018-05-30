@@ -37,6 +37,12 @@
 
     <link href="/theme/css/pygments.css" rel="stylesheet">
 
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -67,22 +73,29 @@
             <ul class="nav">
                           <li class="divider-vertical"></li>
                   <li >
-                    <a href="/category/linux/">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
 						<i class="icon-folder-open icon-large"></i>Linux
 					</a>
                   </li>
                   <li >
-                    <a href="/category/pa-chong-ji-zhu/">
+                    <a href="/category/pa-chong-ji-zhu/index.html">
 						<i class="icon-folder-open icon-large"></i>爬虫技术
 					</a>
                   </li>
                   <li >
-                    <a href="/category/pythonji-zhu/">
+                    <a href="/category/pythonji-zhu/index.html">
 						<i class="icon-folder-open icon-large"></i>Python技术
 					</a>
                   </li>
-
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
                           <ul class="nav pull-right">
+
                                 <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
                           </ul>
 
@@ -97,234 +110,348 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="/linux-file-permission.html">Linux文件权限介绍</a></h1>
+                <h1><a href="/article/code-example/Demos_python -duo-ji-cheng-xiang-jie.html">python 多继承详解</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-09-30T00:00:00+08:00">
-        <i class="icon-calendar"></i>Fri 30 September 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>在Linux中，一切皆为文件（目录也是文件），每个文件对用户具有可读（read）、可写（write）、可执行（execute）权限。目录的执行操作表示是否有权限进入该目录，文件的可执行表示是否可以运行该文件。文件都会从属于一个用户和一个用户组，每个文件针对文件的拥有者、所属组以及其他用户组具有特定的权限。 如上图，除去第一个表示文件类型的字符外，后面的字符均以三个为一组，是『rwx』 ...</p>
-                        <a class="btn primary xsmall" href="/linux-file-permission.html">更多 ...</a>
+                <div class="summary"><p>python 多继承详解</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -duo-ji-cheng-xiang-jie.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/python3-feature-unpacking.html">python3特性一：高级拆箱</a></h1>
+                <h1><a href="/article/code-example/Demos_python -duo-jin-cheng-tong-xin-mo-kuai.html">python 多进程通信模块</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-09-26T00:00:00+08:00">
-        <i class="icon-calendar"></i>Mon 26 September 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/python3/"><i class="icon-tag"></i>python3</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><blockquote>
-<blockquote>
-<blockquote>
-<p>a, b = range(2) &gt;&gt;&gt; a 0 &gt;&gt;&gt; b 1 你可以把序列中多个多 Python2 中可以以这样的方式进行拆箱操作： &gt;&gt;&gt; a, b = range(2) &gt;&gt;&gt; a 0 &gt;&gt;&gt; b 1 你可以把序列中多个多个元素赋值给多个变量名，不过在 Python2 中必须满足变量名的个数与序列中的元素的个数是相等的，否则会报错。 然而，在 Python3 中你可以这样： ...</p>
-</blockquote>
-</blockquote>
-</blockquote>
-                        <a class="btn primary xsmall" href="/python3-feature-unpacking.html">更多 ...</a>
+                <div class="summary"><p>python 多进程通信模块</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -duo-jin-cheng-tong-xin-mo-kuai.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/urllib-unquote.html">分析urllib.unquote乱码的原因</a></h1>
+                <h1><a href="/article/code-example/Demos_python -kai-fa-jian-dan-de-liao-tian-gong-ju.html">python 开发简单的聊天工具</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-09-18T00:00:00+08:00">
-        <i class="icon-calendar"></i>Sun 18 September 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/bian-ma/"><i class="icon-tag"></i>编码</a>
-	<a href="/tag/luan-ma/"><i class="icon-tag"></i>乱码</a>
-	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>Python中的urllib模块用来处理url相关的操作，unquote方法对应javascript中的urldecode方法，它对url进行解码，把类似"%xx"的字符替换成单个字符，例如：“%E6%B3%95%E5%9B%BD%E7%BA%A2%E9%85%92”解码后会转换成“法国红酒”，但是使用过程中，如果姿势不对，最终转换出来的字符会是乱码“æ³å½çº¢é ”。 ...</p>
-                        <a class="btn primary xsmall" href="/urllib-unquote.html">更多 ...</a>
+                <div class="summary"><p>python 开发简单的聊天工具</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -kai-fa-jian-dan-de-liao-tian-gong-ju.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/replace-string-linux.html">在Linux中替换目录下多个文件中的字符串</a></h1>
+                <h1><a href="/article/code-example/Demos_python -lei-bian-liang- -zai-duo-xian-cheng-xia-de-gong-xiang-yu-shi-fang-wen-ti.html">python 类变量 在多线程下的共享与释放问题</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-09-13T00:00:00+08:00">
-        <i class="icon-calendar"></i>Tue 13 September 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>在Linux中，替换多个文件中的某个字符串可以使用grep和sed的组合来实现这个功能。 基本格式 grep -rl matchstring somedir/ | xargs sed -i 's/string1/string2/g' matchstring是你将要被替换的字符串，它与string1是同样的字符串，string2是用来替换string1的字符串。somdir表示在指定目录下。 ...</p>
-                        <a class="btn primary xsmall" href="/replace-string-linux.html">更多 ...</a>
+                <div class="summary"><p>python 类变量 在多线程下的共享与释放问题</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -lei-bian-liang- -zai-duo-xian-cheng-xia-de-gong-xiang-yu-shi-fang-wen-ti.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/centos-python27.html">CentOS升级Python2.7</a></h1>
+                <h1><a href="/article/code-example/Demos_python -pa-qu-zhi-ding-url-de-ICP-bei-an-xin-xi-（-jie-gou-hua-zhua-qu-）.html">python 爬取指定url的ICP备案信息（结构化抓取）</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-08-30T00:00:00+08:00">
-        <i class="icon-calendar"></i>Tue 30 August 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/centos/"><i class="icon-tag"></i>centos</a>
-	<a href="/tag/python27/"><i class="icon-tag"></i>python27</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>CentOS 6.X 自带的Python版本是 2.6 , 但是很多主流框架和第三方依赖包已经开始逐步放弃维护2.6版本了，况且如果一个全新的业务系统还是用Python2.6跑的话，你都不好意思说是搞Python的，为了顺利升级到Python2.7，笔者根据网上资料整理了升级步骤和过程中遇到的问题。 环境准备 更新系统和开发工具集 yum -y update yum ...</p>
-                        <a class="btn primary xsmall" href="/centos-python27.html">更多 ...</a>
+                <div class="summary"><p>python 爬取指定url的ICP备案信息（结构化抓取）</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -pa-qu-zhi-ding-url-de-ICP-bei-an-xin-xi-（-jie-gou-hua-zhua-qu-）.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/python-character-encode.html">PYTHON编码的前世今生</a></h1>
+                <h1><a href="/article/code-example/Demos_python -tan-ce-wang-zhan-mu-lu-de-GUI-cheng-xu.html">python 探测网站目录的GUI程序</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-08-03T00:00:00+08:00">
-        <i class="icon-calendar"></i>Wed 03 August 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/bian-ma/"><i class="icon-tag"></i>编码</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>这是我在知乎上回答的一个问题：Python 编码为什么那么蛋疼？，期间收到了不少赞，不过发现我的回答还存在一些误导，于是通过查找资料重新整理了一篇，希望能解答你对编码的困惑。 一旦走上了编程之路，如果你不把编码问题搞清楚，那么它将像幽灵一般纠缠你整个职业生涯，各种灵异事件会接踵而来，挥之不去。只有充分发挥程序员死磕到底的精神你才有可能彻底摆脱编码问题带来的烦恼，我第一次遇到编码问题是写 ...</p>
-                        <a class="btn primary xsmall" href="/python-character-encode.html">更多 ...</a>
+                <div class="summary"><p>python 探测网站目录的GUI程序</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -tan-ce-wang-zhan-mu-lu-de-GUI-cheng-xu.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/iterators-vs-generators.html">完全理解Python迭代对象、迭代器、生成器</a></h1>
+                <h1><a href="/article/code-example/Demos_python -xie-de-http-hou-tai-ruo-kou-ling-bao-po-gong-ju.html">python 写的http后台弱口令爆破工具</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-05-19T00:00:00+08:00">
-        <i class="icon-calendar"></i>Thu 19 May 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/generator/"><i class="icon-tag"></i>generator</a>
-	<a href="/tag/iterable/"><i class="icon-tag"></i>iterable</a>
-	<a href="/tag/iterator/"><i class="icon-tag"></i>iterator</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>本文源自RQ作者的一篇博文，原文是Iterables vs. Iterators vs. Generators，俺写的这篇文章是按照自己的理解做的参考翻译，算不上是原文的中译版本，推荐阅读原文，谢谢网友指正。 ...</p>
-                        <a class="btn primary xsmall" href="/iterators-vs-generators.html">更多 ...</a>
+                <div class="summary"><p>python 写的http后台弱口令爆破工具</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -xie-de-http-hou-tai-ruo-kou-ling-bao-po-gong-ju.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/linux-command-lsof.html">Linux性能监控命令详解：lsof</a></h1>
+                <h1><a href="/article/code-example/Demos_python -zai-hu-lian-wang-ying-yong-shi-ru-ci-qiang-da.html">python 在互联网应用是如此强大</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-03-27T00:00:00+08:00">
-        <i class="icon-calendar"></i>Sun 27 March 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
-	<a href="/tag/lsof/"><i class="icon-tag"></i>lsof</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>lsof可以查看当前系统所有的打开文件，在linux环境下，一切皆文件，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件，如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，文件描述符提供了大量关于这个应用程序本身的信息。 命令参数： -a 列出被打开的文件的进程列表 -c&lt;进程名&gt; 列出指定进程所打开的文件 -g ...</p>
-                        <a class="btn primary xsmall" href="/linux-command-lsof.html">更多 ...</a>
+                <div class="summary"><p>python 在互联网应用是如此强大</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -zai-hu-lian-wang-ying-yong-shi-ru-ci-qiang-da.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/tag-cloud-implement.html">标签云算法Python实现</a></h1>
+                <h1><a href="/article/code-example/Demos_python -zhong-readline -he-readlines-de-qu-bie.html">python 中readline 和readlines的区别</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-03-01T00:00:00+08:00">
-        <i class="icon-calendar"></i>Tue 01 March 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/biao-qian-yun/"><i class="icon-tag"></i>标签云</a>
-	<a href="/tag/djang-blog/"><i class="icon-tag"></i>djang-blog</a>
-	<a href="/tag/python/"><i class="icon-tag"></i>python</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>标签云（Tag Cloud）常见于各种博客站点中，标签有利于网站内容分类，还可以用于相关性内容推荐。近日笔者有空把个人的开源博客Django_blog添加了一个新功能--标签云。最终效果请访问：http://foofish.net/blog/tags 实现原理 标签云最终展现出来的效果其实是由两个HTML参数来控制的，分别是：font-size和color，如： &lt;a ...</p>
-                        <a class="btn primary xsmall" href="/tag-cloud-implement.html">更多 ...</a>
+                <div class="summary"><p>python 中readline 和readlines的区别</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python -zhong-readline -he-readlines-de-qu-bie.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/linklist-reverse.html">算法题：链表反转</a></h1>
+                <h1><a href="/article/code-example/Demos_python socket-bian-cheng-ru-men-（-bian-xie-server-shi-li-）.html">python socket编程入门（编写server实例）</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2016-02-28T00:00:00+08:00">
-        <i class="icon-calendar"></i>Sun 28 February 2016
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
 </abbr>
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/pythonji-zhu/"><i class="icon-folder-open"></i>Python技术</a>.
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/suan-fa/"><i class="icon-tag"></i>算法</a>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>链表的反转是一个很常见、很基础的数据结构题，输入一个单向链表，输出逆序反转后的链表，如图：上面的链表转换成下面的链表。实现链表反转有两种方式，一种是循环迭代，另外一种方式是递归。 第一种方式：循坏迭代 循坏迭代算法需要三个临时变量：pre、head、next，临界条件是链表为None或者链表就只有一个节点。 # encoding: utf-8 class Node(object): def ...</p>
-                        <a class="btn primary xsmall" href="/linklist-reverse.html">更多 ...</a>
+                <div class="summary"><p>python socket编程入门（编写server实例）</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python socket-bian-cheng-ru-men-（-bian-xie-server-shi-li-）.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/article/code-example/Demos_python urllib2-xiang-jie-ji-shi-li.html">python urllib2详解及实例</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>python urllib2详解及实例</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python urllib2-xiang-jie-ji-shi-li.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/article/code-example/Demos_python+ mysql-cun-chu-er-jin-zhi-liu-de-fang-shi.html">python+ mysql存储二进制流的方式</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>python+ mysql存储二进制流的方式</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python+ mysql-cun-chu-er-jin-zhi-liu-de-fang-shi.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/article/code-example/Demos_python-bi-bao-xiang-jie-（-shi-li-）.html">python闭包详解（实例）</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>python闭包详解（实例）</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python-bi-bao-xiang-jie-（-shi-li-）.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/article/code-example/Demos_python-cha-xun-bai-du-seo-xin-xi.html">python查询百度seo信息</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>python查询百度seo信息</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python-cha-xun-bai-du-seo-xin-xi.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+        <div class="article">
+                <h1><a href="/article/code-example/Demos_python-chu-li-Excel -zhi- xlrd.html">python处理Excel 之 xlrd</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>python处理Excel 之 xlrd</p>
+                        <a class="btn primary xsmall" href="/article/code-example/Demos_python-chu-li-Excel -zhi- xlrd.html">more ...</a>
                 </div>
         </div>
         <hr />
 
-        <div class="pagination">
+<!--<p class="paginator">
+            <a href="/index6.html">&laquo;</a>
+    Page 7 / 47
+        <a href="/index8.html">&raquo;</a>
+</p>
+-->
+
+
+ <div class="pagination">
         <ul>
+                 <li ><a href="/index1.html">First(1)</a></li>
                         <li class="prev"><a href="/index6.html">&larr; Previous</a></li>
-                        <li class=""><a href="/index.html">1</a></li>
                         <li class=""><a href="/index2.html">2</a></li>
                         <li class=""><a href="/index3.html">3</a></li>
                         <li class=""><a href="/index4.html">4</a></li>
@@ -334,7 +461,9 @@
                         <li class=""><a href="/index8.html">8</a></li>
                         <li class=""><a href="/index9.html">9</a></li>
                         <li class=""><a href="/index10.html">10</a></li>
+                        <li class=""><a href="/index11.html">11</a></li>
                         <li class="next"><a href="/index8.html">Next &rarr;</a></li>
+                <li ><a href="/index47.html"> Last(47)</a></li>
         </ul>
         </div>
 
@@ -352,347 +481,417 @@
 <li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
     <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
 
-<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
 <li>
-<a href="/category/linux/">
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
     <i class="icon-folder-open icon-large"></i>Linux
 </a>
 </li>
 <li>
-<a href="/category/pa-chong-ji-zhu/">
+<a href="/category/pa-chong-ji-zhu/index.html">
     <i class="icon-folder-open icon-large"></i>爬虫技术
 </a>
 </li>
 <li>
-<a href="/category/pythonji-zhu/">
+<a href="/category/pythonji-zhu/index.html">
     <i class="icon-folder-open icon-large"></i>Python技术
 </a>
 </li>
 
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
 <li class="tag-4">
-    <a href="/tag/iterable/">
-        <i class="icon-tag icon-large"></i>iterable
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/legb/">
-        <i class="icon-tag icon-large"></i>legb
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/tuple/">
-        <i class="icon-tag icon-large"></i>tuple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/dian-zi-shu/">
-        <i class="icon-tag icon-large"></i>电子书
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/extractor/">
-        <i class="icon-tag icon-large"></i>extractor
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/metaclass/">
-        <i class="icon-tag icon-large"></i>metaclass
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/beautifulsoup/">
-        <i class="icon-tag icon-large"></i>beautifulsoup
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/dict/">
-        <i class="icon-tag icon-large"></i>dict
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/virtualenv/">
-        <i class="icon-tag icon-large"></i>virtualenv
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/pythonic/">
-        <i class="icon-tag icon-large"></i>pythonic
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/yield/">
-        <i class="icon-tag icon-large"></i>yield
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/datetime/">
-        <i class="icon-tag icon-large"></i>datetime
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/zuo-yong-yu/">
-        <i class="icon-tag icon-large"></i>作用域
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/bian-ma/">
-        <i class="icon-tag icon-large"></i>编码
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/pip/">
-        <i class="icon-tag icon-large"></i>pip
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/zhuang-shi-qi/">
-        <i class="icon-tag icon-large"></i>装饰器
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/book/">
-        <i class="icon-tag icon-large"></i>book
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/gc/">
-        <i class="icon-tag icon-large"></i>gc
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/with/">
-        <i class="icon-tag icon-large"></i>with
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/requests/">
-        <i class="icon-tag icon-large"></i>requests
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/django/">
-        <i class="icon-tag icon-large"></i>django
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/thread/">
-        <i class="icon-tag icon-large"></i>thread
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/for/">
-        <i class="icon-tag icon-large"></i>for
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/fudge/">
-        <i class="icon-tag icon-large"></i>fudge
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/ci-yun/">
-        <i class="icon-tag icon-large"></i>词云
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/re/">
+    <a href="/tag/re/index.html">
         <i class="icon-tag icon-large"></i>re
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/ru-men/">
-        <i class="icon-tag icon-large"></i>入门
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/list/">
-        <i class="icon-tag icon-large"></i>list
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/tornado/">
-        <i class="icon-tag icon-large"></i>tornado
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/cai-dan/">
-        <i class="icon-tag icon-large"></i>彩蛋
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/http/">
-        <i class="icon-tag icon-large"></i>http
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/suan-fa/">
-        <i class="icon-tag icon-large"></i>算法
-    </a>
-</li>
-<li class="tag-0">
-    <a href="/tag/python/">
-        <i class="icon-tag icon-large"></i>python
-    </a>
-</li>
-<li class="tag-1">
-    <a href="/tag/pa-chong/">
-        <i class="icon-tag icon-large"></i>爬虫
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/singleton/">
-        <i class="icon-tag icon-large"></i>singleton
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/shu/">
-        <i class="icon-tag icon-large"></i>书
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/intern/">
-        <i class="icon-tag icon-large"></i>intern
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/han-shu/">
-        <i class="icon-tag icon-large"></i>函数
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/jie-huo/">
+    <a href="/tag/jie-huo/index.html">
         <i class="icon-tag icon-large"></i>解惑
     </a>
 </li>
-<li class="tag-4">
-    <a href="/tag/str/">
-        <i class="icon-tag icon-large"></i>str
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/zheng-ze-biao-da-shi/">
-        <i class="icon-tag icon-large"></i>正则表达式
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
     </a>
 </li>
-<li class="tag-4">
-    <a href="/tag/timestamp/">
-        <i class="icon-tag icon-large"></i>timestamp
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/lsof/">
-        <i class="icon-tag icon-large"></i>lsof
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/shi-xian-yuan-li/">
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
         <i class="icon-tag icon-large"></i>实现原理
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/equals-identical/">
-        <i class="icon-tag icon-large"></i>equals-identical
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/luan-ma/">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
         <i class="icon-tag icon-large"></i>乱码
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/python27/">
-        <i class="icon-tag icon-large"></i>python27
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/decorator/">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
         <i class="icon-tag icon-large"></i>decorator
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/biao-qian-yun/">
-        <i class="icon-tag icon-large"></i>标签云
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/lambda/">
-        <i class="icon-tag icon-large"></i>lambda
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/bi-bao/">
-        <i class="icon-tag icon-large"></i>闭包
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/centos/">
-        <i class="icon-tag icon-large"></i>centos
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/iterator/">
-        <i class="icon-tag icon-large"></i>iterator
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/int/">
-        <i class="icon-tag icon-large"></i>int
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/generator/">
-        <i class="icon-tag icon-large"></i>generator
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/free/">
-        <i class="icon-tag icon-large"></i>free
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
     </a>
 </li>
 <li class="tag-2">
-    <a href="/tag/linux/">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
         <i class="icon-tag icon-large"></i>linux
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/zhi-hu/">
+    <a href="/tag/zhi-hu/index.html">
         <i class="icon-tag icon-large"></i>知乎
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/rename/">
-        <i class="icon-tag icon-large"></i>rename
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/stringio/">
-        <i class="icon-tag icon-large"></i>stringio
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/pycharm/">
-        <i class="icon-tag icon-large"></i>pycharm
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/djang-blog/">
+    <a href="/tag/djang-blog/index.html">
         <i class="icon-tag icon-large"></i>djang-blog
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/method/">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
         <i class="icon-tag icon-large"></i>method
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/ming-ming-kong-jian/">
-        <i class="icon-tag icon-large"></i>命名空间
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
     </a>
 </li>
 <li class="tag-3">
-    <a href="/tag/python3/">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
         <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
     </a>
 </li>
 
@@ -711,7 +910,7 @@
 
        <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
                    and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
-         <p>&copy; 2018 By Alex</p>
+         <p>&copy; Alex 2018</p>
       </footer>
 
     </div><!--/.fluid-container-->
@@ -720,7 +919,7 @@
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
     <script src="/theme/js/bootstrap.min.js"></script>
   </body>
 </html>

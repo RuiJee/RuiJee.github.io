@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python中线程的MQ消息队列实现以及消息队列的优点解析</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python中线程的MQ消息队列实现以及消息队列的优点解析">
+                                        Python中线程的MQ消息队列实现以及消息队列的优点解析
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python中线程的MQ消息队列实现以及消息队列的优点解析</span>
+
+<span class="err">消息队列</span><span class="p">(</span><span class="n">MQ</span><span class="p">,</span><span class="n">Message</span>
+<span class="n">Queue</span><span class="p">)</span><span class="err">在消息数据传输中的保存作用为数据通信提供了保障和实时处理上的便利</span><span class="p">,</span><span class="err">这里我们就来看一下</span><span class="n">Python</span><span class="err">中线程的</span><span class="n">MQ</span><span class="err">消息队列实现以及消息队列的优点解析</span>
+
+<span class="err">“消息队列”是在消息的传输过程中保存消息的容器。消息队列管理器在将消息从它的源中继到它的目标时充当中间人。队列的主要目的是提供路由并保证消息的传递；如果发送</span>
+<span class="err">消息时接收者不可用，消息队列会保留消息，直到可以成功地传递它。相信对任何架构或应用来说，消息队列都是一个至关重要的组件，下面是十个理由</span><span class="p">:</span>
+
+<span class="n">Python</span><span class="err">的消息队列示例：</span>
+
+<span class="c1">### 1.threading+Queue实现线程队列</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="err"> </span>
+    <span class="n">import</span><span class="err"> </span><span class="n">Queue</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">threading</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">time</span>
+    <span class="err"> </span>
+    <span class="n">queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">ThreadNum</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="err"> </span><span class="s2">&quot;&quot;&quot;没打印一个数字等待1秒，并发打印10个数字需要多少秒？&quot;&quot;&quot;</span>
+    <span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">queue</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="err">  </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">queue</span>
+    <span class="err"> </span>
+    <span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">whileTrue</span><span class="p">:</span>
+    <span class="err">   </span><span class="c1">#消费者端，从队列中获取num</span>
+    <span class="err">   </span><span class="n">num</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="err">   </span><span class="k">print</span><span class="err"> </span><span class="s2">&quot;i&#39;m num </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="err">   </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="err">   </span><span class="c1">#在完成这项工作之后，使用 queue.task_done() 函数向任务已经完成的队列发送一个信号</span>
+    <span class="err">   </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">start</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">def</span><span class="err"> </span><span class="n">main</span><span class="p">():</span>
+    <span class="err"> </span><span class="c1">#产生一个 threads pool, 并把消息传递给thread函数进行处理，这里开启10个并发</span>
+    <span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">i</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">t</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">ThreadNum</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+    <span class="err">  </span><span class="n">t</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="err">  </span><span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="err">  </span>
+    <span class="err"> </span><span class="c1">#往队列中填错数据 </span>
+    <span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">num</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="err">   </span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="err"> </span><span class="c1">#wait on the queue until everything has been processed</span>
+    <span class="err"> </span><span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">main</span><span class="p">()</span>
+    <span class="k">print</span><span class="err"> </span><span class="s2">&quot;Elapsed Time: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="n">start</span><span class="p">)</span>
+
+<span class="err">运行结果：</span>
+
+
+
+    <span class="n">i</span><span class="s1">&#39;m num 0</span>
+    <span class="n">i</span><span class="s1">&#39;m num 1</span>
+    <span class="n">i</span><span class="s1">&#39;m num 2</span>
+    <span class="n">i</span><span class="s1">&#39;m num 3</span>
+    <span class="n">i</span><span class="s1">&#39;m num 4</span>
+    <span class="n">i</span><span class="s1">&#39;m num 5</span>
+    <span class="n">i</span><span class="s1">&#39;m num 6</span>
+    <span class="n">i</span><span class="s1">&#39;m num 7</span>
+    <span class="n">i</span><span class="s1">&#39;m num 8</span>
+    <span class="n">i</span><span class="s1">&#39;m num 9</span>
+    <span class="n">Elapsed</span><span class="err"> </span><span class="n">Time</span><span class="p">:</span><span class="err"> </span><span class="mf">1.01399993896</span>
+
+<span class="err">解读：</span>
+
+<span class="err">具体工作步骤描述如下：</span>
+
+<span class="mi">1</span><span class="err">，创建一个</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span> <span class="err">的实例，然后使用数据对它进行填充。</span>
+
+<span class="mi">2</span><span class="err">，将经过填充数据的实例传递给线程类，后者是通过继承</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span> <span class="err">的方式创建的。</span>
+
+<span class="mi">3</span><span class="err">，生成守护线程池。</span>
+
+<span class="mi">4</span><span class="err">，每次从队列中取出一个项目，并使用该线程中的数据和</span> <span class="n">run</span> <span class="err">方法以执行相应的工作。</span>
+
+<span class="mi">5</span><span class="err">，在完成这项工作之后，使用</span> <span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="err">函数向任务已经完成的队列发送一个信号。</span>
+
+<span class="mi">6</span><span class="err">，对队列执行</span> <span class="n">join</span> <span class="err">操作，实际上意味着等到队列为空，再退出主程序。</span>
+
+<span class="err">在使用这个模式时需要注意一点：通过将守护线程设置为</span> <span class="n">true</span><span class="err">，程序运行完自动退出。好处是在退出之前，可以对队列执行</span> <span class="n">join</span> <span class="err">操作、或者等到队列为空。</span>
+
+
+
+<span class="c1">### 2.多个队列</span>
+
+<span class="err">所谓多个队列，一个队列的输出可以作为另一个队列的输入</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">Queue</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">threading</span>
+    <span class="n">import</span><span class="err"> </span><span class="n">time</span>
+    <span class="err"> </span>
+    <span class="n">queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+    <span class="n">out_queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">ThreadNum</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">queue</span><span class="p">,</span><span class="err"> </span><span class="n">out_queue</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">queue</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">out_queue</span>
+    <span class="err"> </span>
+    <span class="err">  </span><span class="n">def</span><span class="err"> </span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">whileTrue</span><span class="p">:</span>
+    <span class="err">      </span><span class="c1">#从队列中取消息</span>
+    <span class="err">      </span><span class="n">num</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="err">      </span><span class="n">bkeep</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">num</span>
+    <span class="err">      </span>
+    <span class="err">      </span><span class="c1">#将bkeep放入队列中</span>
+    <span class="err">      </span><span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">bkeep</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="err">      </span><span class="c1">#signals to queue job is done</span>
+    <span class="err">      </span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">PrintLove</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">out_queue</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="err">    </span><span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">out_queue</span>
+    <span class="err"> </span>
+    <span class="err">  </span><span class="n">def</span><span class="err"> </span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">whileTrue</span><span class="p">:</span>
+    <span class="err">      </span><span class="c1">#从队列中获取消息并赋值给bkeep</span>
+    <span class="err">      </span><span class="n">bkeep</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="err">  </span>
+    <span class="err">      </span><span class="n">keke</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s2">&quot;I love &quot;</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="nb">str</span><span class="p">(</span><span class="n">bkeep</span><span class="p">)</span>
+    <span class="err">      </span><span class="k">print</span><span class="err"> </span><span class="n">keke</span><span class="p">,</span>
+    <span class="err">      </span><span class="k">print</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+    <span class="err">      </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="err">      </span><span class="c1">#signals to queue job is done</span>
+    <span class="err">      </span><span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">start</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">def</span><span class="err"> </span><span class="n">main</span><span class="p">():</span>
+    <span class="err">  </span><span class="c1">#populate queue with data</span>
+    <span class="err">  </span><span class="k">for</span><span class="err"> </span><span class="n">num</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="err">    </span>
+    <span class="err">  </span><span class="c1">#spawn a pool of threads, and pass them queue instance</span>
+    <span class="err">  </span><span class="k">for</span><span class="err"> </span><span class="n">i</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">t</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">ThreadNum</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="err"> </span><span class="n">out_queue</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">t</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="err"> </span>
+    <span class="err">  </span><span class="k">for</span><span class="err"> </span><span class="n">i</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">pl</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">PrintLove</span><span class="p">(</span><span class="n">out_queue</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">pl</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">pl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="err">  </span><span class="c1">#wait on the queue until everything has been processed</span>
+    <span class="err">  </span><span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="err">  </span><span class="n">out_queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="err"> </span>
+    <span class="n">main</span><span class="p">()</span>
+    <span class="k">print</span><span class="err"> </span><span class="s2">&quot;Elapsed Time: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="n">start</span><span class="p">)</span>
+
+<span class="err">运行结果：</span>
+
+
+
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">0</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">6</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">1</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">7</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">2</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">8</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">3</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">9</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">4</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">10</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">5</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">7</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">6</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">6</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">7</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">9</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">8</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">8</span>
+    <span class="n">I</span><span class="err"> </span><span class="n">love</span><span class="err"> </span><span class="mi">9</span><span class="err"> </span><span class="n">Thread</span><span class="o">-</span><span class="mi">10</span>
+    <span class="n">Elapsed</span><span class="err"> </span><span class="n">Time</span><span class="p">:</span><span class="err"> </span><span class="mf">2.00300002098</span>
+
+
+
+<span class="err">解读：</span>
+
+<span class="n">ThreadNum</span> <span class="err">类工作流程</span>
+
+<span class="err">定义队列</span><span class="o">---&gt;</span><span class="err">继承</span><span class="n">threading</span><span class="o">----&gt;</span><span class="err">初始化</span><span class="n">queue</span><span class="o">----&gt;</span><span class="err">定义</span><span class="n">run</span><span class="err">函数</span><span class="o">---&gt;</span><span class="n">get</span>
+<span class="n">queue</span><span class="err">中的数据</span><span class="o">----&gt;</span><span class="err">处理数据</span><span class="o">----&gt;</span><span class="n">put</span><span class="err">数据到另外一个</span><span class="n">queue</span><span class="o">--&gt;</span><span class="err">发信号告诉</span><span class="n">queue</span><span class="err">该条处理完毕</span>
+
+
+
+<span class="n">main</span><span class="err">函数工作流程：</span>
+
+\<span class="o">---&gt;</span><span class="err">往自定义</span><span class="n">queue</span><span class="err">中扔数据</span>
+
+\<span class="o">---&gt;</span><span class="k">for</span><span class="err">循环确定启动的线程数</span><span class="o">----&gt;</span><span class="err">实例化</span><span class="n">ThreadNum</span><span class="err">类</span><span class="o">----&gt;</span><span class="err">启动线程并设置守护</span>
+
+\<span class="o">---&gt;</span><span class="k">for</span><span class="err">循环确定启动的线程数</span><span class="o">----&gt;</span><span class="err">实例化</span><span class="n">PrintLove</span><span class="err">类</span><span class="o">---&gt;</span><span class="err">启动线程并设置为守护</span>
+
+\<span class="o">---&gt;</span><span class="err">等待</span><span class="n">queue</span><span class="err">中的消息处理完毕后执行</span><span class="n">join</span><span class="err">。即退出主程序。</span>
+
+
+
+<span class="err">了解了</span><span class="n">MQ</span><span class="err">的大概实现以后，我们来总结一下消息队列的优点：</span>
+
+<span class="c1">### 1\. 解耦</span>
+
+<span class="err">在项目启动之初来预测将来项目会碰到什么需求，是极其困难的。消息队列在处理过程中间插入了一个隐含的、基于数据的接口层，两边的处理过程都要实现这一接口。这允许你</span>
+<span class="err">独立的扩展或修改两边的处理过程，只要确保它们遵守同样的接口约束。</span>
+
+<span class="c1">### 2\. 冗余</span>
+
+<span class="err">有时在处理数据的时候处理过程会失败。除非数据被持久化，否则将永远丢失。消息队列把数据进行持久化直到它们已经被完全处理，通过这一方式规避了数据丢失风险。在被许</span>
+<span class="err">多消息队列所采用的</span><span class="s2">&quot;插入-获取-</span>
+<span class="err">删除</span><span class="s2">&quot;范式中，在把一个消息从队列中删除之前，需要你的处理过程明确的指出该消息已经被处理完毕，确保你的数据被安全的保存直到你使用完毕。</span>
+
+<span class="c1">### 3\. 扩展性</span>
+
+<span class="err">因为消息队列解耦了你的处理过程，所以增大消息入队和处理的频率是很容易的；只要另外增加处理过程即可。不需要改变代码、不需要调节参数。扩展就像调大电力按钮一样简</span>
+<span class="err">单。</span>
+
+<span class="c1">### 4\. 灵活性 &amp; 峰值处理能力</span>
+
+<span class="err">当你的应用上了</span><span class="n">Hacker</span>
+<span class="n">News</span><span class="err">的首页，你将发现访问流量攀升到一个不同寻常的水平。在访问量剧增的情况下，你的应用仍然需要继续发挥作用，但是这样的突发流量并不常见；如果为</span>
+<span class="err">以能处理这类峰值访问为标准来投入资源随时待命无疑是巨大的浪费。使用消息队列能够使关键组件顶住增长的访问压力，而不是因为超出负荷的请求而完全崩溃。</span>
+<span class="err">请查看我们关于峰值处理能力的博客文章了解更多此方面的信息。</span>
+
+<span class="c1">### 5\. 可恢复性</span>
+
+<span class="err">当体系的一部分组件失效，不会影响到整个系统。消息队列降低了进程间的耦合度，所以即使一个处理消息的进程挂掉，加入队列中的消息仍然可以在系统恢复后被处理。而这种</span>
+<span class="err">允许重试或者延后处理请求的能力通常是造就一个略感不便的用户和一个沮丧透顶的用户之间的区别。</span>
+
+<span class="c1">### 6\. 送达保证</span>
+
+<span class="err">消息队列提供的冗余机制保证了消息能被实际的处理，只要一个进程读取了该队列即可。在此基础上，</span><span class="n">IronMQ</span><span class="err">提供了一个</span><span class="s2">&quot;只送达一次&quot;</span><span class="err">保证。无论有多少进</span>
+<span class="err">程在从队列中领取数据，每一个消息只能被处理一次。这之所以成为可能，是因为获取一个消息只是</span><span class="s2">&quot;预定&quot;</span><span class="err">了这个消息，暂时把它移出了队列。除非客户端明确的</span>
+<span class="err">表示已经处理完了这个消息，否则这个消息会被放回队列中去，在一段可配置的时间之后可再次被处理。</span>
+
+<span class="c1">### 7.排序保证</span>
+
+<span class="err">在许多情况下，数据处理的顺序都很重要。消息队列本来就是排序的，并且能保证数据会按照特定的顺序来处理。</span><span class="n">IronMO</span><span class="err">保证消息浆糊通过</span><span class="n">FIFO</span><span class="err">（先进先出）的顺序来</span>
+<span class="err">处理，因此消息在队列中的位置就是从队列中检索他们的位置。</span>
+
+<span class="c1">### 8.缓冲</span>
+
+<span class="err">在任何重要的系统中，都会有需要不同的处理时间的元素。例如</span><span class="p">,</span><span class="err">加载一张图片比应用过滤器花费更少的时间。消息队列通过一个缓冲层来帮助任务最高效率的执行</span><span class="o">--</span>
+<span class="err">写入队列的处理会尽可能的快速，而不受从队列读的预备处理的约束。该缓冲有助于控制和优化数据流经过系统的速度。</span>
+
+<span class="c1">### 9\. 理解数据流</span>
+
+<span class="err">在一个分布式系统里，要得到一个关于用户操作会用多长时间及其原因的总体印象，是个巨大的挑战。消息系列通过消息被处理的频率，来方便的辅助确定那些表现不佳的处理过</span>
+<span class="err">程或领域，这些地方的数据流都不够优化。</span>
+
+<span class="c1">### 10\. 异步通信</span>
+
+<span class="err">很多时候，你不想也不需要立即处理消息。消息队列提供了异步处理机制，允许你把一个消息放入队列，但并不立即处理它。你想向队列中放入多少消息就放多少，然后在你乐意</span>
+<span class="err">的时候再去处理它们。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

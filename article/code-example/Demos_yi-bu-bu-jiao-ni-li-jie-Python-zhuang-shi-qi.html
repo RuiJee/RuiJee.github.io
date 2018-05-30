@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>一步步教你理解Python装饰器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 一步步教你理解Python装饰器">
+                                        一步步教你理解Python装饰器
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 一步步教你理解Python装饰器</span>
+
+<span class="err">或许你已经用过装饰器，它的使用方式非常简单但理解起来困难（其实真正理解的也很简单），想要理解装饰器，你需要懂点函数式编程的概念，</span><span class="n">python</span><span class="err">函数的定义以及函</span>
+<span class="err">数调用的语法规则等，虽然我没法把装饰器变得简单，但是我希望可以通过下面的步骤让你由浅入深明白装饰器是什么。假定你拥有最基本的</span><span class="n">Python</span><span class="err">知识，本文阐述的东西</span>
+<span class="err">可能对那些在工作中经常接触</span><span class="n">Python</span><span class="err">的人有很大的帮助。下面我们来一步步理解</span><span class="n">python</span><span class="err">的装饰器：</span>
+
+<span class="c1">### 1、函数（Functions）</span>
+
+<span class="err">在</span><span class="n">Python</span><span class="err">里，函数是用</span><span class="n">def</span><span class="err">关键字后跟一个函数名称和一个可选的参数表列来创建的，可以用关键字</span><span class="k">return</span><span class="err">指定返回值。下面让我们创建和调用一个最简单的函数</span>
+<span class="err">：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="mi">1</span>
+
+<span class="err">该函数的函数体（在</span><span class="n">Python</span><span class="err">里将就是多行语句）是强制性的并且通过缩进来表明。我们可以通过在函数名后面添加双括号来调用函数。</span>
+
+
+
+<span class="c1">### 2、作用域（Scope）</span>
+
+<span class="err">在</span><span class="n">Python</span><span class="err">中，每个函数都会创建一个作用域。</span><span class="n">Pythonistas</span><span class="err">也可能称函数拥有它们自己的命名空间（</span><span class="n">namespace</span><span class="err">）。这意味着当在函数体里遇到变量名</span>
+<span class="err">时，</span><span class="n">Python</span><span class="err">首先在该函数的命名空间中查找，</span><span class="n">Python</span><span class="err">包含了一些让我们查看命名空间的函数。让我们写一个简单的函数来探查一下</span><span class="n">local</span><span class="err">和</span><span class="k">global</span><span class="err">作用域</span>
+<span class="err">的区别。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">a_string</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s2">&quot;This is a global variable&quot;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="nb">locals</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="nb">globals</span><span class="p">()</span><span class="err"> </span><span class="c1"># doctest: +ELLIPSIS</span>
+    <span class="p">{</span><span class="o">...</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;a_strin&#39;</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;This ia a global variable&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="p">{}</span>
+
+<span class="err">内建的</span><span class="nb">globals</span><span class="err">函数返回一个字典对象，它包含所有</span><span class="n">Python</span><span class="err">知道的变量名</span><span class="p">(</span><span class="err">为了清楚明了起见，我已经忽略了一些</span><span class="n">Python</span><span class="err">自动创建的变量</span><span class="p">)</span><span class="err">。在</span><span class="c1">#2处我调用</span>
+<span class="err">了函数</span><span class="n">foo</span><span class="err">，它将函数内部的</span><span class="n">local</span> <span class="n">namespace</span><span class="err">里的内容打印了出来。正如我们看到的</span><span class="n">foo</span><span class="err">函数拥有自己的独立</span><span class="n">namespace</span><span class="err">，现在它还是空的。</span>
+
+
+
+<span class="c1">### 3、变量解析规则（variable resolution rules）</span>
+
+<span class="err">当然，这并不意味着在函数内部我们不能访问全局变量。</span><span class="n">Python</span><span class="err">的作用域规则是，变量的创建总会创建一个新的</span><span class="n">local</span><span class="err">变量，但是变量的访问（包括修改）会先查找</span><span class="n">l</span>
+<span class="n">ocal</span><span class="err">作用域然后顺着最邻近的作用域去寻找匹配。因此，如果我们修改</span><span class="n">foo</span><span class="err">函数来让它打印</span><span class="k">global</span><span class="err">变量，结果就会像我们希望的那样：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">a_string</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s2">&quot;This is global variable&quot;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="n">a_string</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="n">This</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="k">global</span><span class="err"> </span><span class="n">variable</span>
+
+<span class="err">在</span><span class="c1">#1处，Python在函数中寻找一个local变量，但是没有找到，然后在global变量中找到了一个同名的变量。</span>
+
+
+
+<span class="err">另一方面，如果我们尝试在函数里给</span><span class="k">global</span><span class="err">变量赋值，结果将不如我们所愿：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">a_string</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;This is a global variable&quot;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">a_string</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s2">&quot;test&quot;</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">        </span><span class="k">print</span><span class="err"> </span><span class="nb">locals</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="p">{</span><span class="s1">&#39;a_string&#39;</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;test&#39;</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">a_string</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="s1">&#39;This is a global variable&#39;</span>
+
+<span class="err">正如我们所见，全局变量可以被访问到（如果是可变类型，其甚至可以被改变），但是（默认情况下）不能被赋值。在函数内部的</span><span class="c1">#1处我们实际上创建了一个新的local变</span>
+<span class="err">量，它和全局变量拥有相同的名字，它将全局变量给覆盖了。我们可以通过在</span><span class="n">foo</span><span class="err">函数内部打印</span><span class="n">local</span>
+<span class="n">namespace</span><span class="err">来发现到它已经有了一个条目，通过对函数外部的</span><span class="c1">#2处的输出结果我们可以看到，变量a_string的值根本就没有被改变。</span>
+
+
+
+<span class="c1">### 4、变量的生命周期（Variable lifetime）</span>
+
+<span class="err">也要注意到，变量不仅“生活在”一个命名空间里，它们还有生命周期。考虑下面的代码：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">x</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">print</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="ne">NameError</span><span class="p">:</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="s1">&#39;x&#39;</span><span class="err"> </span><span class="ow">is</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="n">defined</span>
+
+<span class="err">在</span><span class="c1">#1处不仅因为作用域规则引发了问题（尽管这是出现了NameError的原因），而且也出于在Python和许多其它语言里的函数调用实现的原因。此处，我们没有</span>
+<span class="err">任何可用的语法来获取变量</span><span class="n">x</span><span class="err">的值——字面上是不存在的。每次当调用</span><span class="n">foo</span><span class="err">函数时，它的</span><span class="n">namespace</span><span class="err">被重新构建，并且当函数结束时被销毁。</span>
+
+
+
+<span class="c1">### 5、函数的参数（Function parameters）</span>
+
+<span class="n">Python</span><span class="err">允许我们向函数传递参数。参数名成为了该函数的</span><span class="n">local</span><span class="err">变量。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">        </span><span class="k">print</span><span class="err"> </span><span class="nb">locals</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+
+<span class="n">Python</span><span class="err">有许多不同的定义和传递函数参数的方法。要想更详细深入地了解请参照</span><span class="n">the</span> <span class="n">Python</span> <span class="n">documentation</span> <span class="n">on</span> <span class="n">defining</span>
+<span class="n">functions</span><span class="err">。这里我展示一个简版：函数参数既可以是强制的位置参数</span><span class="p">(</span><span class="n">positional</span> <span class="n">parameters</span><span class="p">)</span><span class="err">或者是命名参数，参数的默认值是可选的。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">)</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="mi">2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="err"> </span><span class="c1"># 3</span>
+    <span class="mi">3</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span><span class="err"> </span><span class="c1"># 4</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="ne">TypeError</span><span class="p">:</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span><span class="err"> </span><span class="n">takes</span><span class="err"> </span><span class="n">at</span><span class="err"> </span><span class="n">least</span><span class="err"> </span><span class="mi">1</span><span class="err"> </span><span class="n">argument</span><span class="err"> </span><span class="p">(</span><span class="mi">0</span><span class="err"> </span><span class="n">given</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="err"> </span><span class="c1"># 5</span>
+    <span class="mi">2</span>
+
+<span class="err">在</span><span class="c1">#1处我们定义了一个带有一个位置参数x和一个命名参数y的函数。正如我们看到的，在#2处我们可以通过普通的值传递来调用函数，即使一个参数(译者注：这里指参数</span>
+<span class="n">y</span><span class="err">）在函数定义里被定义为一个命名参数。在</span><span class="c1">#3处我们可以看到，我们甚至可以不为命名参数传递任何值就可以调用函数——如果foo函数没有接收到传给命名参数y的值，</span>
+<span class="n">Python</span><span class="err">将会用我们声明的默认值</span><span class="mi">0</span><span class="err">来调用函数。当然，我们不能漏掉第一个（强制的，定好位置的）参数——</span><span class="c1">#4以一个异常描述了这种错误。</span>
+
+
+
+<span class="err">都很清晰和直接，不是吗？下面变得有点儿让人疑惑——</span><span class="n">Python</span><span class="err">也支持函数调用时的命名参数而不只是在函数定义时。请看</span><span class="c1">#5处，这里我们用两个命名参数调用函数，尽</span>
+<span class="err">管这个函数是以一个命名和一个位置参数来定义的。因为我们的参数有名字，所以我们传递的参数的位置不会产生任何影响。</span>
+<span class="err">相反的情形当然也是正确的。我们的函数的一个参数被定义为一个命名参数但是我们通过位置传递参数——</span> <span class="c1">#4处的调用foo(3,</span>
+<span class="mi">1</span><span class="p">)</span><span class="err">将一个</span><span class="mi">3</span><span class="err">作为第一个参数传递给我们排好序的参数</span><span class="n">x</span><span class="err">并将第二个参数（整数</span><span class="mi">1</span><span class="err">）传递给第二个参数，尽管它被定义为一个命名参数。</span>
+
+
+
+<span class="n">Whoo</span><span class="err">!这就像用很多话来描述一个非常简单的概念：函数的参数可以有名称或者位置。</span>
+
+
+
+<span class="c1">### 6、内嵌函数（Nested functions）</span>
+
+<span class="n">Python</span><span class="err">允许创建嵌套函数，这意味着我们可以在函数内声明函数并且所有的作用域和声明周期规则也同样适用。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">outer</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">x</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">         </span><span class="k">print</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">inner</span><span class="p">()</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="o">...</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">outer</span><span class="p">()</span>
+    <span class="mi">1</span>
+
+<span class="err">这看起来稍显复杂，但其行为仍相当直接，易于理解。考虑一下在</span><span class="c1">#1处发生了什么——Python寻找一个名为x的local变量，失败了，然后在最邻近的外层作用域里</span>
+<span class="err">搜寻，这个作用域是另一个函数！变量</span><span class="n">x</span><span class="err">是函数</span><span class="n">outer</span><span class="err">的</span><span class="n">local</span><span class="err">变量，但是和前文提到的一样，</span><span class="n">inner</span><span class="err">函数拥有对外层作用域的访问权限（最起码有读和修改的权限</span>
+<span class="err">）。在</span><span class="c1">#2处我们调用了inner函数。请记住inner也只是一个变量名，它也遵从Python的变量查找规则——Python首先在outer的作用域里查找之，</span>
+<span class="err">找到了一个名为</span><span class="n">inner</span><span class="err">的</span><span class="n">local</span><span class="err">变量。</span>
+
+
+
+<span class="c1">### 7、函数是一等公民（Functions are first class objects in Python）</span>
+
+<span class="err">在</span><span class="n">Python</span><span class="err">中，这是一个常识，函数是和其它任何东西一样的对象。呃，函数包含变量，它不是那么的特殊！</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">issubclass</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="err"> </span><span class="nb">object</span><span class="p">)</span><span class="err"> </span><span class="c1"># all objects in Python inherit from a common baseclass</span>
+    <span class="bp">True</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">pass</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="o">.</span><span class="vm">__class__</span><span class="err"> </span><span class="c1"># 1&gt;&gt;&gt; issubclass(foo.__class__, object)</span>
+    <span class="bp">True</span>
+
+<span class="err">你也许从没想到过函数也有属性，但是在</span><span class="n">Python</span><span class="err">中，和其它任何东西一样，函数是对象。（如果你发觉这令你感到困惑，请等一下，知道你了解到在</span><span class="n">Python</span><span class="err">中像其它</span>
+<span class="err">任何东西一样，</span><span class="n">class</span><span class="err">也是对象！）也许正是因为这一点使</span><span class="n">Python</span><span class="err">多少有点“学术”的意味——在</span><span class="n">Python</span><span class="err">中像其它任何值一样只是常规的值而已。这意味着你可</span>
+<span class="err">以将函数作为参数传递给函数或者在函数中将函数作为返回值返回！如果你从未考虑过这种事情请考虑下如下的合法</span><span class="n">Python</span><span class="err">代码：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="nb">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="err"> </span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">)</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">apply</span><span class="p">(</span><span class="n">add</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">)</span><span class="err"> </span><span class="c1"># 3</span>
+    <span class="mi">3</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nb">apply</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">)</span>
+    <span class="mi">1</span>
+
+<span class="err">这个例子对你来说可能也不是太奇怪——</span><span class="n">add</span><span class="err">和</span><span class="n">sub</span><span class="err">是标准的</span><span class="n">Python</span><span class="err">函数，它们都接受两个值并返回一个计算了的结果。在</span><span class="c1">#1处你可以看到变量接受一个函数就像其</span>
+<span class="err">它任何普通的变量。在</span><span class="c1">#2处我们调用传入apply的函数——在Python里双括号是调用操作符，并且调用变量名包含的值。在#3处你可以看出在Python中将函</span>
+<span class="err">数当做值进行传递并没有任何特殊语法——函数名就像任何其它变量一样只是变量标签。</span>
+
+
+
+<span class="err">你之前可能见过这种行为——</span><span class="n">Python</span><span class="err">将函数作为参数经常见于像通过为</span><span class="n">key</span><span class="err">参数提供一个函数来自定义</span><span class="nb">sorted</span><span class="err">内建函数等操作中。但是，将函数作为返回值返回会</span>
+<span class="err">怎样呢？请考虑：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">outer</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">         </span><span class="k">print</span><span class="err"> </span><span class="s2">&quot;Inside inner&quot;</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">inner</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">()</span><span class="err"> </span><span class="c1">#2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="err"> </span><span class="c1"># doctest:+ELLIPSIS</span>
+    <span class="o">&lt;</span><span class="n">function</span><span class="err"> </span><span class="n">inner</span><span class="err"> </span><span class="n">at</span><span class="err"> </span><span class="mi">0</span><span class="n">x</span><span class="o">...&gt;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="n">Inside</span><span class="err"> </span><span class="n">inner</span>
+
+<span class="err">这乍看起来有点奇怪。在</span><span class="c1">#1处我返回了变量inner，它碰巧是一个函数标签。这里没有特殊语法——我们的函数返回了inner函数（调用outer()函数并不产生</span>
+<span class="err">可见的执行）。还记得变量的生命周期吗？每当</span><span class="n">outer</span><span class="err">函数被调用时</span><span class="n">inner</span><span class="err">函数就会重新被定义一次，但是如果</span><span class="n">inner</span><span class="err">函数不被</span><span class="p">(</span><span class="n">outer</span><span class="p">)</span><span class="err">返回那么当超出</span><span class="n">ou</span>
+<span class="n">ter</span><span class="err">的作用域后，</span><span class="n">inner</span><span class="err">将不复存在了。</span>
+
+
+
+<span class="err">在</span><span class="c1">#2处我们可以获取到返回值，它是我们的inner函数，它被存储于一个新的变量foo。我们可以看到，如果我们计算foo，它真的包含inner函数，我们可以通</span>
+<span class="err">过使用调用运算符（双括号，还记得吗？）来调用它。这看起来可能有点怪异，但是到目前为止没有什么难以理解，不是么？挺住，因为接下来的东西将会很怪异。</span>
+
+
+
+<span class="c1">### 8、闭包（Closures）</span>
+
+<span class="err">让我们不从定义而是从另一个代码示例开始。如果我们将上一个例子稍加修改会怎样呢？</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">outer</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">x</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">         </span><span class="k">print</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">inner</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="o">.</span><span class="n">func_closure</span><span class="err"> </span><span class="c1"># doctest: +ELLIPSIS</span>
+    <span class="p">(</span><span class="o">&lt;</span><span class="n">cell</span><span class="err"> </span><span class="n">at</span><span class="err"> </span><span class="mi">0</span><span class="n">x</span><span class="o">...</span><span class="p">:</span><span class="err"> </span><span class="nb">int</span><span class="err"> </span><span class="nb">object</span><span class="err"> </span><span class="n">at</span><span class="err"> </span><span class="mi">0</span><span class="n">x</span><span class="o">...&gt;</span><span class="p">,)</span>
+
+<span class="err">从上一个例子中我们看到</span><span class="n">inner</span><span class="err">是一个由</span><span class="n">outer</span><span class="err">返回的函数，存储于一个名为</span><span class="n">foo</span><span class="err">的变量，我们可以通过</span><span class="n">foo</span><span class="p">()</span><span class="err">调用它。但是它能运行吗？让我们先来考虑一下作</span>
+<span class="err">用域规则。</span>
+
+
+
+<span class="err">一切都依照</span><span class="n">Python</span><span class="err">的作用域规则而运行——</span><span class="n">x</span><span class="err">是</span><span class="n">outer</span><span class="err">函数了一个</span><span class="n">local</span><span class="err">变量。当</span><span class="n">inner</span><span class="err">在</span><span class="c1">#1处打印x时，Python在inner中寻找一个loca</span>
+<span class="n">l</span><span class="err">变量，没有找到；然后它在外层作用域即</span><span class="n">outer</span><span class="err">函数中寻找并找到了它。</span>
+
+
+
+<span class="err">但是自此处从变量生命周期的角度来看又会如何呢？变量</span><span class="n">x</span><span class="err">是函数</span><span class="n">outer</span><span class="err">的</span><span class="n">local</span><span class="err">变量，这意味着只有当</span><span class="n">outer</span><span class="err">函数运行时它才存在。只有当</span><span class="n">outer</span><span class="err">返回后我们</span>
+<span class="err">才能调用</span><span class="n">inner</span><span class="err">，因此依照我们关于</span><span class="n">Python</span><span class="err">如何运作的模型来看，在我们调用</span><span class="n">inner</span><span class="err">的时候</span><span class="n">x</span><span class="err">已经不复存在了，那么某个运行时错误可能会出现。</span>
+
+
+
+<span class="err">事实与我们的预想并不一致，返回的</span><span class="n">inner</span><span class="err">函数的确正常运行。</span><span class="n">Python</span><span class="err">支持一种称为闭包</span><span class="p">(</span><span class="n">function</span> <span class="n">closures</span><span class="p">)</span><span class="err">的特性，这意味着定义于非全局作</span>
+<span class="err">用域的</span><span class="n">inner</span><span class="err">函数在定义时记得它们的外层作用域长什么样。这可以通过查看</span><span class="n">inner</span><span class="err">函数的</span><span class="n">func_closure</span><span class="err">属性来查看，它包含了外层作用域里的变量。</span>
+
+
+
+<span class="err">请记住，每次当</span><span class="n">outer</span><span class="err">函数被调用时</span><span class="n">inner</span><span class="err">函数都被重新定义一次。目前</span><span class="n">x</span><span class="err">的值没有改变，因此我们得到的每个</span><span class="n">inner</span><span class="err">函数和其它的</span><span class="n">inner</span><span class="err">函数拥有相同的行为</span>
+<span class="err">，但是如果我们将它做出一点改变呢？</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">         </span><span class="k">print</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="n">inner</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">print1</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">print2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">print1</span><span class="p">()</span>
+    <span class="mi">1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">print2</span><span class="p">()</span>
+    <span class="mi">2</span>
+
+<span class="err">从这个例子中你可以看到</span><span class="n">closures</span><span class="err">——函数记住他们的外层作用域的事实——可以用来构建本质上有一个硬编码参数的自定义函数。我们没有将数字</span><span class="mi">1</span><span class="err">或者</span><span class="mi">2</span><span class="err">传递给我们</span>
+<span class="err">的</span><span class="n">inner</span><span class="err">函数但是构建了能</span><span class="s2">&quot;记住&quot;</span><span class="err">其应该打印数字的自定义版本。</span>
+
+
+
+<span class="n">closures</span><span class="err">就是一个强有力的技术——你甚至想到在某些方面它有点类似于面向对象技术：</span><span class="n">outer</span><span class="err">是</span><span class="n">inner</span><span class="err">的构造函数，</span><span class="n">x</span><span class="err">扮演着一个类似私有成员变量的角色。</span>
+<span class="err">它的作用有很多，如果你熟悉</span><span class="n">Python</span><span class="err">的</span><span class="nb">sorted</span><span class="err">函数的</span><span class="n">key</span><span class="err">参数，你可能已经写过一个</span><span class="k">lambda</span><span class="err">函数通过第二项而不是第一项来排序一些列</span><span class="nb">list</span><span class="err">。也许你现</span>
+<span class="err">在可以写一个</span><span class="n">itemgetter</span><span class="err">函数，它接收一个用于检索的索引并返回一个函数，这个函数适合传递给</span><span class="n">key</span><span class="err">参数。</span>
+
+
+
+<span class="err">但是让我们不要用闭包做任何噩梦般的事情！相反，让我们重新从头开始来写一个</span><span class="n">decorator</span><span class="err">!</span>
+
+
+
+<span class="c1">### 9、装饰器（Decorators）</span>
+
+<span class="err">一个</span><span class="n">decorator</span><span class="err">只是一个带有一个函数作为参数并返回一个替换函数的闭包。我们将从简单的开始一直到写出有用的</span><span class="n">decorators</span><span class="err">。</span>
+
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="n">some_func</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">        </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">            </span><span class="k">print</span><span class="err"> </span><span class="s2">&quot;before some_func&quot;</span>
+    <span class="o">...</span><span class="err">            </span><span class="n">ret</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">some_func</span><span class="p">()</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">            </span><span class="k">return</span><span class="err"> </span><span class="n">ret</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">...</span><span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="n">inner</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="mi">1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">decorated</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">decorated</span><span class="p">()</span>
+    <span class="n">before</span><span class="err"> </span><span class="n">some_func</span>
+    <span class="mi">2</span>
+
+<span class="err">请仔细看我们的</span><span class="n">decorator</span><span class="err">实例。我们定义了一个接受单个参数</span><span class="n">some_func</span><span class="err">的名为</span><span class="n">outer</span><span class="err">的函数。在</span><span class="n">outer</span><span class="err">内部我们定义了一个名为</span><span class="n">inner</span><span class="err">的嵌套</span>
+<span class="err">函数。</span><span class="n">inner</span><span class="err">函数打印一个字符串然后调用</span><span class="n">some_func</span><span class="err">，在</span><span class="c1">#1处缓存它的返回值。some_func的值可能在每次outer被调用时不同，但是无论它是什</span>
+<span class="err">么我们都将调用它。最终，</span><span class="n">inner</span><span class="err">返回</span><span class="n">some_func</span><span class="err">的返回值加</span><span class="mi">1</span><span class="err">，并且我们可以看到，当我们调用存储于</span><span class="c1">#2处decorated里的返回函数时我们得到了输出</span>
+<span class="err">的文本和一个返回值</span><span class="mi">2</span><span class="err">而不是我们期望的调用</span><span class="n">foo</span><span class="err">产生的原始值</span><span class="mf">1.</span>
+
+
+
+<span class="err">我们可以说</span><span class="n">decorated</span><span class="err">变量是</span><span class="n">foo</span><span class="err">的一个“装饰”版本——由</span><span class="n">foo</span><span class="err">加上一些东西构成。实际上，如果我们写了一个有用的</span><span class="n">decorator</span><span class="err">，我们可能想用装饰后</span>
+<span class="err">的版本来替换</span><span class="n">foo</span><span class="err">，从而可以得到</span><span class="n">foo</span><span class="err">的“增添某些东西”的版本。我们可以不用学习任何新语法而做到这一点——重新将包含我们函数的变量进行赋值：</span>
+
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">outer</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="err"> </span><span class="c1"># doctest: +ELLIPSIS</span>
+    <span class="o">&lt;</span><span class="n">function</span><span class="err"> </span><span class="n">inner</span><span class="err"> </span><span class="n">at</span><span class="err"> </span><span class="mi">0</span><span class="n">x</span><span class="o">...&gt;</span>
+
+<span class="err">现在任何对</span><span class="n">foo</span><span class="p">()</span><span class="err">的调用都不会得到原始的</span><span class="n">foo</span><span class="err">，而是会得到我们经过装饰的版本！领悟到了一些</span><span class="n">decorator</span><span class="err">的思想吗？</span>
+
+
+
+<span class="c1">### 10、装饰器的语法糖--@符号（The @ symbol applies a decorator to a function）</span>
+
+<span class="n">Python</span> <span class="mf">2.4</span><span class="err">通过在函数定义前添加一个@符号实现对函数的包装。在上面的代码示例中，我们用一个包装了的函数来替换包含函数的变量来实现了包装。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">add</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">wrapper</span><span class="p">(</span><span class="n">add</span><span class="p">)</span>
+
+<span class="err">这一模式任何时候都可以用来包装任何函数，但是如果们定义了一个函数，我们可以用@符号像下面示例那样包装它：</span>
+
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nd">@wrapper</span>
+    <span class="o">...</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="err"> </span><span class="n">b</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">Coordinate</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+<span class="err">请注意，这种方式和用</span><span class="n">wrapper</span><span class="err">函数的返回值来替换原始变量并没有任何不同，</span><span class="n">Python</span><span class="err">只是增添了一些语法糖</span><span class="p">(</span><span class="n">syntactic</span>
+<span class="n">sugar</span><span class="p">)</span><span class="err">让它看起来更明显一点。</span>
+
+
+
+<span class="c1">### 11、*args and **kwargs</span>
+
+<span class="err">我们已经写了一个有用的</span><span class="n">decorator</span><span class="err">，但是它是硬编码的，它只适用于特定种类的函数——带有两个参数的函数。我们函数内部的</span><span class="n">checker</span><span class="err">函数接受了两个参数，</span>
+<span class="err">然后继续将参数闭包里的函数。如果我们想要一个能包装任何类型函数的</span><span class="n">decorator</span><span class="err">呢？让我们实现一个在不改变被包装函数的前提下对每一次被包装函数的调用增添一</span>
+<span class="err">次计数的包装器。这意味着这个</span><span class="n">decorator</span><span class="err">需要接受所有待包装的任何函数并将传递给它的任何参数传递给被包装的函数来调用它（被包装的函数）。</span>
+
+
+
+<span class="err">这种情况很常见，所以</span><span class="n">Python</span><span class="err">为这一特性提供了语法支持。请确保阅读</span><span class="n">Python</span>
+<span class="n">Tutorial</span><span class="err">以了解更多，但是在函数定义时使用</span><span class="o">*</span><span class="err">运算符意味着任何传递给函数的额外位置参数最终以一个</span><span class="o">*</span><span class="err">作为前导。因此：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">one</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="n">args</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">one</span><span class="p">()</span>
+    <span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">one</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">)</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="mi">3</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">two</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">,</span><span class="err"> </span><span class="o">*</span><span class="n">args</span><span class="p">):</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">,</span><span class="err"> </span><span class="n">args</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">two</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="err"> </span><span class="n">b</span><span class="err"> </span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="err">第一个函数</span><span class="n">one</span><span class="err">只是简单的将任何（如果有）传递给它的位置参数打印出来。正如你在</span><span class="c1">#1处见到的，在函数内部我们只是引用了args变量——*args只是表明在函数</span>
+<span class="err">定义中位置参数应该保存在变量</span><span class="n">args</span><span class="err">中。</span><span class="n">Python</span><span class="err">也允许我们指定一些变量并捕获到任何在</span><span class="n">args</span><span class="err">变量里的其它参数，正如</span><span class="c1">#2处所示。</span>
+
+
+
+<span class="o">*</span><span class="err">运算符也可以用于函数调用中，这时它也有着类似的意义。在调用一个函数时带有一个以</span><span class="o">*</span><span class="err">为前导的变量作为参数表示这个变量内容需要被解析然后用作位置参数。再一次以实例来说明：</span>
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">lst</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">add</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="err"> </span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="mi">3</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="n">lst</span><span class="p">)</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="mi">3</span>
+
+<span class="c1">#1处的代码抽取出了和#2处相同的参数——在#2处Python为我们自动解析了参数，我们也可以像在#1处一样自己解析出来。这看起来不错，*args既表示当调</span>
+<span class="err">用函数是从一个</span><span class="n">iterable</span><span class="err">抽取位置参数，也表示当定义一个函数是接受任何额外的位置变量。</span>
+
+
+
+<span class="err">当我们引入</span><span class="o">**</span><span class="err">时，事情变得更加复杂点，与</span><span class="o">*</span><span class="err">表示</span><span class="n">iterables</span><span class="err">和位置参数一样，</span><span class="o">**</span><span class="err">表示</span><span class="n">dictionaries</span> <span class="o">&amp;</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span><span class="err">对。很简单，不是么？</span>
+
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="n">kwargs</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">()</span>
+    <span class="p">{}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="p">{</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">2</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">}</span>
+
+<span class="err">当我们定义一个函数时我们可以用</span><span class="o">**</span><span class="n">kwargs</span><span class="err">表明所有未捕获的</span><span class="n">keyword</span><span class="err">变量应该被存储在一个名为</span><span class="n">kwargs</span><span class="err">的字典中。前面的例子中的</span><span class="n">args</span><span class="err">和本例中的</span><span class="n">k</span>
+<span class="n">wargs</span><span class="err">都不是</span><span class="n">Python</span><span class="err">语法的一部分，但是在函数定义时使用这两个作为变量名时一种惯例。就像一样，我们可以在函数调用时使用</span>\\<span class="o">*</span><span class="err">。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">dct</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="err"> </span><span class="mi">2</span><span class="p">}</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">rturn</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">+</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">bar</span><span class="p">(</span><span class="o">**</span><span class="n">dct</span><span class="p">)</span>
+    <span class="mi">3</span>
+
+
+
+<span class="c1">### 12、更通用的装饰器（More generic decorators）</span>
+
+<span class="err">用我们掌握的新“武器”我们可以写一个</span><span class="n">decorator</span><span class="err">用来“记录”函数的参数。为了简单起见，我们将其打印在</span><span class="n">stdout</span><span class="err">上：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">logger</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="n">def</span><span class="err"> </span><span class="n">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span><span class="err"> </span><span class="c1"># 1</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">print</span><span class="err"> </span><span class="s2">&quot;Arguments were: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="err"> </span><span class="c1"># 2</span>
+    <span class="o">...</span><span class="err"> </span><span class="k">return</span><span class="err"> </span><span class="n">inner</span>
+
+<span class="err">注意到在</span><span class="c1">#1处inner函数带有任意数量的任何类型的参数，然后在#2处将它们传递到被包装的函数中。这允许我们包装或者装饰任何函数。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nd">@logger</span>
+    <span class="o">...</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="o">*</span><span class="err"> </span><span class="n">y</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="nd">@logger</span>
+    <span class="o">...</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">foo2</span><span class="p">():</span>
+    <span class="o">...</span><span class="err">     </span><span class="k">return</span><span class="err"> </span><span class="mi">2</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo1</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">Arguments</span><span class="err"> </span><span class="n">were</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">4</span><span class="p">),</span><span class="err"> </span><span class="p">{}</span>
+    <span class="mi">20</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">Arguments</span><span class="err"> </span><span class="n">were</span><span class="p">:</span><span class="err"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span><span class="err"> </span><span class="p">{}</span>
+    <span class="mi">1</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">foo2</span><span class="p">()</span>
+    <span class="n">Arguments</span><span class="err"> </span><span class="n">were</span><span class="p">:</span><span class="err"> </span><span class="p">(),{}</span>
+    <span class="mi">2</span>
+
+<span class="err">对函数的调用会产生一个</span><span class="s2">&quot;logging&quot;</span><span class="err">输出行，也会输出一个如我们期望的函数返回值。</span>
+
+
+
+<span class="err">如果你一直跟到了最后一个实例，祝贺你，你已经理解了</span><span class="n">decorators</span><span class="err">了！</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -37,6 +37,12 @@
 
     <link href="/theme/css/pygments.css" rel="stylesheet">
 
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -66,23 +72,30 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
                   <li class="active">
-                    <a href="/category/linux/">
+                    <a href="/category/linux/index.html">
 						<i class="icon-folder-open icon-large"></i>Linux
 					</a>
                   </li>
                   <li >
-                    <a href="/category/pa-chong-ji-zhu/">
+                    <a href="/category/pa-chong-ji-zhu/index.html">
 						<i class="icon-folder-open icon-large"></i>爬虫技术
 					</a>
                   </li>
                   <li >
-                    <a href="/category/pythonji-zhu/">
+                    <a href="/category/pythonji-zhu/index.html">
 						<i class="icon-folder-open icon-large"></i>Python技术
 					</a>
                   </li>
-
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
                           <ul class="nav pull-right">
+
                                 <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
                           </ul>
 
@@ -97,7 +110,7 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="/linux-rename.html">Linux中批量替换文件名</a></h1>
+                <h1><a href="/article/linux/linux-rename.html">Linux中批量替换文件名</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2016-12-23T00:00:00+08:00">
@@ -106,20 +119,21 @@
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/linux/index.html"><i class="icon-folder-open"></i>Linux</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
-	<a href="/tag/rename/"><i class="icon-tag"></i>rename</a>
+	<a href="/tag/linux/index.html"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/rename/index.html"><i class="icon-tag"></i>rename</a>
+
 </footer><!-- /.post-info --></div>
                 <div class="summary"><p>在Linux系统中修改文件名可以用mv命令，但是它只能对单个文件进行操作，如要要批量执行还要写shell脚本，用for语句迭代执行，不过Linux中另外一个命令支持批量替换文件名，它是rename，rename支持正则表达式匹配。需要注意的是，rename命令在不同的Linux发行版语法格式不一样。 语法 在Debian或者Ubuntu环境下使用的语法是： rename ...</p>
-                        <a class="btn primary xsmall" href="/linux-rename.html">更多 ...</a>
+                        <a class="btn primary xsmall" href="/article/linux/linux-rename.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/linux-file-permission.html">Linux文件权限介绍</a></h1>
+                <h1><a href="/article/linux/linux-file-permission.html">Linux文件权限介绍</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2016-09-30T00:00:00+08:00">
@@ -128,19 +142,20 @@
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/linux/index.html"><i class="icon-folder-open"></i>Linux</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/linux/index.html"><i class="icon-tag"></i>linux</a>
+
 </footer><!-- /.post-info --></div>
                 <div class="summary"><p>在Linux中，一切皆为文件（目录也是文件），每个文件对用户具有可读（read）、可写（write）、可执行（execute）权限。目录的执行操作表示是否有权限进入该目录，文件的可执行表示是否可以运行该文件。文件都会从属于一个用户和一个用户组，每个文件针对文件的拥有者、所属组以及其他用户组具有特定的权限。 如上图，除去第一个表示文件类型的字符外，后面的字符均以三个为一组，是『rwx』 ...</p>
-                        <a class="btn primary xsmall" href="/linux-file-permission.html">更多 ...</a>
+                        <a class="btn primary xsmall" href="/article/linux/linux-file-permission.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/replace-string-linux.html">在Linux中替换目录下多个文件中的字符串</a></h1>
+                <h1><a href="/article/linux/replace-string-linux.html">在Linux中替换目录下多个文件中的字符串</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2016-09-13T00:00:00+08:00">
@@ -149,19 +164,20 @@
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/linux/index.html"><i class="icon-folder-open"></i>Linux</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/linux/index.html"><i class="icon-tag"></i>linux</a>
+
 </footer><!-- /.post-info --></div>
                 <div class="summary"><p>在Linux中，替换多个文件中的某个字符串可以使用grep和sed的组合来实现这个功能。 基本格式 grep -rl matchstring somedir/ | xargs sed -i 's/string1/string2/g' matchstring是你将要被替换的字符串，它与string1是同样的字符串，string2是用来替换string1的字符串。somdir表示在指定目录下。 ...</p>
-                        <a class="btn primary xsmall" href="/replace-string-linux.html">更多 ...</a>
+                        <a class="btn primary xsmall" href="/article/linux/replace-string-linux.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/linux-command-lsof.html">Linux性能监控命令详解：lsof</a></h1>
+                <h1><a href="/article/linux/linux-command-lsof.html">Linux性能监控命令详解：lsof</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2016-03-27T00:00:00+08:00">
@@ -170,20 +186,21 @@
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/linux/index.html"><i class="icon-folder-open"></i>Linux</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
-	<a href="/tag/lsof/"><i class="icon-tag"></i>lsof</a>
+	<a href="/tag/linux/index.html"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/lsof/index.html"><i class="icon-tag"></i>lsof</a>
+
 </footer><!-- /.post-info --></div>
                 <div class="summary"><p>lsof可以查看当前系统所有的打开文件，在linux环境下，一切皆文件，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件，如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，文件描述符提供了大量关于这个应用程序本身的信息。 命令参数： -a 列出被打开的文件的进程列表 -c&lt;进程名&gt; 列出指定进程所打开的文件 -g ...</p>
-                        <a class="btn primary xsmall" href="/linux-command-lsof.html">更多 ...</a>
+                        <a class="btn primary xsmall" href="/article/linux/linux-command-lsof.html">more ...</a>
                 </div>
         </div>
         <hr />
         <div class="article">
-                <h1><a href="/linux-command-free.html">Linux性能监控命令详解：free</a></h1>
+                <h1><a href="/article/linux/linux-command-free.html">Linux性能监控命令详解：free</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2016-02-27T00:00:00+08:00">
@@ -192,18 +209,20 @@
 <span class="label">By</span>
 <a href="/author/alex/"><i class="icon-user"></i>Alex</a>
 <span class="label">Category</span>
-<a href="/category/linux/"><i class="icon-folder-open"></i>Linux</a>.
+<a href="/category/linux/index.html"><i class="icon-folder-open"></i>Linux</a>.
 
 
 <span class="label">Tags</span>
-	<a href="/tag/free/"><i class="icon-tag"></i>free</a>
-	<a href="/tag/linux/"><i class="icon-tag"></i>linux</a>
+	<a href="/tag/free/index.html"><i class="icon-tag"></i>free</a>
+	<a href="/tag/linux/index.html"><i class="icon-tag"></i>linux</a>
+
 </footer><!-- /.post-info --></div>
                 <div class="summary"><p>在系统遇到各种IO瓶颈，内存使用率高，cpu使用率高等问题时，我们如何来定位错误？linux提供了很多命令来协助我们快速定位到错误，free命令是Linux最常用的命令之一：它可以查看系统的内存状况，包括服务器的总内存，已经使用的内存和剩下未被使用的内存，以及缓冲区和缓存各自占用的内存情况。 $ free -m total used free shared buffers cached ...</p>
-                        <a class="btn primary xsmall" href="/linux-command-free.html">更多 ...</a>
+                        <a class="btn primary xsmall" href="/article/linux/linux-command-free.html">more ...</a>
                 </div>
         </div>
         <hr />
+
 
         </div><!--/span-->
 
@@ -219,347 +238,417 @@
 <li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
     <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
 
-<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
 <li>
-<a href="/category/linux/">
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
     <i class="icon-folder-open icon-large"></i>Linux
 </a>
 </li>
 <li>
-<a href="/category/pa-chong-ji-zhu/">
+<a href="/category/pa-chong-ji-zhu/index.html">
     <i class="icon-folder-open icon-large"></i>爬虫技术
 </a>
 </li>
 <li>
-<a href="/category/pythonji-zhu/">
+<a href="/category/pythonji-zhu/index.html">
     <i class="icon-folder-open icon-large"></i>Python技术
 </a>
 </li>
 
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
 <li class="tag-4">
-    <a href="/tag/iterable/">
-        <i class="icon-tag icon-large"></i>iterable
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/legb/">
-        <i class="icon-tag icon-large"></i>legb
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/tuple/">
-        <i class="icon-tag icon-large"></i>tuple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/dian-zi-shu/">
-        <i class="icon-tag icon-large"></i>电子书
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/extractor/">
-        <i class="icon-tag icon-large"></i>extractor
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/metaclass/">
-        <i class="icon-tag icon-large"></i>metaclass
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/beautifulsoup/">
-        <i class="icon-tag icon-large"></i>beautifulsoup
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/dict/">
-        <i class="icon-tag icon-large"></i>dict
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/virtualenv/">
-        <i class="icon-tag icon-large"></i>virtualenv
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/pythonic/">
-        <i class="icon-tag icon-large"></i>pythonic
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/yield/">
-        <i class="icon-tag icon-large"></i>yield
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/datetime/">
-        <i class="icon-tag icon-large"></i>datetime
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/zuo-yong-yu/">
-        <i class="icon-tag icon-large"></i>作用域
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/bian-ma/">
-        <i class="icon-tag icon-large"></i>编码
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/pip/">
-        <i class="icon-tag icon-large"></i>pip
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/zhuang-shi-qi/">
-        <i class="icon-tag icon-large"></i>装饰器
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/book/">
-        <i class="icon-tag icon-large"></i>book
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/gc/">
-        <i class="icon-tag icon-large"></i>gc
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/with/">
-        <i class="icon-tag icon-large"></i>with
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/requests/">
-        <i class="icon-tag icon-large"></i>requests
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/django/">
-        <i class="icon-tag icon-large"></i>django
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/thread/">
-        <i class="icon-tag icon-large"></i>thread
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/for/">
-        <i class="icon-tag icon-large"></i>for
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/fudge/">
-        <i class="icon-tag icon-large"></i>fudge
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/ci-yun/">
-        <i class="icon-tag icon-large"></i>词云
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/re/">
+    <a href="/tag/re/index.html">
         <i class="icon-tag icon-large"></i>re
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/ru-men/">
-        <i class="icon-tag icon-large"></i>入门
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/list/">
-        <i class="icon-tag icon-large"></i>list
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/tornado/">
-        <i class="icon-tag icon-large"></i>tornado
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/cai-dan/">
-        <i class="icon-tag icon-large"></i>彩蛋
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/http/">
-        <i class="icon-tag icon-large"></i>http
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/suan-fa/">
-        <i class="icon-tag icon-large"></i>算法
-    </a>
-</li>
-<li class="tag-0">
-    <a href="/tag/python/">
-        <i class="icon-tag icon-large"></i>python
-    </a>
-</li>
-<li class="tag-1">
-    <a href="/tag/pa-chong/">
-        <i class="icon-tag icon-large"></i>爬虫
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/singleton/">
-        <i class="icon-tag icon-large"></i>singleton
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/shu/">
-        <i class="icon-tag icon-large"></i>书
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/intern/">
-        <i class="icon-tag icon-large"></i>intern
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/han-shu/">
-        <i class="icon-tag icon-large"></i>函数
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/jie-huo/">
+    <a href="/tag/jie-huo/index.html">
         <i class="icon-tag icon-large"></i>解惑
     </a>
 </li>
-<li class="tag-4">
-    <a href="/tag/str/">
-        <i class="icon-tag icon-large"></i>str
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/zheng-ze-biao-da-shi/">
-        <i class="icon-tag icon-large"></i>正则表达式
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
     </a>
 </li>
-<li class="tag-4">
-    <a href="/tag/timestamp/">
-        <i class="icon-tag icon-large"></i>timestamp
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/lsof/">
-        <i class="icon-tag icon-large"></i>lsof
-    </a>
-</li>
-<li class="tag-2">
-    <a href="/tag/shi-xian-yuan-li/">
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
         <i class="icon-tag icon-large"></i>实现原理
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/equals-identical/">
-        <i class="icon-tag icon-large"></i>equals-identical
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/luan-ma/">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
         <i class="icon-tag icon-large"></i>乱码
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/python27/">
-        <i class="icon-tag icon-large"></i>python27
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/decorator/">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
         <i class="icon-tag icon-large"></i>decorator
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/biao-qian-yun/">
-        <i class="icon-tag icon-large"></i>标签云
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/lambda/">
-        <i class="icon-tag icon-large"></i>lambda
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/bi-bao/">
-        <i class="icon-tag icon-large"></i>闭包
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/centos/">
-        <i class="icon-tag icon-large"></i>centos
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/iterator/">
-        <i class="icon-tag icon-large"></i>iterator
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/int/">
-        <i class="icon-tag icon-large"></i>int
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/generator/">
-        <i class="icon-tag icon-large"></i>generator
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/free/">
-        <i class="icon-tag icon-large"></i>free
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
     </a>
 </li>
 <li class="tag-2">
-    <a href="/tag/linux/">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
         <i class="icon-tag icon-large"></i>linux
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/zhi-hu/">
+    <a href="/tag/zhi-hu/index.html">
         <i class="icon-tag icon-large"></i>知乎
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/rename/">
-        <i class="icon-tag icon-large"></i>rename
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/stringio/">
-        <i class="icon-tag icon-large"></i>stringio
-    </a>
-</li>
-<li class="tag-3">
-    <a href="/tag/pycharm/">
-        <i class="icon-tag icon-large"></i>pycharm
-    </a>
-</li>
-<li class="tag-4">
-    <a href="/tag/djang-blog/">
+    <a href="/tag/djang-blog/index.html">
         <i class="icon-tag icon-large"></i>djang-blog
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/method/">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
         <i class="icon-tag icon-large"></i>method
     </a>
 </li>
 <li class="tag-4">
-    <a href="/tag/ming-ming-kong-jian/">
-        <i class="icon-tag icon-large"></i>命名空间
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
     </a>
 </li>
 <li class="tag-3">
-    <a href="/tag/python3/">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
         <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
     </a>
 </li>
 
@@ -578,7 +667,7 @@
 
        <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
                    and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
-         <p>&copy; 2018 By Alex</p>
+         <p>&copy; Alex 2018</p>
       </footer>
 
     </div><!--/.fluid-container-->
@@ -587,7 +676,7 @@
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
     <script src="/theme/js/bootstrap.min.js"></script>
   </body>
 </html>

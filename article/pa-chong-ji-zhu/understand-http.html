@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>爬虫入门系列（一）：快速理解HTTP协议</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 爬虫入门系列（一）：快速理解HTTP协议">
+                                        爬虫入门系列（一）：快速理解HTTP协议
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-04-06T00:00:00+08:00">
+        <i class="icon-calendar"></i>Thu 06 April 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pa-chong-ji-zhu/index.html"><i class="icon-folder-open"></i>爬虫技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/http/index.html"><i class="icon-tag"></i>http</a>
+	<a href="/tag/pa-chong/index.html"><i class="icon-tag"></i>爬虫</a>
+
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#29228;&#34411;&#20837;&#38376;&#31995;&#21015;&#30446;&#24405;&#65306; </p>
+<ol>
+<li><a href="https://foofish.net/understand-http.html">&#29228;&#34411;&#20837;&#38376;&#31995;&#21015;&#65288;&#19968;&#65289;&#65306;&#24555;&#36895;&#29702;&#35299;HTTP&#21327;&#35758;</a></li>
+<li><a href="https://foofish.net/http-requests.html">&#29228;&#34411;&#20837;&#38376;&#31995;&#21015;&#65288;&#20108;&#65289;&#65306;&#20248;&#38597;&#30340;HTTP&#24211;requests</a></li>
+<li><a href="https://foofish.net/http-requests-zhihu-api.html">&#29228;&#34411;&#20837;&#38376;&#31995;&#21015;&#65288;&#19977;&#65289;&#65306;&#29992; requests &#26500;&#24314;&#30693;&#20046; API</a></li>
+<li><a href="https://foofish.net/crawler-beautifulsoup.html">&#29228;&#34411;&#20837;&#38376;&#31995;&#21015;&#65288;&#22235;&#65289;&#65306;HTML&#25991;&#26412;&#35299;&#26512;&#24211;BeautifulSoup</a></li>
+</ol>
+<hr/>
+<blockquote>
+<p>4&#26376;&#20221;&#32473;&#33258;&#24049;&#25366;&#19968;&#20010;&#29228;&#34411;&#31995;&#21015;&#30340;&#22353;&#65292;&#20027;&#35201;&#28041;&#21450;HTTP &#21327;&#35758;&#12289;&#27491;&#21017;&#34920;&#36798;&#24335;&#12289;&#29228;&#34411;&#26694;&#26550; Scrapy&#12289;&#28040;&#24687;&#38431;&#21015;&#12289;&#25968;&#25454;&#24211;&#31561;&#20869;&#23481;&#12290;</p>
+</blockquote>
+<p>&#29228;&#34411;&#30340;&#22522;&#26412;&#21407;&#29702;&#26159;&#27169;&#25311;&#27983;&#35272;&#22120;&#36827;&#34892; HTTP &#35831;&#27714;&#65292;&#29702;&#35299; HTTP &#21327;&#35758;&#26159;&#20889;&#29228;&#34411;&#30340;&#24517;&#22791;&#22522;&#30784;&#65292;&#25307;&#32856;&#32593;&#31449;&#30340;&#29228;&#34411;&#23703;&#20301;&#20063;&#36203;&#28982;&#20889;&#30528;&#29087;&#32451;&#25484;&#25569;HTTP&#21327;&#35758;&#35268;&#33539;&#65292;&#20889;&#29228;&#34411;&#36824;&#19981;&#24471;&#19981;&#20808;&#20174;HTTP&#21327;&#35758;&#24320;&#22987;&#35762;&#36215;</p>
+<h2>HTTP&#21327;&#35758;&#26159;&#20160;&#20040;&#65311;</h2>
+<p>&#20320;&#27983;&#35272;&#30340;&#27599;&#19968;&#20010;&#32593;&#39029;&#37117;&#26159;&#22522;&#20110; HTTP &#21327;&#35758;&#21576;&#29616;&#30340;&#65292;HTTP &#21327;&#35758;&#26159;&#20114;&#32852;&#32593;&#24212;&#29992;&#20013;&#65292;&#23458;&#25143;&#31471;&#65288;&#27983;&#35272;&#22120;&#65289;&#19982;&#26381;&#21153;&#22120;&#20043;&#38388;&#36827;&#34892;&#25968;&#25454;&#36890;&#20449;&#30340;&#19968;&#31181;&#21327;&#35758;&#12290;&#21327;&#35758;&#20013;&#35268;&#23450;&#20102;&#23458;&#25143;&#31471;&#24212;&#35813;&#25353;&#29031;&#20160;&#20040;&#26684;&#24335;&#32473;&#26381;&#21153;&#22120;&#21457;&#36865;&#35831;&#27714;&#65292;&#21516;&#26102;&#20063;&#32422;&#23450;&#20102;&#26381;&#21153;&#31471;&#36820;&#22238;&#30340;&#21709;&#24212;&#32467;&#26524;&#24212;&#35813;&#26159;&#20160;&#20040;&#26684;&#24335;&#12290;</p>
+<p>&#21482;&#35201;&#22823;&#23478;&#37117;&#25353;&#29031;&#21327;&#35758;&#35268;&#23450;&#26041;&#24335;&#21457;&#36215;&#35831;&#27714;&#21644;&#36820;&#22238;&#21709;&#24212;&#32467;&#26524;&#65292;&#20219;&#20309;&#20154;&#37117;&#21487;&#20197;&#22522;&#20110;HTTP&#21327;&#35758;&#23454;&#29616;&#33258;&#24049;&#30340;Web&#23458;&#25143;&#31471;&#65288;&#27983;&#35272;&#22120;&#12289;&#29228;&#34411;&#65289;&#21644;Web&#26381;&#21153;&#22120;&#65288;Nginx&#12289;Apache&#31561;&#65289;&#12290;</p>
+<p>HTTP &#21327;&#35758;&#26412;&#36523;&#26159;&#38750;&#24120;&#31616;&#21333;&#30340;&#12290;&#23427;&#35268;&#23450;&#65292;&#21482;&#33021;&#30001;&#23458;&#25143;&#31471;&#20027;&#21160;&#21457;&#36215;&#35831;&#27714;&#65292;&#26381;&#21153;&#22120;&#25509;&#25910;&#35831;&#27714;&#22788;&#29702;&#21518;&#36820;&#22238;&#21709;&#24212;&#32467;&#26524;&#65292;&#21516;&#26102; HTTP &#26159;&#19968;&#31181;&#26080;&#29366;&#24577;&#30340;&#21327;&#35758;&#65292;&#21327;&#35758;&#26412;&#36523;&#19981;&#35760;&#24405;&#23458;&#25143;&#31471;&#30340;&#21382;&#21490;&#35831;&#27714;&#35760;&#24405;&#12290;</p>
+<p><img alt="http" src="../images/http.jpg"/></p>
+<p>HTTP &#21327;&#35758;&#26159;&#22914;&#20309;&#35268;&#23450;&#35831;&#27714;&#26684;&#24335;&#21644;&#21709;&#24212;&#26684;&#24335;&#30340;&#21602;&#65311;&#25442;&#35328;&#20043;&#65292;&#23458;&#25143;&#31471;&#25353;&#29031;&#20160;&#20040;&#26684;&#24335;&#25165;&#33021;&#27491;&#30830;&#21457;&#36215; HTTP &#35831;&#27714;&#21602;&#65311;&#26381;&#21153;&#31471;&#25353;&#29031;&#20160;&#20040;&#26684;&#24335;&#36820;&#22238;&#21709;&#24212;&#32467;&#26524;&#23458;&#25143;&#31471;&#25165;&#33021;&#27491;&#30830;&#35299;&#26512;&#65311;</p>
+<h2>HTTP &#35831;&#27714;</h2>
+<p>HTTP &#35831;&#27714;&#30001;3&#37096;&#20998;&#32452;&#25104;&#65292;&#20998;&#21035;&#26159;&#35831;&#27714;&#34892;&#12289;&#35831;&#27714;&#39318;&#37096;&#12289;&#35831;&#27714;&#20307;&#65292;&#39318;&#37096;&#21644;&#35831;&#27714;&#20307;&#26159;&#21487;&#36873;&#30340;&#65292;&#24182;&#19981;&#26159;&#27599;&#20010;&#35831;&#27714;&#37117;&#38656;&#35201;&#30340;&#12290;</p>
+<p><img alt="http-request.jpg" src="../images/http-request.jpg"/></p>
+<h3>&#35831;&#27714;&#34892;</h3>
+<p>&#35831;&#27714;&#34892;&#26159;&#27599;&#20010;&#35831;&#27714;&#24517;&#19981;&#21487;&#23569;&#30340;&#37096;&#20998;&#65292;&#23427;&#30001;3&#37096;&#20998;&#32452;&#25104;&#65292;&#20998;&#21035;&#26159;&#35831;&#27714;&#26041;&#27861;&#65288;method)&#12289;&#35831;&#27714;URL&#65288;URI&#65289;&#12289;HTTP&#21327;&#35758;&#29256;&#26412;&#65292;&#20197;&#31354;&#26684;&#38548;&#24320;&#12290;</p>
+<p>HTTP&#21327;&#35758;&#20013;&#26368;&#24120;&#29992;&#30340;&#35831;&#27714;&#26041;&#27861;&#26377;&#65306;GET&#12289;POST&#12289;PUT&#12289;DELETE&#12290;GET &#26041;&#27861;&#29992;&#20110;&#20174;&#26381;&#21153;&#22120;&#33719;&#21462;&#36164;&#28304;&#65292;90%&#30340;&#29228;&#34411;&#37117;&#26159;&#22522;&#20110;GET&#35831;&#27714;&#25235;&#21462;&#25968;&#25454;&#12290;</p>
+<p>&#35831;&#27714; URL &#26159;&#25351;&#36164;&#28304;&#25152;&#22312;&#26381;&#21153;&#22120;&#30340;&#36335;&#24452;&#22320;&#22336;&#65292;&#27604;&#22914;&#19978;&#22270;&#30340;&#20363;&#23376;&#34920;&#31034;&#23458;&#25143;&#31471;&#24819;&#33719;&#21462; index.html &#36825;&#20010;&#36164;&#28304;&#65292;&#23427;&#30340;&#36335;&#24452;&#22312;&#26381;&#21153;&#22120; foofish.net &#30340;&#26681;&#30446;&#24405;&#65288;/&#65289;&#19979;&#38754;&#12290;</p>
+<h3>&#35831;&#27714;&#39318;&#37096;</h3>
+<p>&#22240;&#20026;&#35831;&#27714;&#34892;&#25152;&#25658;&#24102;&#30340;&#20449;&#24687;&#37327;&#38750;&#24120;&#26377;&#38480;&#65292;&#20197;&#33267;&#20110;&#23458;&#25143;&#31471;&#36824;&#26377;&#24456;&#22810;&#24819;&#21521;&#26381;&#21153;&#22120;&#35201;&#35828;&#30340;&#20107;&#24773;&#19981;&#24471;&#19981;&#25918;&#22312;&#35831;&#27714;&#39318;&#37096;&#65288;Header&#65289;&#65292;&#35831;&#27714;&#39318;&#37096;&#29992;&#20110;&#32473;&#26381;&#21153;&#22120;&#25552;&#20379;&#19968;&#20123;&#39069;&#22806;&#30340;&#20449;&#24687;&#65292;&#27604;&#22914; User-Agent &#29992;&#26469;&#34920;&#26126;&#23458;&#25143;&#31471;&#30340;&#36523;&#20221;&#65292;&#35753;&#26381;&#21153;&#22120;&#30693;&#36947;&#20320;&#26159;&#26469;&#33258;&#27983;&#35272;&#22120;&#30340;&#35831;&#27714;&#36824;&#26159;&#29228;&#34411;&#65292;&#26159;&#26469;&#33258; Chrome &#27983;&#35272;&#22120;&#36824;&#26159; FireFox&#12290;HTTP/1.1 &#35268;&#23450;&#20102;47&#31181;&#39318;&#37096;&#23383;&#27573;&#31867;&#22411;&#12290;HTTP&#39318;&#37096;&#23383;&#27573;&#30340;&#26684;&#24335;&#24456;&#20687; Python &#20013;&#30340;&#23383;&#20856;&#31867;&#22411;&#65292;&#30001;&#38190;&#20540;&#23545;&#32452;&#25104;&#65292;&#20013;&#38388;&#29992;&#20882;&#21495;&#38548;&#24320;&#12290;&#27604;&#22914;&#65306;</p>
+<div class="highlight"><pre><span/><span class="n">User</span><span class="o">-</span><span class="n">Agent</span><span class="p">:</span> <span class="n">Mozilla</span><span class="o">/</span><span class="mf">5.0</span>
+</pre></div>
+
+<p>&#22240;&#20026;&#23458;&#25143;&#31471;&#21457;&#36865;&#35831;&#27714;&#26102;&#65292;&#21457;&#36865;&#30340;&#25968;&#25454;&#65288;&#25253;&#25991;&#65289;&#26159;&#30001;&#23383;&#31526;&#20018;&#26500;&#25104;&#30340;&#65292;&#20026;&#20102;&#21306;&#20998;&#35831;&#27714;&#39318;&#37096;&#30340;&#32467;&#23614;&#21644;&#35831;&#27714;&#20307;&#30340;&#24320;&#22987;&#65292;&#29992;&#19968;&#20010;&#31354;&#34892;&#26469;&#34920;&#31034;&#65292;&#36935;&#21040;&#31354;&#34892;&#26102;&#65292;&#23601;&#34920;&#31034;&#36825;&#26159;&#39318;&#37096;&#30340;&#32467;&#23614;&#65292;&#35831;&#27714;&#20307;&#30340;&#24320;&#22987;&#12290;</p>
+<h3>&#35831;&#27714;&#20307;</h3>
+<p>&#35831;&#27714;&#20307;&#26159;&#23458;&#25143;&#31471;&#25552;&#20132;&#32473;&#26381;&#21153;&#22120;&#30340;&#30495;&#27491;&#20869;&#23481;&#65292;&#27604;&#22914;&#29992;&#25143;&#30331;&#24405;&#26102;&#30340;&#38656;&#35201;&#29992;&#30340;&#29992;&#25143;&#21517;&#21644;&#23494;&#30721;&#65292;&#27604;&#22914;&#25991;&#20214;&#19978;&#20256;&#30340;&#25968;&#25454;&#65292;&#27604;&#22914;&#27880;&#20876;&#29992;&#25143;&#20449;&#24687;&#26102;&#25552;&#20132;&#30340;&#34920;&#21333;&#20449;&#24687;&#12290;</p>
+<p>&#29616;&#22312;&#25105;&#20204;&#29992; Python &#25552;&#20379;&#30340;&#26368;&#21407;&#22987;API <em>socket</em> &#27169;&#22359;&#26469;&#27169;&#25311;&#21521;&#26381;&#21153;&#22120;&#21457;&#36215;&#19968;&#20010; HTTP &#35831;&#27714;</p>
+<div class="highlight"><pre><span/>with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    # 1. &#19982;&#26381;&#21153;&#22120;&#24314;&#31435;&#36830;&#25509;
+    s.connect(("www.seriot.ch", 80))
+    # 2. &#26500;&#24314;&#35831;&#27714;&#34892;&#65292;&#35831;&#27714;&#36164;&#28304;&#26159; index.php
+    request_line = b"GET /index.php HTTP/1.1"
+    # 3. &#26500;&#24314;&#35831;&#27714;&#39318;&#37096;&#65292;&#25351;&#23450;&#20027;&#26426;&#21517;
+    headers = b"Host: seriot.ch"
+    # 4. &#29992;&#31354;&#34892;&#26631;&#35760;&#35831;&#27714;&#39318;&#37096;&#30340;&#32467;&#26463;&#20301;&#32622;
+    blank_line = b"\r\n"
+
+    # &#35831;&#27714;&#34892;&#12289;&#39318;&#37096;&#12289;&#31354;&#34892;&#36825;3&#37096;&#20998;&#20869;&#23481;&#29992;&#25442;&#34892;&#31526;&#20998;&#38548;&#65292;&#32452;&#25104;&#19968;&#20010;&#35831;&#27714;&#25253;&#25991;&#23383;&#31526;&#20018;
+    # &#21457;&#36865;&#32473;&#26381;&#21153;&#22120;
+    message = b"\r\n".join([request_line, headers, blank_line])
+    s.send(message)
+
+    # &#26381;&#21153;&#22120;&#36820;&#22238;&#30340;&#21709;&#24212;&#20869;&#23481;&#31245;&#21518;&#36827;&#34892;&#20998;&#26512;
+    response = s.recv(1024)
+    print(response)
+</pre></div>
+
+
+<h2>HTTP &#21709;&#24212;</h2>
+<p>&#26381;&#21153;&#31471;&#25509;&#25910;&#35831;&#27714;&#24182;&#22788;&#29702;&#21518;&#65292;&#36820;&#22238;&#21709;&#24212;&#20869;&#23481;&#32473;&#23458;&#25143;&#31471;&#65292;&#21516;&#26679;&#22320;&#65292;&#21709;&#24212;&#20869;&#23481;&#20063;&#24517;&#39035;&#36981;&#24490;&#22266;&#23450;&#30340;&#26684;&#24335;&#27983;&#35272;&#22120;&#25165;&#33021;&#27491;&#30830;&#35299;&#26512;&#12290;HTTP &#21709;&#24212;&#20063;&#30001;3&#37096;&#20998;&#32452;&#25104;&#65292;&#20998;&#21035;&#26159;&#65306;&#21709;&#24212;&#34892;&#12289;&#21709;&#24212;&#39318;&#37096;&#12289;&#21709;&#24212;&#20307;&#65292;&#19982; HTTP &#30340;&#35831;&#27714;&#26684;&#24335;&#26159;&#30456;&#23545;&#24212;&#30340;&#12290;</p>
+<p><img alt="http-response.jpg" src="../images/http-response.jpg"/></p>
+<h3>&#21709;&#24212;&#34892;</h3>
+<p>&#21709;&#24212;&#34892;&#21516;&#26679;&#20063;&#26159;3&#37096;&#20998;&#32452;&#25104;&#65292;&#30001;&#26381;&#21153;&#31471;&#25903;&#25345;&#30340; HTTP &#21327;&#35758;&#29256;&#26412;&#21495;&#12289;&#29366;&#24577;&#30721;&#12289;&#20197;&#21450;&#23545;&#29366;&#24577;&#30721;&#30340;&#31616;&#30701;&#21407;&#22240;&#25551;&#36848;&#32452;&#25104;&#12290;</p>
+<p>&#29366;&#24577;&#30721;&#26159;&#21709;&#24212;&#34892;&#20013;&#24456;&#37325;&#35201;&#30340;&#19968;&#20010;&#23383;&#27573;&#12290;&#36890;&#36807;&#29366;&#24577;&#30721;&#65292;&#23458;&#25143;&#31471;&#21487;&#20197;&#30693;&#36947;&#26381;&#21153;&#22120;&#26159;&#21542;&#27491;&#24120;&#22788;&#29702;&#30340;&#35831;&#27714;&#12290;&#22914;&#26524;&#29366;&#24577;&#30721;&#26159;200&#65292;&#35828;&#26126;&#23458;&#25143;&#31471;&#30340;&#35831;&#27714;&#22788;&#29702;&#25104;&#21151;&#65292;&#22914;&#26524;&#26159;500&#65292;&#35828;&#26126;&#26381;&#21153;&#22120;&#22788;&#29702;&#35831;&#27714;&#30340;&#26102;&#20505;&#20986;&#29616;&#20102;&#24322;&#24120;&#12290;404 &#34920;&#31034;&#35831;&#27714;&#30340;&#36164;&#28304;&#22312;&#26381;&#21153;&#22120;&#25214;&#19981;&#21040;&#12290;&#38500;&#27492;&#20043;&#22806;&#65292;HTTP &#21327;&#35758;&#36824;&#24456;&#23450;&#20041;&#20102;&#24456;&#22810;&#20854;&#20182;&#30340;&#29366;&#24577;&#30721;&#65292;&#19981;&#36807;&#23427;&#19981;&#26159;&#26412;&#25991;&#30340;&#35752;&#35770;&#33539;&#22260;&#12290;</p>
+<h3>&#21709;&#24212;&#39318;&#37096;</h3>
+<p>&#21709;&#24212;&#39318;&#37096;&#21644;&#35831;&#27714;&#39318;&#37096;&#31867;&#20284;&#65292;&#29992;&#20110;&#23545;&#21709;&#24212;&#20869;&#23481;&#30340;&#34917;&#20805;&#65292;&#22312;&#39318;&#37096;&#37324;&#38754;&#21487;&#20197;&#21578;&#30693;&#23458;&#25143;&#31471;&#21709;&#24212;&#20307;&#30340;&#25968;&#25454;&#31867;&#22411;&#26159;&#20160;&#20040;&#65311;&#21709;&#24212;&#20869;&#23481;&#36820;&#22238;&#30340;&#26102;&#38388;&#26159;&#20160;&#20040;&#26102;&#20505;&#65292;&#21709;&#24212;&#20307;&#26159;&#21542;&#21387;&#32553;&#20102;&#65292;&#21709;&#24212;&#20307;&#26368;&#21518;&#19968;&#27425;&#20462;&#25913;&#30340;&#26102;&#38388;&#12290;</p>
+<h3>&#21709;&#24212;&#20307;</h3>
+<p>&#21709;&#24212;&#20307;&#65288;body&#65289;&#26159;&#26381;&#21153;&#22120;&#36820;&#22238;&#30340;&#30495;&#27491;&#20869;&#23481;&#65292;&#23427;&#21487;&#20197;&#26159;&#19968;&#20010;HTML&#39029;&#38754;&#65292;&#25110;&#32773;&#26159;&#19968;&#24352;&#22270;&#29255;&#12289;&#19968;&#27573;&#35270;&#39057;&#31561;&#31561;&#12290;</p>
+<p>&#25105;&#20204;&#32487;&#32493;&#27839;&#29992;&#21069;&#38754;&#37027;&#20010;&#20363;&#23376;&#26469;&#30475;&#30475;&#26381;&#21153;&#22120;&#36820;&#22238;&#30340;&#21709;&#24212;&#32467;&#26524;&#26159;&#20160;&#20040;&#65311;&#22240;&#20026;&#25105;&#21482;&#25509;&#25910;&#20102;&#21069;1024&#20010;&#23383;&#33410;&#65292;&#25152;&#20197;&#26377;&#19968;&#37096;&#20998;&#21709;&#24212;&#20869;&#23481;&#26159;&#30475;&#19981;&#21040;&#30340;&#12290;</p>
+<div class="highlight"><pre><span/><span class="n">b</span><span class="s1">'HTTP/1.1 200 OK</span><span class="se">\r\n</span>
+<span class="n">Date</span><span class="p">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Apr</span> <span class="mi">2017</span> <span class="mi">16</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="mi">35</span> <span class="n">GMT</span>\<span class="n">r</span>\<span class="n">n</span>
+<span class="n">Server</span><span class="p">:</span> <span class="n">Apache</span>\<span class="n">r</span>\<span class="n">n</span>
+<span class="n">Expires</span><span class="p">:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">19</span> <span class="n">Nov</span> <span class="mi">1981</span> <span class="mi">08</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mo">00</span> <span class="n">GMT</span>\<span class="n">r</span>\<span class="n">n</span>
+<span class="n">Set</span><span class="o">-</span><span class="n">Cookie</span><span class="p">:</span> <span class="n">PHPSESSID</span><span class="o">=</span><span class="mi">66</span><span class="n">bea0a1f7cb572584745f9ce6984b7e</span><span class="p">;</span> <span class="n">path</span><span class="o">=/</span>\<span class="n">r</span>\<span class="n">n</span>
+<span class="n">Transfer</span><span class="o">-</span><span class="n">Encoding</span><span class="p">:</span> <span class="n">chunked</span>\<span class="n">r</span>\<span class="n">n</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">;</span> <span class="n">charset</span><span class="o">=</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>\<span class="n">r</span>\<span class="n">n</span>\<span class="n">r</span>\<span class="n">n118d</span>\<span class="n">r</span>\<span class="n">n</span>
+
+<span class="o">&lt;</span><span class="err">!</span><span class="n">DOCTYPE</span> <span class="n">html</span> <span class="n">PUBLIC</span> <span class="s2">"-//W3C//DTD XHTML 1.0 Strict//EN"</span> <span class="s2">"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</span><span class="o">&gt;</span>\<span class="n">n</span>\<span class="n">n</span>
+<span class="o">&lt;</span><span class="n">html</span> <span class="n">xmlns</span><span class="o">=</span><span class="s2">"http://www.w3.org/1999/xhtml"</span> <span class="n">xml</span><span class="p">:</span><span class="n">lang</span><span class="o">=</span><span class="s2">"en"</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"en"</span><span class="o">&gt;</span>\<span class="n">n</span>
+<span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>\<span class="n">n</span>\<span class="n">t</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s2">"Content-Type"</span> <span class="n">content</span><span class="o">=</span><span class="s2">"text/html;charset=iso-8859-1"</span> <span class="o">/&gt;</span>    \<span class="n">n</span>\<span class="n">t</span>
+    <span class="o">&lt;</span><span class="n">meta</span> <span class="n">http</span><span class="o">-</span><span class="n">equiv</span><span class="o">=</span><span class="s2">"content-language"</span> <span class="n">content</span><span class="o">=</span><span class="s2">"en"</span> <span class="o">/&gt;</span>\<span class="n">n</span>\<span class="n">t</span>
+<span class="o">...</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>&#20174;&#32467;&#26524;&#26469;&#30475;&#65292;&#23427;&#19982;&#21327;&#35758;&#20013;&#35268;&#33539;&#30340;&#26684;&#24335;&#26159;&#19968;&#26679;&#30340;&#65292;&#31532;&#19968;&#34892;&#26159;&#21709;&#24212;&#34892;&#65292;&#29366;&#24577;&#30721;&#26159;200&#65292;&#34920;&#26126;&#35831;&#27714;&#25104;&#21151;&#12290;&#31532;&#20108;&#37096;&#20998;&#26159;&#21709;&#24212;&#39318;&#37096;&#20449;&#24687;&#65292;&#30001;&#22810;&#20010;&#39318;&#37096;&#32452;&#25104;&#65292;&#26377;&#26381;&#21153;&#22120;&#36820;&#22238;&#21709;&#24212;&#30340;&#26102;&#38388;&#65292;Cookie&#20449;&#24687;&#31561;&#31561;&#12290;&#31532;&#19977;&#37096;&#20998;&#23601;&#26159;&#30495;&#27491;&#30340;&#21709;&#24212;&#20307; HTML &#25991;&#26412;&#12290;</p>
+<p>&#33267;&#27492;&#65292;&#20320;&#24212;&#35813;&#23545; HTTP &#21327;&#35758;&#26377;&#19968;&#20010;&#24635;&#20307;&#30340;&#35748;&#35782;&#20102;&#65292;&#29228;&#34411;&#30340;&#34892;&#20026;&#26412;&#36136;&#19978;&#23601;&#26159;&#27169;&#25311;&#27983;&#35272;&#22120;&#21457;&#36865;HTTP&#35831;&#27714;&#65292;&#25152;&#20197;&#35201;&#24819;&#22312;&#29228;&#34411;&#39046;&#22495;&#28145;&#32789;&#32454;&#20316;&#65292;&#29702;&#35299; HTTP &#21327;&#35758;&#26159;&#24517;&#39035;&#30340;&#12290;</p>
+<p>&#24403;&#28982; HTTP &#21327;&#35758;&#36828;&#19981;&#27490;&#36825;&#20040;&#19968;&#28857;&#20869;&#23481;&#65292;&#20063;&#26681;&#26412;&#19981;&#21487;&#33021;&#29992;&#19968;&#31687;&#25991;&#31456;&#23601;&#35797;&#22270;&#25226;&#23427;&#20840;&#37096;&#35762;&#28165;&#26970;&#65292;&#25105;&#22312;&#36825;&#37324;&#20063;&#21482;&#26159;&#25243;&#30742;&#24341;&#29577;&#65292;&#24819;&#28145;&#20837;&#20102;&#35299;HTTP&#30340;&#65292;&#21487;&#21442;&#32771;&#20844;&#20247;&#21495;&#12300;Python&#20043;&#31109;&#12301;&#25512;&#33616;&#30340;&#24310;&#20280;&#38405;&#35835;&#12290;</p>
+<p>&#24310;&#20280;&#38405;&#35835;</p>
+<ul>
+<li>&#12298;&#22270;&#35299;HTTP&#12299;</li>
+<li>&#12298;HTTP&#26435;&#23041;&#25351;&#21335;&#12299;</li>
+<li><a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html">HTTP Request&#65306;https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5</a></li>
+<li><a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html">HTTP Response&#65306;https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html</a></li>
+</ul>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/understand-http.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

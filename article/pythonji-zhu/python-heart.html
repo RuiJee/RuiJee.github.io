@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>基于微博数据打造一颗“心”</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 基于微博数据打造一颗“心”">
+                                        基于微博数据打造一颗“心”
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2017-02-14T00:00:00+08:00">
+        <i class="icon-calendar"></i>Tue 14 February 2017
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/pythonji-zhu/index.html"><i class="icon-folder-open"></i>Python技术</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/pa-chong/index.html"><i class="icon-tag"></i>爬虫</a>
+
+</footer><!-- /.post-info -->                </div>
+                <article>
+        <p>&#19968;&#24180;&#19968;&#24230;&#30340;&#34384;&#29399;&#33410;&#32456;&#20110;&#36807;&#21435;&#20102;&#65292;&#26379;&#21451;&#22280;&#21508;&#31181;&#26194;&#65292;&#26194;&#33258;&#25293;&#65292;&#26194;&#23043;&#65292;&#26194;&#32654;&#39135;&#65292;&#31168;&#24681;&#29233;&#30340;&#12290;&#31243;&#24207;&#21592;&#22312;&#26194;&#20160;&#20040;&#65292;&#31243;&#24207;&#21592;&#22312;&#21152;&#29677;&#12290;&#20294;&#26159;&#31036;&#29289;&#36824;&#26159;&#23569;&#19981;&#20102;&#30340;&#65292;&#36865;&#20160;&#20040;&#22909;&#65311;&#20316;&#20026;&#31243;&#24207;&#21592;&#65292;&#25105;&#20934;&#22791;&#20102;&#19968;&#20221;&#29305;&#21035;&#30340;&#31036;&#29289;&#65292;&#29992;&#20197;&#24448;&#21457;&#30340;&#24494;&#21338;&#25968;&#25454;&#25171;&#36896;&#19968;&#39063;&#8220;&#29233;&#24515;&#8221;&#65292;&#25105;&#24819;&#22905;&#19968;&#23450;&#20250;&#24863;&#21160;&#24471;&#21741;&#20102;&#21543;&#12290;&#21704;&#21704;</p>
+<h3>&#20934;&#22791;&#24037;&#20316;</h3>
+<p>&#26377;&#20102;&#24819;&#27861;&#20043;&#21518;&#23601;&#24320;&#22987;&#34892;&#21160;&#20102;&#65292;&#33258;&#28982;&#26368;&#20808;&#24819;&#21040;&#30340;&#23601;&#26159;&#29992; Python &#20102;&#65292;&#22823;&#20307;&#24605;&#36335;&#23601;&#26159;&#25226;&#24494;&#21338;&#25968;&#25454;&#29228;&#19979;&#26469;&#65292;&#25968;&#25454;&#32463;&#36807;&#28165;&#27927;&#21152;&#24037;&#21518;&#20877;&#36827;&#34892;&#20998;&#35789;&#22788;&#29702;&#65292;&#22788;&#29702;&#21518;&#30340;&#25968;&#25454;&#20132;&#32473;&#35789;&#20113;&#24037;&#20855;&#65292;&#37197;&#21512;&#31185;&#23398;&#35745;&#31639;&#24037;&#20855;&#21644;&#32472;&#22270;&#24037;&#20855;&#21046;&#20316;&#25104;&#22270;&#20687;&#20986;&#26469;&#65292;&#28041;&#21450;&#21040;&#30340;&#24037;&#20855;&#21253;&#26377;&#65306;</p>
+<p>requests &#29992;&#20110;&#32593;&#32476;&#35831;&#27714;&#29228;&#21462;&#24494;&#21338;&#25968;&#25454;&#65292;&#32467;&#24052;&#20998;&#35789;&#36827;&#34892;&#20013;&#25991;&#20998;&#35789;&#22788;&#29702;&#65292;&#35789;&#20113;&#22788;&#29702;&#24211; wordcloud&#65292;&#22270;&#29255;&#22788;&#29702;&#24211; Pillow&#65292;&#31185;&#23398;&#35745;&#31639;&#24037;&#20855; NumPy &#65292;&#31867;&#20284;&#20110; MATLAB &#30340; 2D &#32472;&#22270;&#24211; Matplotlib </p>
+<h3>&#24037;&#20855;&#23433;&#35013;</h3>
+<p>&#23433;&#35013;&#36825;&#20123;&#24037;&#20855;&#21253;&#26102;&#65292;&#19981;&#21516;&#31995;&#32479;&#24179;&#21488;&#26377;&#21487;&#33021;&#20986;&#29616;&#19981;&#19968;&#26679;&#30340;&#38169;&#35823;&#65292;wordcloud&#65292;requests&#65292;jieba &#37117;&#21487;&#20197;&#36890;&#36807;&#26222;&#36890;&#30340; pip &#26041;&#24335;&#22312;&#32447;&#23433;&#35013;&#65292;</p>
+<div class="highlight"><pre><span/><span class="n">pip</span> <span class="n">install</span> <span class="n">wordcloud</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">requests</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">jieba</span>
+</pre></div>
+
+<p>&#22312;Windows &#24179;&#21488;&#23433;&#35013;  Pillow&#65292;NumPy&#65292;Matplotlib &#30452;&#25509;&#29992; pip &#22312;&#32447;&#23433;&#35013;&#20250;&#20986;&#29616;&#21508;&#31181;&#38382;&#39064;&#65292;&#25512;&#33616;&#30340;&#19968;&#31181;&#26041;&#24335;&#26159;&#22312;&#19968;&#20010;&#21483; Python Extension Packages for Windows <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/">1</a> &#30340;&#31532;&#19977;&#26041;&#24179;&#21488;&#19979;&#36733; &#30456;&#24212;&#30340; .whl &#25991;&#20214;&#23433;&#35013;&#12290;&#21487;&#20197;&#26681;&#25454;&#33258;&#24049;&#30340;&#31995;&#32479;&#29615;&#22659;&#36873;&#25321;&#19979;&#36733;&#23433;&#35013; cp27 &#23545;&#24212; python2.7&#65292;amd64 &#23545;&#24212; 64 &#20301;&#31995;&#32479;&#12290;&#19979;&#36733;&#21040;&#26412;&#22320;&#21518;&#36827;&#34892;&#23433;&#35013;</p>
+<div class="highlight"><pre><span/><span class="n">pip</span> <span class="n">install</span> <span class="n">Pillow</span><span class="o">-</span><span class="mf">4.0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">cp27</span><span class="o">-</span><span class="n">cp27m</span><span class="o">-</span><span class="n">win_amd64</span><span class="o">.</span><span class="n">whl</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">scipy</span><span class="o">-</span><span class="mf">0.18</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">cp27</span><span class="o">-</span><span class="n">cp27m</span><span class="o">-</span><span class="n">win_amd64</span><span class="o">.</span><span class="n">whl</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">numpy</span><span class="o">-</span><span class="mf">1.11</span><span class="o">.</span><span class="mi">3</span><span class="o">+</span><span class="n">mkl</span><span class="o">-</span><span class="n">cp27</span><span class="o">-</span><span class="n">cp27m</span><span class="o">-</span><span class="n">win_amd64</span><span class="o">.</span><span class="n">whl</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">matplotlib</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="mi">3</span><span class="o">-</span><span class="n">cp27</span><span class="o">-</span><span class="n">cp27m</span><span class="o">-</span><span class="n">win_amd64</span><span class="o">.</span><span class="n">whl</span>
+</pre></div>
+
+
+<p>&#20854;&#20182;&#24179;&#21488;&#21487;&#26681;&#25454;&#38169;&#35823;&#25552;&#31034; Google &#35299;&#20915;&#12290;&#25110;&#32773;&#30452;&#25509;&#22522;&#20110; Anaconda &#24320;&#21457;&#65292;&#23427;&#26159; Python &#30340;&#19968;&#20010;&#20998;&#25903;&#65292;&#20869;&#32622;&#20102;&#22823;&#37327;&#31185;&#23398;&#35745;&#31639;&#12289;&#26426;&#22120;&#23398;&#20064;&#30340;&#27169;&#22359; &#12290;</p>
+<h3>&#33719;&#21462;&#25968;&#25454;</h3>
+<p>&#26032;&#28010;&#24494;&#21338;&#23448;&#26041;&#25552;&#20379;&#30340; API &#26159;&#20010;&#28195;&#28195;&#65292;&#21482;&#33021;&#33719;&#21462;&#29992;&#25143;&#26368;&#26032;&#21457;&#24067;&#30340;5&#26465;&#25968;&#25454;&#65292;&#36864;&#32780;&#27714;&#20854;&#27425;&#65292;&#20351;&#29992;&#29228;&#34411;&#21435;&#25235;&#21462;&#25968;&#25454;&#65292;&#25235;&#21462;&#21069;&#20808;&#35780;&#20272;&#38590;&#24230;&#65292;&#30475;&#30475;&#26159;&#21542;&#26377;&#20154;&#20889;&#22909;&#20102;&#65292;&#22312;GitHub&#36891;&#20102;&#19968;&#22280;&#65292;&#22522;&#26412;&#27809;&#26377;&#28385;&#36275;&#38656;&#27714;&#30340;&#12290;&#20498;&#26159;&#32473;&#25105;&#25552;&#20379;&#20102;&#19968;&#20123;&#24605;&#36335;&#65292;&#20110;&#26159;&#20915;&#23450;&#33258;&#24049;&#20889;&#29228;&#34411;&#12290;&#20351;&#29992; http://m.weibo.cn/ &#31227;&#21160;&#31471;&#32593;&#22336;&#21435;&#29228;&#21462;&#25968;&#25454;&#12290;&#21457;&#29616;&#25509;&#21475; http://m.weibo.cn/index/my?format=cards&amp;page=1 &#21487;&#20197;&#20998;&#39029;&#33719;&#21462;&#24494;&#21338;&#25968;&#25454;&#65292;&#32780;&#19988;&#36820;&#22238;&#30340;&#25968;&#25454;&#26159; json &#26684;&#24335;&#65292;&#36825;&#26679;&#23601;&#30465;&#20107;&#24456;&#22810;&#20102;&#65292;&#19981;&#36807;&#35813;&#25509;&#21475;&#38656;&#35201;&#30331;&#24405;&#21518;&#30340; cookies &#20449;&#24687;&#65292;&#30331;&#24405;&#33258;&#24049;&#30340;&#24080;&#21495;&#23601;&#21487;&#20197;&#36890;&#36807; Chrome &#27983;&#35272;&#22120; &#25214;&#21040; Cookies &#20449;&#24687;&#12290;
+<img alt="weibo-cookie" src="../images/weibo-cookies.png"/></p>
+<p>&#23454;&#29616;&#20195;&#30721;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">fetch_weibo</span><span class="p">():</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="s2">"http://m.weibo.cn/index/my?format=cards&amp;page=</span><span class="si">%s</span><span class="s2">"</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">102</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">api</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"card_group"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mblog"</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">cleanring</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">text</span>
+</pre></div>
+
+
+<p>&#26597;&#30475;&#24494;&#21338;&#30340;&#24635;&#39029;&#25968;&#26159;101&#65292;&#32771;&#34385;&#21040;&#19968;&#27425;&#24615;&#36820;&#22238;&#19968;&#20010;&#21015;&#34920;&#23545;&#35937;&#22826;&#36153;&#20869;&#23384;&#65292;&#20989;&#25968;&#29992; yield &#36820;&#22238;&#19968;&#20010;&#29983;&#25104;&#22120;&#65292;&#27492;&#22806;&#36824;&#35201;&#23545;&#25991;&#26412;&#36827;&#34892;&#25968;&#25454;&#28165;&#27927;&#65292;&#20363;&#22914;&#21435;&#38500;&#26631;&#28857;&#31526;&#21495;&#65292;HTML &#26631;&#31614;&#65292;&#8220;&#36716;&#21457;&#24494;&#21338;&#8221;&#36825;&#26679;&#30340;&#23383;&#26679;&#12290;</p>
+<h3>&#20445;&#23384;&#25968;&#25454;</h3>
+<p>&#25968;&#25454;&#33719;&#21462;&#20043;&#21518;&#65292;&#25105;&#20204;&#35201;&#25226;&#23427;&#31163;&#32447;&#20445;&#23384;&#36215;&#26469;&#65292;&#26041;&#20415;&#19979;&#27425;&#37325;&#22797;&#20351;&#29992;&#65292;&#36991;&#20813;&#37325;&#22797;&#22320;&#21435;&#29228;&#21462;&#12290;&#20351;&#29992; csv &#26684;&#24335;&#20445;&#23384;&#21040; weibo.csv &#25991;&#20214;&#20013;&#65292;&#20197;&#20415;&#19979;&#19968;&#27493;&#20351;&#29992;&#12290;&#25968;&#25454;&#20445;&#23384;&#21040; csv &#25991;&#20214;&#20013;&#25171;&#24320;&#30340;&#26102;&#20505;&#21487;&#33021;&#20026;&#20081;&#30721;&#65292;&#27809;&#20851;&#31995;&#65292;&#29992; notepad++&#26597;&#30475;&#19981;&#26159;&#20081;&#30721;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">texts</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'weibo.csv'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">({</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+
+<span class="k">def</span> <span class="nf">read_csv</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'weibo.csv'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">row</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>&#20998;&#35789;&#22788;&#29702;</h3>
+<p>&#20174; weibo.csv &#25991;&#20214;&#20013;&#35835;&#20986;&#26469;&#30340;&#27599;&#19968;&#26465;&#24494;&#21338;&#36827;&#34892;&#20998;&#35789;&#22788;&#29702;&#21518;&#20877;&#20132;&#32473; wordcloud &#29983;&#25104;&#35789;&#20113;&#12290;&#32467;&#24052;&#20998;&#35789;&#36866;&#29992;&#20110;&#22823;&#37096;&#20998;&#20013;&#25991;&#20351;&#29992;&#22330;&#26223;&#65292;&#20351;&#29992;&#20572;&#27490;&#35789;&#24211; stopwords.txt &#25226;&#26080;&#29992;&#30340;&#20449;&#24687;&#65288;&#27604;&#22914;&#65306;&#30340;&#65292;&#37027;&#20040;&#65292;&#22240;&#20026;&#31561;&#65289;&#36807;&#28388;&#25481;&#12290;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">word_segment</span><span class="p">(</span><span class="n">texts</span><span class="p">):</span>
+    <span class="n">jieba</span><span class="o">.</span><span class="n">analyse</span><span class="o">.</span><span class="n">set_stop_words</span><span class="p">(</span><span class="s2">"stopwords.txt"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">analyse</span><span class="o">.</span><span class="n">extract_tags</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">topK</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>&#29983;&#25104;&#22270;&#29255;</h3>
+<p>&#25968;&#25454;&#20998;&#35789;&#22788;&#29702;&#21518;&#65292;&#23601;&#21487;&#20197;&#32473; wordcloud &#22788;&#29702;&#20102;&#65292;wordcloud &#26681;&#25454;&#25968;&#25454;&#37324;&#38754;&#30340;&#21508;&#20010;&#35789;&#20986;&#29616;&#30340;&#39057;&#29575;&#12289;&#26435;&#37325;&#25353;&#27604;&#21015;&#26174;&#31034;&#20851;&#38190;&#23383;&#30340;&#23383;&#20307;&#22823;&#23567;&#12290;&#29983;&#25104;&#26041;&#24418;&#30340;&#22270;&#20687;&#65292;&#22914;&#22270;&#65306;</p>
+<p><img alt="wordcloud" src="../images/wordcloud.png"/></p>
+<p>&#26159;&#30340;&#65292;&#29983;&#25104;&#30340;&#22270;&#29255;&#27627;&#26080;&#32654;&#24863;&#65292;&#27605;&#31455;&#26159;&#35201;&#36865;&#20154;&#30340;&#20063;&#35201;&#25343;&#24471;&#20986;&#25163;&#25165;&#22909;&#28843;&#32768;&#23545;&#21543;&#65292;&#37027;&#20040;&#25105;&#20204;&#25214;&#19968;&#24352;&#23500;&#26377;&#33402;&#26415;&#24863;&#30340;&#22270;&#29255;&#20316;&#20026;&#27169;&#29256;&#65292;&#20020;&#25721;&#20986;&#19968;&#24352;&#28418;&#20142;&#30340;&#22270;&#20986;&#26469;&#12290;&#25105;&#22312;&#32593;&#19978;&#25628;&#21040;&#19968;&#24352;&#8220;&#24515;&#8221;&#22411;&#22270;&#65306;
+<img alt="heart-mask" src="../images/heart-mask.jpg"/></p>
+<p>&#29983;&#25104;&#22270;&#29255;&#20195;&#30721;&#65306;</p>
+<div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">generate_img</span><span class="p">(</span><span class="n">texts</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">)</span>
+    <span class="n">mask_img</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="s1">'./heart-mask.jpg'</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">wordcloud</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span>
+        <span class="n">font_path</span><span class="o">=</span><span class="s1">'msyh.ttc'</span><span class="p">,</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">mask_img</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wordcloud</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'./heart.jpg'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+
+<p>&#38656;&#35201;&#27880;&#24847;&#30340;&#26159;&#22788;&#29702;&#26102;&#65292;&#38656;&#35201;&#32473; matplotlib &#25351;&#23450;&#20013;&#25991;&#23383;&#20307;&#65292;&#21542;&#21017;&#20250;&#26174;&#31034;&#20081;&#30721;&#65292;&#25214;&#21040;&#23383;&#20307;&#25991;&#20214;&#22841;&#65306;C:\Windows\Fonts\Microsoft YaHei UI&#22797;&#21046;&#35813;&#23383;&#20307;&#65292;&#25335;&#36125;&#21040; matplotlib &#23433;&#35013;&#30446;&#24405;&#65306;C:\Python27\Lib\site-packages\matplotlib\mpl-data\fonts\ttf &#19979;</p>
+<p>&#24046;&#19981;&#22810;&#23601;&#36825;&#26679;&#12290;</p>
+<p><img alt="heart.png" src="../images/heart.jpg"/></p>
+<p>&#24403;&#25105;&#33258;&#35946;&#22320;&#25226;&#36825;&#24352;&#22270;&#21457;&#32473;&#22905;&#30340;&#26102;&#20505;&#65292;&#20986;&#29616;&#20102;&#36825;&#26679;&#30340;&#23545;&#35805;&#65306;  </p>
+<blockquote>
+<p>&#36825;&#26159;&#20160;&#20040;&#65311;<br/>
+&#25105;&#65306;&#29233;&#24515;&#21834;&#65292;&#20146;&#25163;&#20570;&#30340;<br/>
+&#36825;&#20040;&#19987;&#19994;&#65292;&#22909;&#24863;&#21160;&#21834;&#65292;&#20320;&#30340;&#30524;&#37324;&#21482;&#26377; python &#65292;&#27809;&#26377;&#25105;  &#65288;&#21741;&#31505;&#65289;<br/>
+&#25105;&#65306;&#26126;&#26126;&#26159;&#8220;&#24515;&#8221;&#20013;&#26377; python &#21834;</p>
+</blockquote>
+<p>&#25105;&#22909;&#20687;&#35828;&#38169;&#20102;&#20160;&#20040;&#12290;&#21704;&#21704;&#21704;</p>
+<p>&#23436;&#25972;&#20195;&#30721;&#21487;&#20197;&#22312;&#20844;&#20247;&#21495;&#22238;&#22797;"h"&#19979;&#36733;&#12290;</p>
+        <br/>
+        </article>
+
+<p>Original:https://foofish.net/python-heart.html</p>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

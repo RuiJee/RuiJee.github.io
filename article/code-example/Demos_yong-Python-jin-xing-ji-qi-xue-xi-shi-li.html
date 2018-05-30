@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>用Python进行机器学习实例</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to 用Python进行机器学习实例">
+                                        用Python进行机器学习实例
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># 用Python进行机器学习实例</span>
+
+<span class="c1">### 概要</span>
+
+<span class="err">本文是用</span><span class="n">Python</span><span class="err">编程语言来进行机器学习小实验的第一篇。主要内容如下：</span>
+
+
+
+<span class="err">读入数据并清洗数据</span>
+
+<span class="err">探索理解输入数据的特点</span>
+
+<span class="err">分析如何为学习算法呈现数据</span>
+
+<span class="err">选择正确的模型和学习算法</span>
+
+<span class="err">评估程序表现的准确性</span>
+
+
+
+<span class="c1">### 读入数据 Reading the data</span>
+
+<span class="err">当读入数据时，你将面临处理无效或丢失数据的问题，好的处理方式相比于精确的科学来说，更像是一种艺术。因为这部分处理适当可以适用于更多的机器学习算法并因此提高成</span>
+<span class="err">功的概率。</span>
+
+
+
+<span class="err">用</span><span class="n">NumPy</span><span class="err">有效地咀嚼数据，用</span><span class="n">SciPy</span><span class="err">智能地吸收数据</span>
+
+<span class="n">Python</span><span class="err">是一个高度优化的解释性语言，在处理数值繁重的算法方面要比</span><span class="n">C</span><span class="err">等语言慢很多，那为什么依然有很多科学家和公司在计算密集的领域将赌注下在</span><span class="n">Python</span><span class="err">上呢</span>
+<span class="err">？因为</span><span class="n">Python</span><span class="err">可以很容易地将数值计算任务分配给</span><span class="n">C</span><span class="err">或</span><span class="n">Fortran</span><span class="err">这些底层扩展。其中</span><span class="n">NumPy</span><span class="err">和</span><span class="n">SciPy</span><span class="err">就是其中代表。</span><span class="n">NumPy</span><span class="err">提供了很多有效的数据结构</span>
+<span class="err">，比如</span><span class="n">array</span><span class="err">，而</span><span class="n">SciPy</span><span class="err">提供了很多算法来处理这些</span><span class="n">arrays</span><span class="err">。无论是矩阵操作、线性代数、最优化问题、聚类，甚至快速傅里叶变换，该工具箱都可以满足需求。</span>
+
+<span class="err">!</span><span class="p">[](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">mmbiz</span><span class="o">.</span><span class="n">qpic</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">mmbiz_jpg</span><span class="o">/</span><span class="n">BP6HQN6ROpyDvwlAG8co8vvzxvpnxrtYIofa5yYq5xs</span>
+<span class="n">cPYEaKe8rRdGOsjib76nU8egeDnsWeXaTgBSDRQWyuRA</span><span class="o">/</span><span class="mi">640</span><span class="err">?</span><span class="n">wx_fmt</span><span class="o">=</span><span class="n">jpeg</span><span class="o">&amp;</span><span class="n">tp</span><span class="o">=</span><span class="n">webp</span><span class="o">&amp;</span><span class="n">wxfrom</span><span class="o">=</span><span class="mi">5</span><span class="o">&amp;</span>
+<span class="n">wx_lazy</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">### 读入数据操作</span>
+
+<span class="err">这里我们以网页点击数据为例，第一维属性是小时，第二维数据是点击个数。</span>
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">scipy</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">sp</span>
+    <span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="s1">&#39;web_traffic.tsv&#39;</span><span class="p">,</span><span class="err"> </span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">### 预处理和清洗数据</span>
+
+<span class="err">当你准备好了你的数据结构用于存储处理数据后，你可能需要更多的数据来确保预测活动，或者拥有了很多数据，你需要去思考如何更好的进行数据采样。在将原始数据（</span><span class="n">raw</span>
+<span class="n">data</span><span class="err">）进行训练之前，对数据进行提炼可以起到很好的作用，有时，一个用提炼的数据的简单的算法要比使用原始数据的高级算法的表现效果要好。这个工作流程被称作特征</span>
+<span class="err">工程（</span><span class="n">feature</span> <span class="n">engineering</span><span class="err">）。</span><span class="n">Creative</span> <span class="ow">and</span> <span class="n">intelligent</span> <span class="n">that</span> <span class="n">you</span> <span class="n">are</span><span class="p">,</span> <span class="n">you</span> <span class="n">will</span>
+<span class="n">immediately</span> <span class="n">see</span> <span class="n">the</span> <span class="n">results</span><span class="err">。</span>
+
+
+
+<span class="err">由于数据集中可能还有无效数值（</span><span class="n">nan</span><span class="err">），我们可以事先看一下无效值的个数：</span>
+
+
+
+    <span class="n">hours</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">hits</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">hits</span><span class="p">))</span>
+
+
+
+<span class="err">用下面的方法将其过滤掉：</span>
+
+
+
+    <span class="c1">#cleaning the data</span>
+    <span class="n">hours</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hours</span><span class="p">[</span><span class="o">~</span><span class="n">sp</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">hits</span><span class="p">)]</span>
+    <span class="n">hits</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hits</span><span class="p">[</span><span class="o">~</span><span class="n">sp</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">hits</span><span class="p">)]</span>
+
+<span class="err">为了将数据给出一个直观的认识，用</span><span class="n">Matplotlib</span><span class="err">的</span><span class="n">pyplot</span><span class="err">包来将数据呈现出来。</span>
+
+
+
+    <span class="n">import</span><span class="err"> </span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">plt</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span><span class="n">hits</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Web traffic over the last month&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Hits/hour&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="n">w</span><span class="o">*</span><span class="mi">7</span><span class="o">*</span><span class="mi">24</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">w</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="err"> </span><span class="p">[</span><span class="s1">&#39;week </span><span class="si">%i</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">w</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">w</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="err">其显示效果如下：</span>
+
+<span class="err">!</span><span class="p">[](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">mmbiz</span><span class="o">.</span><span class="n">qpic</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">mmbiz_jpg</span><span class="o">/</span><span class="n">BP6HQN6ROpyDvwlAG8co8vvzxvpnxrtYnic0CI1FcyN</span>
+<span class="n">qOShra3XyBkqG6s3LicDmW8cQ2U53BtibcvyTdGjxdibWHw</span><span class="o">/</span><span class="mi">640</span><span class="err">?</span><span class="n">wx_fmt</span><span class="o">=</span><span class="n">jpeg</span><span class="o">&amp;</span><span class="n">tp</span><span class="o">=</span><span class="n">webp</span><span class="o">&amp;</span><span class="n">wxfrom</span>
+<span class="o">=</span><span class="mi">5</span><span class="o">&amp;</span><span class="n">wx_lazy</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">### 选择合适的学习算法</span>
+
+<span class="err">选择一个好的学习算法并不是从你的工具箱中的三四个算法中挑选这么简单，实际上有更多的算法你可能没有见过。所以这是一个权衡不同的性能和功能需求的深思熟虑的过程，</span>
+<span class="err">比如执行速度和准确率的权衡，</span><span class="p">,</span><span class="err">可扩展性和易用性的平衡。</span>
+
+
+
+<span class="err">现在，我们已经对数据有了一个直观的认识，我们接下来要做的是找到一个真实的模型，并且能推断未来的数据走势。</span>
+
+
+
+<span class="err">用逼近误差（</span><span class="n">approximation</span> <span class="n">error</span><span class="err">）来选择模型</span>
+
+<span class="err">在很多模型中选择一个正确的模型，我们需要用逼近误差来衡量模型预测性能，并用来选择模型。这里，我们用预测值和真实值差值的平方来定义度量误差：</span>
+
+
+
+    <span class="n">def</span><span class="err"> </span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="err"> </span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">y</span><span class="p">):</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="err">其中</span><span class="n">f</span><span class="err">表示预测函数。</span>
+
+<span class="err">用简单直线来拟合数据</span>
+
+<span class="err">我们现在假设该数据的隐含模型是一条直线，那么我们还如何去拟合这些数据来使得逼近误差最小呢？</span><span class="n">SciPy</span><span class="err">的</span><span class="n">polyfit</span><span class="p">()</span><span class="err">函数可以解决这个问题，给出</span><span class="n">x</span><span class="err">和</span><span class="n">y</span><span class="err">轴的</span>
+<span class="err">数据，还有参数</span><span class="n">order</span><span class="err">（直线的</span><span class="n">order</span><span class="err">是</span><span class="mi">1</span><span class="err">），该函数给出最小化逼近误差的模型的参数。</span>
+
+
+
+    <span class="n">fp1</span><span class="p">,</span><span class="err"> </span><span class="n">residuals</span><span class="p">,</span><span class="err"> </span><span class="n">rank</span><span class="p">,</span><span class="err"> </span><span class="n">sv</span><span class="p">,</span><span class="err"> </span><span class="n">rcond</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span><span class="err"> </span><span class="n">hits</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">full</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">fp1</span><span class="err">是</span><span class="n">polyfit</span><span class="err">函数返回模型参数，对于直线来说，它是直线的斜率和截距。</span>
+
+<span class="err">如果</span><span class="n">polyfit</span><span class="err">的参数</span><span class="n">full</span><span class="err">为</span><span class="bp">True</span><span class="err">的话，将得到拟合过程中更多有用的信息，这里只有</span><span class="n">residuals</span><span class="err">是我们感兴趣的，它正是该拟合直线的逼近误差。</span>
+
+<span class="err">然后将该线在图中画出来：</span>
+
+
+
+    <span class="c1">#fit straight line model</span>
+    <span class="n">fp1</span><span class="p">,</span><span class="err"> </span><span class="n">residuals</span><span class="p">,</span><span class="err"> </span><span class="n">rank</span><span class="p">,</span><span class="err"> </span><span class="n">sv</span><span class="p">,</span><span class="err"> </span><span class="n">rcond</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span><span class="err"> </span><span class="n">hits</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="n">full</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">fStraight</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">fp1</span><span class="p">)</span>
+    <span class="c1">#draw fitting straight line</span>
+    <span class="n">fx</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">hours</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="err"> </span><span class="mi">1000</span><span class="p">)</span><span class="err"> </span><span class="c1"># generate X-values for plotting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span><span class="err"> </span><span class="n">fStraight</span><span class="p">(</span><span class="n">fx</span><span class="p">),</span><span class="err"> </span><span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;d=</span><span class="si">%i</span><span class="s2">&quot;</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="n">fStraight</span><span class="o">.</span><span class="n">order</span><span class="p">],</span><span class="err"> </span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+
+<span class="err">用更高阶的曲线来拟合数据</span>
+
+<span class="err">用直线的拟合是不是很好呢？用直线拟合的误差是</span><span class="mi">317</span><span class="p">,</span><span class="mi">389</span><span class="p">,</span><span class="mf">767.34</span><span class="err">，这说明我们的预测结果是好还是坏呢？我们不妨用更高阶的曲线来拟合数据，看是不是能得到</span>
+<span class="err">更好的效果。</span>
+
+
+
+<span class="err">其逼近误差为：</span>
+
+
+
+    <span class="n">Error</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="n">straight</span><span class="err"> </span><span class="n">line</span><span class="p">:</span><span class="err"> </span><span class="mf">317389767.34</span>
+    <span class="n">Error</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="n">Curve2</span><span class="err"> </span><span class="n">line</span><span class="p">:</span><span class="err"> </span><span class="mf">179983507.878</span>
+    <span class="n">Error</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="n">Curve3</span><span class="err"> </span><span class="n">line</span><span class="p">:</span><span class="err"> </span><span class="mf">139350144.032</span>
+    <span class="n">Error</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="n">Curve10</span><span class="err"> </span><span class="n">line</span><span class="p">:</span><span class="err"> </span><span class="mf">121942326.364</span>
+    <span class="n">Error</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="n">Curve50</span><span class="err"> </span><span class="n">line</span><span class="p">:</span><span class="err"> </span><span class="mf">109504587.153</span>
+
+
+
+<span class="err">这里我们进一步看一下实验结果，看看我们的预测曲线是不是很好的拟合数据了呢？尤其是看一下多项式的阶数从</span><span class="mi">10</span><span class="err">到</span><span class="mi">50</span><span class="err">的过程中，模型与数据贴合太紧，这样模型不但是去</span>
+<span class="err">拟合数据背后的模型，还去拟合了噪声数据，导致曲线震荡剧烈，这种现象叫做</span> <span class="err">过拟合</span> <span class="err">。</span>
+
+
+
+<span class="c1">### 小结</span>
+
+<span class="err">从上面的小实验中，我们可以看出，如果是直线拟合的话就太简单了，但多项式的阶数从</span><span class="mi">10</span><span class="err">到</span><span class="mi">50</span><span class="err">的拟合又太过了，那么是不是</span><span class="mi">2</span><span class="err">、</span><span class="mi">3</span><span class="err">阶的多项式就是最好的答案呢？但我们同</span>
+<span class="err">时发现，如果我们以它们作为预测的话，那它们又会无限制增长下去。所以，我们最后反省一下，看来我们还是没有真正地理解数据。</span>
+
+
+
+<span class="err">衡量性能指标</span>
+
+<span class="err">作为一个</span><span class="n">ML</span><span class="err">的初学者，在衡量学习器性能方面会遇到很多问题或错误。如果是拿你的训练数据来进行测试的话，这可能是一个很简单的问题；而当你遇到的不平衡的训练数据时</span>
+<span class="err">，数据就决定了预测的成功与否。</span>
+
+
+
+<span class="c1">### 回看数据</span>
+
+<span class="err">我们再仔细分析一下数据，看一下再</span><span class="n">week3</span><span class="err">到</span><span class="n">week4</span><span class="err">之间，好像是有一个明显的拐点，所以我们把</span><span class="n">week3</span><span class="o">.</span><span class="mi">5</span><span class="err">之后的数据分离出来，训练一条新的曲线。</span>
+
+
+
+    <span class="n">inflection</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mf">3.5</span><span class="o">*</span><span class="mi">7</span><span class="o">*</span><span class="mi">24</span><span class="err"> </span><span class="c1">#the time of week3.5 is an inflection</span>
+    <span class="n">time1</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hours</span><span class="p">[:</span><span class="n">inflection</span><span class="p">]</span>
+    <span class="n">value1</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hits</span><span class="p">[:</span><span class="n">inflection</span><span class="p">]</span>
+    <span class="n">time2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hours</span><span class="p">[</span><span class="n">inflection</span><span class="p">:]</span>
+    <span class="n">value2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hits</span><span class="p">[</span><span class="n">inflection</span><span class="p">:]</span>
+    <span class="n">fStraight1p</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">time1</span><span class="p">,</span><span class="n">value1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fStraight1</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">fStraight1p</span><span class="p">)</span>
+    <span class="n">fStraight2p</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">time2</span><span class="p">,</span><span class="n">value2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fStraight2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">sp</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">fStraight2p</span><span class="p">)</span>
+
+<span class="err">显然，这两条直线更好的描述了数据的特征，虽然其逼近误差还是比那些高阶多项式曲线的误差要大，但是这种方式的拟合可以更好的获取数据的发展趋势。相对于高阶多项式曲</span>
+<span class="err">线的过拟合现象，对于低阶的曲线，由于没有很好的描述数据，而导致欠拟合的情形。所以为了更好的描述数据特征，使用</span><span class="mi">2</span><span class="err">阶曲线来拟合数据，来避免过拟合和欠拟合现象的发</span>
+<span class="err">生。</span>
+
+
+
+<span class="c1">### 训练与测试</span>
+
+<span class="err">我们训练得到了一个模型，这里就是我们拟合的两个曲线。为了验证我们训练的模型是否准确，我们可以在最初训练时将一部分训练数据拿出来，当做测试数据来使用，而不仅仅</span>
+<span class="err">通过逼近误差来判别模型好坏。</span>
+
+
+
+<span class="c1">### 总结</span>
+
+<span class="err">这一小节作为机器学习小实验的引入，主要传递两点意思：</span>
+
+<span class="mi">1</span><span class="err">、要训练一个学习器，必须理解和提炼数据，将注意力从算法转移到数据上</span>
+
+<span class="mi">2</span><span class="err">、学习如何进行机器学习实验，不要混淆训练和测试数据</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

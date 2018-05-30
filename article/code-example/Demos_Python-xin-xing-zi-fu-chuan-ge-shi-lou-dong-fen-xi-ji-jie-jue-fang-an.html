@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python新型字符串格式漏洞分析及解决方案</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python新型字符串格式漏洞分析及解决方案">
+                                        Python新型字符串格式漏洞分析及解决方案
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python新型字符串格式漏洞分析及解决方案</span>
+
+<span class="err">最近一个</span><span class="n">python</span><span class="err">字符串格式化的漏洞引起了我的注意，今天就来说一下</span><span class="n">Python</span><span class="err">引入的一种格式化字符串的新型语法的安全漏洞进行了深入的分析，并提供了相应的安</span>
+<span class="err">全解决方案。</span>
+
+<span class="err">当我们对不可信的用户输入使用</span><span class="nb">str</span><span class="o">.</span><span class="n">format</span><span class="err">的时候，将会带来安全隐患——对于这个问题，其实我早就知道了，但是直到今天我才真正意识到它的严重性。因为攻击者</span>
+<span class="err">可以利用它来绕过</span><span class="n">Jinja2</span><span class="err">沙盒，这会造成严重的信息泄露问题。同时，我在本文最后部分为</span><span class="nb">str</span><span class="o">.</span><span class="n">format</span><span class="err">提供了一个新的安全版本。</span>
+
+<span class="err">需要提醒的是，这是一个相当严重的安全隐患，这里之所以撰文介绍，是因为大多数人很可能不知道它是多么容易被利用。</span>
+
+<span class="c1">### 核心问题</span>
+
+<span class="err">从</span><span class="n">Python</span> <span class="mf">2.6</span><span class="err">开始，</span><span class="n">Python</span><span class="err">受</span><span class="o">.</span><span class="n">NET</span><span class="err">启发而引入了一种格式化字符串的新型语法。当然，除了</span><span class="n">Python</span><span class="err">之外，</span><span class="n">Rust</span><span class="err">及其他一些编程语言也支持这种语</span>
+<span class="err">法。借助于</span><span class="o">.</span><span class="n">format</span><span class="err">（）方法，该语法可以应用到字节和</span><span class="nb">unicode</span><span class="err">字符串（在</span><span class="n">Python</span>
+<span class="mi">3</span><span class="err">中，只能用于</span><span class="nb">unicode</span><span class="err">字符串）上面，此外，它还能映射为更加具有可定制性的</span><span class="n">string</span><span class="o">.</span><span class="n">Formatter</span> <span class="n">API</span><span class="err">。</span>
+
+<span class="err"> 该语法的一个特点是，人们可以通过它确定出字符串格式的位置和关键字参数，并且随时可以显式对数据项重新排序。此外，它甚至可以访问对象的属性和数据项——这是导致</span>
+<span class="err">这里的安全问题的根本原因。</span>
+
+<span class="err"> 总的来说，人们可以利用它来进行以下事情：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="s1">&#39;class of {0} is {0.__class__}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="s2">&quot;class of 42 is &quot;</span>
+
+<span class="err">实质上，任何能够控制格式字符串的人都有可能访问对象的各种内部属性。</span>
+
+<span class="c1">### 问题出在哪里？</span>
+
+<span class="err">第一个问题是，如何控制格式字符串。可以从下列地方下手：</span>
+
+<span class="mf">1.</span><span class="err">字符串文件中不可信的翻译器。我们很可能通过它们得手，因为许多被翻译成多种语言的应用程序都会用到这种新式</span><span class="n">Python</span><span class="err">字符串格式化方法，但是并非所有人都会对</span>
+<span class="err">输入的所有字符串进行全面的审查。</span>
+
+<span class="mf">2.</span><span class="err">用户暴露的配置。</span> <span class="err">由于一些系统用户可以对某些行为进行配置，而这些配置有可能以格式字符串的形式被暴露出来。需要特别提示的是，我就见过某些用户可以通过</span><span class="n">Web</span>
+<span class="err">应用程序来配置通知邮件、日志消息格式或其他基本模板。</span>
+
+<span class="c1">### 危险等级</span>
+
+<span class="err">如果只是向该格式字符串传递</span><span class="n">C</span><span class="err">解释器对象的话，倒是不会有太大的危险，因为这样的话，你最多会暴露一些整数类之类的东西。</span>
+
+<span class="err">然而，一旦</span><span class="n">Python</span><span class="err">对象被传递给这种格式字符串的话，那就麻烦了。这是因为，能够从</span><span class="n">Python</span><span class="err">函数暴露的东西的数量是相当惊人的。</span>
+<span class="err">下面是假想的</span><span class="n">Web</span><span class="err">应用程序的情形，这种情况下能够泄露密钥：</span>
+
+
+
+
+
+    <span class="n">CONFIG</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{</span>
+    <span class="err">    </span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">:</span><span class="err"> </span><span class="s1">&#39;super secret key&#39;</span>
+    <span class="p">}</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Event</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="nb">id</span><span class="p">,</span><span class="err"> </span><span class="n">level</span><span class="p">,</span><span class="err"> </span><span class="n">message</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">id</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">level</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">message</span>
+    <span class="err"> </span>
+    <span class="n">def</span><span class="err"> </span><span class="n">format_event</span><span class="p">(</span><span class="n">format_string</span><span class="p">,</span><span class="err"> </span><span class="n">event</span><span class="p">):</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="n">format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
+
+<span class="err">如果用户可以在这里注入</span><span class="n">format_string</span><span class="err">，那么他们就能发现下面这样的秘密字符串：</span>
+
+
+
+    <span class="p">{</span><span class="n">event</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="vm">__globals__</span><span class="p">[</span><span class="n">CONFIG</span><span class="p">][</span><span class="n">SECRET_KEY</span><span class="p">]}</span>
+
+<span class="c1">### 将格式化作沙箱化处理</span>
+
+<span class="err">那么，如果需要让其他人提供格式化字符串，那该怎么办呢？</span> <span class="err">其实，可以利用某些未公开的内部机制来改变字符串格式化行为。</span>
+
+
+
+    <span class="n">from</span><span class="err"> </span><span class="n">string</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">Formatter</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">collections</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">Mapping</span>
+    <span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">MagicFormatMapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>
+    <span class="err">    </span><span class="s2">&quot;&quot;&quot;This class implements a dummy wrapper to fix a bug in the Python</span>
+<span class="s2">        standard library for string formatting.</span>
+<span class="s2">     </span>
+<span class="s2">        See http://bugs.python.org/issue13598 for information about why</span>
+<span class="s2">        this is necessary.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">args</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">kwargs</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">_last_index</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">0</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">key</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">key</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+    <span class="err">            </span><span class="n">idx</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_last_index</span>
+    <span class="err">            </span><span class="bp">self</span><span class="o">.</span><span class="n">_last_index</span><span class="err"> </span><span class="o">+=</span><span class="err"> </span><span class="mi">1</span>
+    <span class="err">            </span><span class="k">try</span><span class="p">:</span>
+    <span class="err">                </span><span class="k">return</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="err">            </span><span class="k">except</span><span class="err"> </span><span class="ne">LookupError</span><span class="p">:</span>
+    <span class="err">                </span><span class="k">pass</span>
+    <span class="err">            </span><span class="n">key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="c1"># This is a necessary API but it&#39;s undocumented and moved around</span>
+    <span class="c1"># between Python releases</span>
+    <span class="k">try</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">from</span><span class="err"> </span><span class="n">_string</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">formatter_field_name_split</span>
+    <span class="k">except</span><span class="err"> </span><span class="ne">ImportError</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">formatter_field_name_split</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="k">lambda</span><span class="err"> </span>\
+    <span class="err">        </span><span class="n">x</span><span class="p">:</span><span class="err"> </span><span class="n">x</span><span class="o">.</span><span class="n">_formatter_field_name_split</span><span class="p">()</span>
+    <span class="p">{</span><span class="n">C</span><span class="p">}</span><span class="err"> </span>
+    <span class="n">class</span><span class="err"> </span><span class="n">SafeFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="err"> </span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="n">get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="err"> </span><span class="n">field_name</span><span class="p">,</span><span class="err"> </span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="err">        </span><span class="n">first</span><span class="p">,</span><span class="err"> </span><span class="n">rest</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">formatter_field_name_split</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="err">        </span><span class="n">obj</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="err"> </span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="err">        </span><span class="k">for</span><span class="err"> </span><span class="n">is_attr</span><span class="p">,</span><span class="err"> </span><span class="n">i</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">rest</span><span class="p">:</span>
+    <span class="err">            </span><span class="k">if</span><span class="err"> </span><span class="n">is_attr</span><span class="p">:</span>
+    <span class="err">                </span><span class="n">obj</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">safe_getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="err"> </span><span class="n">i</span><span class="p">)</span>
+    <span class="err">            </span><span class="k">else</span><span class="p">:</span>
+    <span class="err">                </span><span class="n">obj</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">obj</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="n">obj</span><span class="p">,</span><span class="err"> </span><span class="n">first</span>
+    <span class="err"> </span>
+    <span class="n">def</span><span class="err"> </span><span class="n">safe_getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="err"> </span><span class="n">attr</span><span class="p">):</span>
+    <span class="err">    </span><span class="c1"># Expand the logic here.  For instance on 2.x you will also need</span>
+    <span class="err">    </span><span class="c1"># to disallow func_globals, on 3.x you will also need to hide</span>
+    <span class="err">    </span><span class="c1"># things like cr_frame and others.  So ideally have a list of</span>
+    <span class="err">    </span><span class="c1"># objects that are entirely unsafe to access.</span>
+    <span class="err">    </span><span class="k">if</span><span class="err"> </span><span class="n">attr</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="err"> </span><span class="o">==</span><span class="err"> </span><span class="s1">&#39;_&#39;</span><span class="p">:</span>
+    <span class="err">        </span><span class="k">raise</span><span class="err"> </span><span class="ne">AttributeError</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="err"> </span><span class="n">attr</span><span class="p">)</span>
+    <span class="err"> </span>
+    <span class="n">def</span><span class="err"> </span><span class="n">safe_format</span><span class="p">(</span><span class="n">_string</span><span class="p">,</span><span class="err"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">formatter</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">SafeFormatter</span><span class="p">()</span>
+    <span class="err">    </span><span class="n">kwargs</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">MagicFormatMapping</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="n">formatter</span><span class="o">.</span><span class="n">vformat</span><span class="p">(</span><span class="n">_string</span><span class="p">,</span><span class="err"> </span><span class="n">args</span><span class="p">,</span><span class="err"> </span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="err">现在，我们就可以使用</span><span class="n">safe_format</span><span class="err">方法来替代</span><span class="nb">str</span><span class="o">.</span><span class="n">format</span><span class="err">了：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="s1">&#39;{0.__class__}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">safe_format</span><span class="p">(</span><span class="s1">&#39;{0.__class__}&#39;</span><span class="p">,</span><span class="err"> </span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span>
+    <span class="ne">AttributeError</span><span class="p">:</span><span class="err"> </span><span class="vm">__class__</span>
+
+
+
+<span class="c1">### 总结：</span>
+
+<span class="err">程序开发中有这么一句话：任何时候不要相信用户的输入！现在看来这句话说得非常有道理。所以各位同学要谨记！</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

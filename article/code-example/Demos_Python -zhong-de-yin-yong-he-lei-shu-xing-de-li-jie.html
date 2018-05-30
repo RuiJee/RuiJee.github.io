@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python 中的引用和类属性的理解</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python 中的引用和类属性的理解">
+                                        Python 中的引用和类属性的理解
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python 中的引用和类属性的理解</span>
+
+<span class="err">最近对</span><span class="n">Python</span> <span class="err">的对象引用机制稍微研究了一下，留下笔记，以供查阅。</span>
+
+<span class="err">首先有一点是明确的：「</span><span class="n">Python</span> <span class="err">中一切皆对象」。</span>
+
+<span class="err">那么，这到底意味着什么呢？</span>
+
+<span class="err">如下代码：</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="n">a</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span><span class="err"> </span><span class="c1"># 来个简单的list</span>
+    <span class="c1"># 最初，list 和其中各个元素的id 是这样的。</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;origin&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">a</span>
+    <span class="k">for</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">a</span><span class="p">:</span>
+    <span class="err">    </span><span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="err"> </span><span class="n">x</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------&#39;</span>
+    <span class="c1"># 我们把第一个元素改改</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after change a[0]&#39;</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">4</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">a</span>
+    <span class="k">for</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">a</span><span class="p">:</span>
+    <span class="err">    </span><span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="err"> </span><span class="n">x</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------&#39;</span>
+    <span class="c1"># 我们再把第二个元素改改</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after change a[1]&#39;</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">5</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">a</span>
+    <span class="k">for</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">a</span><span class="p">:</span>
+    <span class="err">    </span><span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="err"> </span><span class="n">x</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------&#39;</span>
+    <span class="c1"># 回头看看直接写个0 ，id是多少</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;how about const 0?&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="err"> </span><span class="mi">0</span>
+
+<span class="err">运行结果如下：</span>
+
+
+
+    <span class="n">PastgiftMacbookPro</span><span class="p">:</span><span class="n">python</span><span class="err"> </span><span class="n">pastgift</span><span class="err">$ </span><span class="o">./</span><span class="n">refTest</span><span class="o">.</span><span class="n">py</span><span class="err"> </span>
+    <span class="n">Origin</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="mi">4298181328</span><span class="err"> </span><span class="mi">0</span>
+    <span class="mi">4298181304</span><span class="err"> </span><span class="mi">1</span>
+    <span class="mi">4298181280</span><span class="err"> </span><span class="mi">2</span>
+    <span class="o">----------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">change</span><span class="err"> </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="mi">4298181232</span><span class="err"> </span><span class="mi">4</span>
+    <span class="mi">4298181304</span><span class="err"> </span><span class="mi">1</span>
+    <span class="mi">4298181280</span><span class="err"> </span><span class="mi">2</span>
+    <span class="o">----------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">change</span><span class="err"> </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="err"> </span><span class="mi">5</span><span class="p">,</span><span class="err"> </span><span class="mi">2</span><span class="p">]</span>
+    <span class="mi">4298181232</span><span class="err"> </span><span class="mi">4</span>
+    <span class="mi">4298181208</span><span class="err"> </span><span class="mi">5</span>
+    <span class="mi">4298181280</span><span class="err"> </span><span class="mi">2</span>
+    <span class="o">----------------------</span>
+    <span class="n">how</span><span class="err"> </span><span class="n">about</span><span class="err"> </span><span class="n">const</span><span class="err"> </span><span class="mi">0</span><span class="err">?</span>
+    <span class="mi">4298181328</span><span class="err"> </span><span class="mi">0</span>
+
+<span class="err">从「</span><span class="n">Origin</span><span class="err">」部分来看，</span><span class="nb">list</span> <span class="err">中各个元素的地址之间都正好相差</span><span class="mi">24</span><span class="err">，依次指向各自的数据——这让我想到了数组。</span>
+
+<span class="err">当修改</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">的值之后，发现，</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">的地址发生了变化。也就是说，赋值语句实际上只是让</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">重新指向另一个对象而已。此外，还注意到，</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="err">的地址和</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="err">的地址相差</span><span class="mi">48</span><span class="err">（</span><span class="mi">2</span><span class="err">个</span><span class="mi">24</span><span class="err">）。</span>
+
+<span class="err">当再次修改</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="err">之后，同样地，</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="err">的地址也发生变化，有趣的是，这次</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="err">的地址和</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">的地址又相差</span><span class="mi">24</span><span class="err">，和原先的</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="err">相差</span><span class="mi">72</span><span class="err">（</span><span class="mi">3</span><span class="err">个</span><span class="mi">24</span><span class="err">）。</span>
+
+<span class="err">最后，当直接把数字</span><span class="mi">0</span><span class="err">的地址打印出来后，发现它的地址和最开始的</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="err">的地址完全一样。</span>
+
+<span class="err">至此，基本可以说明，就算是</span><span class="nb">list</span> <span class="err">中的元素，其实也是引用。修改</span><span class="nb">list</span> <span class="err">中的元素，实际上还是在修改引用而已。</span>
+
+<span class="err">对于</span><span class="n">Python</span> <span class="err">中类属性，有人提到过「类属性在同一类及其子类之间共享，修改类属性会影响到同一类及其子类的所有对象」。</span>
+
+<span class="err">听着挺吓人，但仔细研究之后，其实倒也不是什么大不了的事情。</span>
+
+<span class="err">如下代码：</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Bird</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">name</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;bird&#39;</span>
+    <span class="err">    </span><span class="n">talent</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Chicken</span><span class="p">(</span><span class="n">Bird</span><span class="p">):</span>
+    <span class="err">    </span><span class="k">pass</span>
+    <span class="n">bird</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Bird</span><span class="p">();</span>
+    <span class="n">bird2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Bird</span><span class="p">();</span><span class="err"> </span><span class="c1"># 同类实例</span>
+    <span class="n">chicken</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Chicken</span><span class="p">();</span><span class="err"> </span><span class="c1"># 子类实例</span>
+    <span class="c1"># 最开始是这样的</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;Original attr&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">      </span><span class="n">bird</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">    </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">     </span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">   </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">   </span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------------&#39;</span>
+    <span class="c1"># 换个名字看看</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;bird name changed!&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after changing name&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">      </span><span class="n">bird</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">    </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">     </span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">   </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">   </span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------------&#39;</span>
+    <span class="c1"># 洗个天赋试试（修改类属性中的元素）</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;walk&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after changing talent(a list)&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">      </span><span class="n">bird</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">    </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">     </span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">   </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">   </span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------------&#39;</span>
+    <span class="c1"># 换个新天赋树（整个类属性全换掉）</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;swim&#39;</span><span class="p">]</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after reassign talent&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">      </span><span class="n">bird</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">    </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">     </span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">   </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">   </span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------------&#39;</span>
+    <span class="c1"># 洗掉新天赋树（对新来的类属性中的元素进行修改）</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;dance&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;changing element after reassigning talent&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">      </span><span class="n">bird</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">    </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">     </span><span class="n">bird2</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err">   </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="err">   </span><span class="n">chicken</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">chicken</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;----------------------------&#39;</span>
+
+<span class="err">运行结果：</span>
+
+
+
+    <span class="n">PastgiftMacbookPro</span><span class="p">:</span><span class="n">python</span><span class="err"> </span><span class="n">pastgift</span><span class="err">$ </span><span class="o">./</span><span class="n">changeAttributeTest</span><span class="o">.</span><span class="n">py</span><span class="err"> </span>
+    <span class="n">Original</span><span class="err"> </span><span class="n">attr</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="o">----------------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">changing</span><span class="err"> </span><span class="n">name</span>
+    <span class="mi">4301986984</span><span class="err"> </span><span class="n">bird</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="n">changed</span><span class="err">!</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="o">----------------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">changing</span><span class="err"> </span><span class="n">talent</span><span class="p">(</span><span class="n">a</span><span class="err"> </span><span class="nb">list</span><span class="p">)</span>
+    <span class="mi">4301986984</span><span class="err"> </span><span class="n">bird</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="n">changed</span><span class="err">!</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="o">----------------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">reassign</span><span class="err"> </span><span class="n">talent</span>
+    <span class="mi">4301986984</span><span class="err"> </span><span class="n">bird</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="n">changed</span><span class="err">!</span>
+    <span class="mi">4301859512</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;swim&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="o">----------------------------</span>
+    <span class="n">changing</span><span class="err"> </span><span class="n">element</span><span class="err"> </span><span class="n">after</span><span class="err"> </span><span class="n">reassigning</span><span class="err"> </span><span class="n">talent</span>
+    <span class="mi">4301986984</span><span class="err"> </span><span class="n">bird</span><span class="err"> </span><span class="n">name</span><span class="err"> </span><span class="n">changed</span><span class="err">!</span>
+    <span class="mi">4301859512</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;dance&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="mi">4301998000</span><span class="err"> </span><span class="n">bird</span>
+    <span class="mi">4301857352</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="o">----------------------------</span>
+
+<span class="err">在「</span><span class="n">Origin</span><span class="err">」的时候，同类对象，子类对象的相同类属性的地址都是相同的——这就是所谓的「共享」。</span>
+
+<span class="err">修改</span><span class="n">name</span> <span class="err">之后，只有被修改的对象</span><span class="n">name</span>
+<span class="err">属性发生变化。这是因为对</span><span class="n">name</span><span class="err">的赋值操作实际上就是换了一个字符串，重新引用。字符串本身并没有发生变化。所以并没有在同类和子类之间产生互相影响。</span>
+
+<span class="err">接下来，修改</span><span class="n">talent</span> <span class="err">中的元素。这时，情况有所改变：同类及其子类的</span><span class="n">talent</span>
+<span class="err">属性都一起跟着变了——这很好理解，因为它们都引用的内存地址都一样，引用的是同一个对象。</span>
+
+<span class="err">再接下来，给</span><span class="n">talent</span> <span class="err">重新赋值，也就是改成引用另外一个对象。结果是只有本实例的</span><span class="n">talent</span>
+<span class="err">属性变化了。从内存地址可以看出，本实例和其他实例的</span><span class="n">talent</span> <span class="err">属性已经不再指向相同的对象了。就是说「至此，本实例已经是圈外人士了」。</span>
+
+<span class="err">那么，最后再次修改</span><span class="n">talent</span> <span class="err">中元素后，对其他实例无影响的结果也是很好理解了。因为已经是「圈外人士」了嘛，我再怎么折腾也都是自己的事情了。</span>
+
+<span class="err">所以，「类属性在同类及其子类之间互相影响」必须有一个前提条件：实例建立后，其类属性从来没有被重新赋值过，即类属性依然指向最初所指向的内存地址。</span>
+
+<span class="err">最后提一下对象属性</span>
+
+<span class="err">如下代码：</span>
+
+
+
+    <span class="c1">#!/usr/bin/env python</span>
+    <span class="n">class</span><span class="err"> </span><span class="n">Bird</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="err">    </span><span class="n">def</span><span class="err"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">        </span><span class="bp">self</span><span class="o">.</span><span class="n">talent</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="n">bird</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Bird</span><span class="p">()</span>
+    <span class="n">bird2</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Bird</span><span class="p">()</span>
+    <span class="c1"># 刚开始的情形</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;Origin&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;--------------------&#39;</span>
+    <span class="c1"># 修改其中一个对象的属性</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;walk&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;after changing attribute&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;--------------------&#39;</span>
+    <span class="c1"># 作死：两个对象的属性指向同一个内存地址，再修改</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;swim&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;assign to another attribute and change it&#39;</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="nb">id</span><span class="p">(</span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span><span class="p">),</span><span class="err"> </span><span class="n">bird2</span><span class="o">.</span><span class="n">talent</span>
+    <span class="k">print</span><span class="err"> </span><span class="s1">&#39;--------------------&#39;</span>
+    <span class="err">运行结果：</span>
+    <span class="n">PastgiftMacbookPro</span><span class="p">:</span><span class="n">python</span><span class="err"> </span><span class="n">pastgift</span><span class="err">$ </span><span class="o">./</span><span class="n">changeAttributeTest2</span><span class="o">.</span><span class="n">py</span><span class="err"> </span>
+    <span class="n">Origin</span>
+    <span class="mi">4299867632</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="o">--------------------</span>
+    <span class="n">after</span><span class="err"> </span><span class="n">changing</span><span class="err"> </span><span class="n">attribute</span>
+    <span class="mi">4299867632</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">]</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;fly&#39;</span><span class="p">]</span>
+    <span class="o">--------------------</span>
+    <span class="n">assign</span><span class="err"> </span><span class="n">to</span><span class="err"> </span><span class="n">another</span><span class="err"> </span><span class="n">attribute</span><span class="err"> </span><span class="ow">and</span><span class="err"> </span><span class="n">change</span><span class="err"> </span><span class="n">it</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;swim&#39;</span><span class="p">]</span>
+    <span class="mi">4299760200</span><span class="err"> </span><span class="p">[</span><span class="s1">&#39;swim&#39;</span><span class="p">]</span>
+    <span class="o">--------------------</span>
+
+<span class="err">由于对象属性就算内容完全一样（刚初始化后的属性内容一般都是一样的），也会分配到完全不同的内存地址上去。所以不存在「同类对象之间影响」的情况。</span>
+
+<span class="err">但如果让一个对象的属性和另一个对象的属性指向同一个地址，两者之间（但也仅限两者之间）便又互相牵连起来。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

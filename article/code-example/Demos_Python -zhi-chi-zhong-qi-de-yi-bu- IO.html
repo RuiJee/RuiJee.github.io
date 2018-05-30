@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python 支持重启的异步 IO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python 支持重启的异步 IO">
+                                        Python 支持重启的异步 IO
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python 支持重启的异步 IO</span>
+
+<span class="err">摘要</span>
+
+
+
+<span class="err">这是一份从</span><span class="n">Python3</span><span class="o">.</span><span class="mi">3</span><span class="err">开始的</span><span class="n">Python3</span><span class="err">异步</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">提议。研究从</span><span class="n">PEP</span> <span class="mi">3153</span><span class="err">缺失的具体提议。</span>
+<span class="err">这提议包括了一个可插入式的事件循环</span><span class="n">API</span><span class="err">，传输和与</span><span class="n">Twisted</span><span class="err">相似的协议抽象，以及来自</span><span class="p">(</span><span class="n">PEP</span> <span class="mi">380</span><span class="p">)</span>
+<span class="err">基于</span><span class="k">yield</span><span class="err">的更高级的调度器。一份作品里的参考实现，它的代码命名为</span><span class="n">Tulip</span><span class="err">（</span><span class="n">Tulip</span><span class="err">的</span><span class="n">repo</span><span class="err">的链接放在文章最后的参考文献分段里）。</span>
+
+<span class="err">介绍</span>
+
+
+
+<span class="err">事件循环常用于互操作性较高的地方。对于像</span><span class="n">Twisted</span><span class="err">、</span><span class="n">Tornado</span><span class="err">或者</span><span class="n">ZeroMQ</span><span class="err">这类（基于</span><span class="n">Python3</span><span class="o">.</span><span class="mi">3</span><span class="err">的）框架，它应该是容易去根据框架的需求通过</span>
+<span class="err">轻量级封装或者代理去适配默认的事件循环实现，或者是用它们自己的事件循环实现去替代默认的实现。（一些像</span><span class="n">Twisted</span><span class="err">的框架，拥有多种的事件循环实现。由于这些实</span>
+<span class="err">现都具有统一的接口，所以这应该不会成为问题。）</span>
+
+<span class="err">事件循环甚至有可能存在两个不同的第三方框架交互，通过共享默认事件循环实现（各自使用自己的适配器），或者是通过共享其中一个框架的事件循环实现。在后者，两种不同</span>
+<span class="err">级别的适配可能会存在（从框架</span><span class="n">A</span><span class="err">的事件循环到标准事件循环接口，然后从标准的再到框架</span><span class="n">B</span><span class="err">的事件循环）。被使用的事件循环实现应该在主程序的控制之下（尽管提供了事件循</span>
+<span class="err">环可以选择的默认策略）。</span>
+
+<span class="err">因此，两个单独的</span><span class="n">API</span><span class="err">被定义：</span>
+
+<span class="err">获取和设置当前事件的循环对象；</span>
+
+<span class="err">一个确认事件循环对象的接口和它的最低保证</span>
+
+<span class="err">一个事件循环实现可能提供额外的方法和保证。</span>
+
+<span class="err">事件循环接口不取决于产量，相反，它使用一个回调，额外接口（传输协议和协议）以及期货（？）的组合。后者类似于在</span><span class="n">PEP3148</span><span class="err">中定义的接口，但有不同的实现而且不</span>
+<span class="err">绑定到线程。特别是，它们没有</span><span class="n">wait</span><span class="p">()</span><span class="err">方法，用户将使用回调。</span>
+
+<span class="err">对于那些不喜欢用回调函数的人（包括我），（</span><span class="n">Python</span><span class="err">）提供了一个写异步</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">代码的调度器作为协同程序，它使用了</span><span class="n">PEP</span> <span class="mi">380</span><span class="err">的</span><span class="k">yield</span>
+<span class="n">from</span><span class="err">表达式。这个调度器并不是可插入的；可插入性存在于事件循环级别，同时调度器也应该工作在任何符合标准的事件循环实现上。</span>
+
+<span class="err">对于那些在使用协同程序和其他异步框架的代码的互操作性，调度器有一个行为上类似</span><span class="n">Future</span><span class="err">的</span><span class="n">Task</span><span class="err">类。一个在事件循环级别进行交互操作的框架能够通过加入一个回</span>
+<span class="err">调函数到</span><span class="n">Future</span><span class="err">中，同时等待一个</span><span class="n">Future</span><span class="err">来完成。同样的，调度器提供一个操作来挂起协同程序，直到回调函数被调用。</span>
+
+<span class="err">通过事件循环接口来为线程间交互操作提供限制；（</span><span class="n">Python</span><span class="err">里）有一个</span><span class="n">API</span><span class="err">能够提交一个函数到一个能够返回兼容事件循环的</span><span class="n">Future</span><span class="err">的执行器（看</span> <span class="n">PEP</span>
+<span class="mi">3148</span><span class="err">）。</span>
+
+<span class="err">没有目的的</span>
+
+
+
+<span class="err">像</span><span class="n">Stackless</span> <span class="n">Python</span><span class="err">或</span> <span class="n">greenlets</span><span class="o">/</span><span class="n">gevent</span> <span class="err">的系统互操作性不是本教程的目的。</span>
+
+<span class="err">规范</span>
+
+
+
+<span class="err">依赖</span>
+
+
+
+<span class="n">Python3</span><span class="o">.</span><span class="mi">3</span><span class="err">是必需的。不需超过</span><span class="n">Python3</span><span class="o">.</span><span class="mi">3</span><span class="err">范围的新语言或标准库。不需要第三方模块或包。</span>
+
+<span class="err">模块命名空间</span>
+
+
+
+<span class="err">这里的规范会放在一个新的顶层包。不同的组件会放在这个包的不同子模块里。包会从各自的子模块中导入常用的</span><span class="n">API</span><span class="err">，同时使他们能作为包的可用属性（类似电子邮件包的做</span>
+<span class="err">法）。</span>
+
+<span class="err">顶层包的名字目前还没指定。参考实现使用“</span><span class="n">tulip</span><span class="err">”来命名，但是这个名字可能会在这个实现加入到标准库的时候改变为其他更为烦人的名字（有希望在</span><span class="n">Python3</span><span class="o">.</span>
+<span class="mi">4</span><span class="err">中）。</span>
+
+<span class="err">在烦人的名字选好之前，这篇教程会使用“</span><span class="n">tulip</span><span class="err">”作为顶层包的名字。假定没有给定模块名的类和函数都通过顶层包来访问。</span>
+
+<span class="err">事件循环策略：获取和设置事件循环</span>
+
+
+
+<span class="err">要获取当前的事件循环，可以使用</span><span class="n">get_event_loop</span><span class="p">()</span><span class="err">。这函数返回一个在下面有定义的</span><span class="n">EventLoop</span><span class="err">类的实例或者一个等价的对象。</span><span class="n">get_event</span>
+<span class="n">_loop</span><span class="p">()</span><span class="err">可能根据当前线程返回不同的对象，或者根据其他上下文的概念返回不同对象。</span>
+
+<span class="err">要设置当前事件循环，可以使用</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">event_loop</span><span class="p">)</span><span class="err">，这里的</span><span class="n">event_loop</span><span class="err">是</span><span class="n">EventLoop</span><span class="err">类的实例或者等价的实例对象。</span>
+<span class="err">这里使用与</span><span class="n">get_event_loop</span><span class="p">()</span><span class="err">相同的上下文的概念。</span>
+
+<span class="err">还有第三个策略函数：</span><span class="n">new_event_loop</span><span class="p">()</span><span class="err">，有利于单元测试和其他特别的情况，它会创建和返回一个新的基于该策略的默认规则的</span><span class="n">EventLoop</span><span class="err">实例。要</span>
+<span class="err">使它成为当前的事件循环，你需要调用</span><span class="n">set_event_loop</span><span class="p">()</span><span class="err">。</span>
+
+<span class="err">要改变上述三个函数的工作方式（包括他们的上下文的概念），可以通过调用</span><span class="n">set_event_loop_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span><span class="err">，其中参数</span><span class="n">policy</span><span class="err">是一个事</span>
+<span class="err">件循环策略对象。这个策略对象可以是任何包含了类似上面描述的函数表现（</span><span class="n">get_event_loop</span><span class="p">(),</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">event_loop</span><span class="p">)</span><span class="err">和</span>
+<span class="n">new_event_loop</span><span class="p">()</span><span class="err">）的对象。默认的事件循环策略是</span><span class="n">DefaultEventLoopPolicy</span><span class="err">类的一个实例。当前事件循环策略对象能够通过调用</span><span class="n">ge</span>
+<span class="n">t_event_loop_policy</span><span class="p">()</span><span class="err">来取回。</span>
+
+<span class="err">一个事件循环策略没强制要求只能有一个事件循环存在。默认的事件循环策略也没强制要求这样做，但是它强制要求每个线程只能有一个事件循环。</span>
+
+<span class="err">事件循环接口</span>
+
+
+
+<span class="err">关于时间：在</span> <span class="n">Python</span> <span class="err">中，所有的超时（</span><span class="n">timeout</span><span class="err">），间隔（</span><span class="n">interval</span><span class="err">）和延时（</span><span class="n">delay</span><span class="err">）都是以秒来计算的，可以是整型也可以是浮点型。时钟的</span>
+<span class="err">精准度依赖于具体的实现；默认使用</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="err">。</span>
+
+<span class="err">关于回调（</span><span class="n">callbacks</span><span class="err">）和处理函数（</span><span class="n">handlers</span><span class="err">）：如果一个函数接受一个回调函数和任意个数的变量作为参数，那么你也可以用一个处理函数对象（</span><span class="n">Hand</span>
+<span class="n">ler</span><span class="err">）来替换回调函数。这样的话就不需要再传递那些参数。这个处理函数对象应该是一个立即返回的函数（</span><span class="n">fromcall_soon</span><span class="p">()</span><span class="err">），而不是延迟返回的（</span><span class="n">fro</span>
+<span class="n">mcall_later</span><span class="p">()</span><span class="err">）。如果处理函数已经取消，那么这个调用将不起作用。</span>
+
+<span class="err">一个符合标准的事件循环对象拥有以下的方法：</span>
+
+<span class="n">run</span><span class="p">()</span><span class="err">。</span> <span class="err">执行事件循环，知道没啥好做了。具体的意思是：</span>
+
+<span class="err">除了取消调用外，没有更多通过</span><span class="n">call_later</span><span class="p">(),</span><span class="n">call_repeatedly</span><span class="p">(),</span><span class="n">call_soon</span><span class="p">(),</span>
+<span class="n">orcall_soon_threadsafe</span><span class="p">()</span><span class="err">这些方法调度的调用。</span>
+
+<span class="err">没有更多的注册了的文件描述符。</span> <span class="err">当它关闭的时候会由注册方来注销文件描述符。</span>
+
+<span class="err">备注</span><span class="p">:</span><span class="err">直到遇到终止条件或者调用</span><span class="n">stop</span><span class="p">()</span><span class="err">，</span><span class="n">run</span><span class="p">()</span><span class="err">会一直阻塞。</span>
+
+<span class="err">备注</span><span class="p">:</span> <span class="err">如果你使用</span><span class="n">call_repeatedly</span><span class="p">()</span><span class="err">来执行一个调用，</span><span class="n">run</span><span class="p">()</span><span class="err">不会在你调用</span><span class="n">stop</span><span class="p">()</span><span class="err">前退出。</span>
+
+<span class="err">需要详细说明：</span> <span class="err">有多少类似的真正需要我们做的？</span>
+
+<span class="n">run_forever</span><span class="p">()</span><span class="err">。直到调用</span><span class="n">stop</span><span class="p">()</span><span class="err">前一直运行事件循环。</span>
+
+<span class="n">run_until_complete</span><span class="p">(</span><span class="n">future</span><span class="p">,</span>
+<span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="err">。在</span><span class="n">Future</span><span class="err">完成前一直运行事件循环。如果给出了</span><span class="n">timeout</span><span class="err">的值，它会等待</span><span class="n">timeout</span><span class="err">的时间。</span>
+<span class="err">如果</span><span class="n">Future</span><span class="err">完成了，它的结果会返回</span> <span class="err">或者它的异常抛出；如果在超时前完成</span><span class="n">Future</span><span class="err">，</span> <span class="err">或者</span><span class="n">stop</span><span class="p">()</span><span class="err">被调用</span><span class="p">,</span><span class="err">会抛出</span><span class="n">TimeoutError</span>
+<span class="err">（但</span><span class="n">Future</span><span class="err">不会被取消）</span><span class="o">.</span> <span class="err">在事件循环已经在运行的时候，这个方法不能调用。</span>
+
+<span class="err">备注</span><span class="p">:</span> <span class="err">这个</span><span class="n">API</span><span class="err">更多用来做测试或者类似的工作。</span> <span class="err">它不应该用作从</span><span class="k">yield from</span> <span class="err">表达式的</span><span class="n">future</span><span class="err">替代品或其他等待一个</span><span class="n">Future</span><span class="err">的方法。</span> <span class="p">(</span><span class="err">例如</span>
+<span class="err">注册一个完成的回调</span><span class="p">)</span><span class="err">。</span>
+
+<span class="n">run_once</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="err">。运行事件循环一段事件。</span> <span class="err">如果给出了</span><span class="n">timeout</span><span class="err">的值，</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">轮询会阻塞一段时间；</span> <span class="err">否则</span><span class="p">,</span>
+<span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">轮询不会受时间约束。</span>
+
+<span class="err">备注：准确来说，这里做了多少工作是根据具体实现的。</span>
+<span class="err">一个约束是：如果一个使用</span><span class="n">call_soon</span><span class="p">()</span><span class="err">来直接调度自己，会导致死顺坏，</span><span class="n">run_once</span><span class="p">()</span><span class="err">仍然会返回。</span>
+
+<span class="n">stop</span><span class="p">()</span><span class="err">。尽可能快地停止事件循环。随后可以使用</span><span class="n">run</span><span class="p">()</span><span class="err">重启循环（或者的一个变体）。</span>
+
+<span class="err">备注</span><span class="p">:</span>
+<span class="err">有多块来停止是根据它具体实现。所有在</span><span class="n">stop</span><span class="p">()</span><span class="err">前已经在运行的直接回调函数必定仍在运行，但是在</span><span class="n">stop</span><span class="p">()</span><span class="err">调用后的调度的回调函数（或者延迟运行的）不会运行。</span>
+
+<span class="n">close</span><span class="p">()</span><span class="err">。关闭事件循环，释放它所保持的所有资源，例如被</span><span class="n">epoll</span><span class="p">()</span><span class="err">或</span><span class="n">kqueue</span><span class="p">()</span><span class="err">使用的文件描述符。这个方法不应该在事件循环运行期间调用。它可以被</span>
+<span class="err">多次调用。</span>
+
+<span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。为</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">安排延迟大约</span><span class="n">delay</span><span class="err">秒后调用，一旦，除非被取消了。返</span>
+<span class="err">回一个</span><span class="n">Handler</span><span class="err">对象代表回调函数，</span><span class="n">Handler</span><span class="err">对象的</span><span class="n">cancel</span><span class="p">()</span><span class="err">方法常用来取消回调函数。</span>
+
+<span class="n">call_repeatedly</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span><span class="err">。和</span><span class="n">call_later</span><span class="p">()</span><span class="err">类似，但是会在每个</span><span class="n">interval</span><span class="err">秒中重复</span>
+<span class="err">调用回调函数，直到返回的</span><span class="n">Handler</span><span class="err">被取消。第一次调用是在</span><span class="n">interval</span><span class="err">秒内。</span>
+
+<span class="n">call_soon</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。类似</span><span class="n">call_later</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。</span>
+
+<span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。类似</span><span class="n">call_soon</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">，但是当事件循环在阻塞等</span>
+<span class="err">待</span><span class="n">IO</span><span class="err">的时候在另外的线程调用，事件循环的阻塞会被取消。这是唯一安全地从另外的线程调用的方法。（要在一个线程安全的方式去延迟一段时间调度回调函数，你可以使用</span><span class="n">e</span>
+<span class="n">v</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">call_later</span><span class="p">,</span><span class="n">when</span><span class="p">,</span><span class="n">callback</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。）但它在信号处理器中调用并不安全（因为它</span>
+<span class="err">可以使用锁）。</span>
+
+<span class="n">add_signal_handler</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。无论什么时候接收到信号</span> <span class="sb">``</span><span class="n">sigis</span> <span class="err">，</span> <span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="err">会被安排调用。返回一个能来取消信号回调函数的</span><span class="n">Handler</span><span class="err">。（取消返回的处理器回导致在下个信号到来的时候调用</span><span class="n">remove_signal_handler</span><span class="p">()</span><span class="err">。</span>
+<span class="err">优先明确地调用</span><span class="n">remove_signal_handler</span><span class="p">()</span><span class="err">。）为相同的信号定义另外一个回到函数来替代之前的</span><span class="n">handler</span><span class="err">（每个信号只能激活一个</span><span class="n">handle</span>
+<span class="n">r</span><span class="err">）。</span><span class="n">sig</span><span class="err">参数必需是一个在信号模块里定义的有效的信号值。如果信号不能处理，这会抛出一个异常：如果它不是一个有效的信号或者如果它是一个不能捕获的信号（例如</span><span class="n">S</span>
+<span class="n">IGKILL</span><span class="err">），会抛出</span><span class="ne">ValueError</span><span class="err">。如果这个特别的事件循环实例不能处理信号（因为信号是每个处理器的全局变量，只有在主线程的事件循环才能处理这些信号）</span>
+<span class="err">，它会抛出</span><span class="ne">RuntimeError</span><span class="err">。</span>
+
+<span class="n">remove_signal_handler</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span><span class="err">。为信号</span><span class="n">sig</span><span class="err">移除</span><span class="n">handler</span><span class="err">，当有设置的时候。抛出和</span><span class="n">add_signal_handler</span><span class="p">()</span><span class="err">一样的异</span>
+<span class="err">常（除了在不能不错的信号时返回</span><span class="bp">False</span><span class="err">代替抛出</span><span class="ne">RuntimeError</span><span class="err">）。如果</span><span class="n">handler</span><span class="err">移除成功，返回</span><span class="bp">True</span><span class="err">，如果没有设置</span><span class="n">handler</span><span class="err">则返回</span><span class="n">Fal</span>
+<span class="n">se</span><span class="err">。</span>
+
+<span class="err">一些符合标准接口返回</span><span class="n">Future</span><span class="err">的方法：</span>
+
+<span class="n">wrap_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span><span class="err">。</span> <span class="err">这里需要在</span><span class="n">PEP</span> <span class="mi">3148</span> <span class="err">描述的</span><span class="n">Future</span>
+<span class="err">（例如一个</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span><span class="err">的实例）</span> <span class="err">同时返回一个兼容事件循环的</span><span class="n">Future</span> <span class="err">（例如</span><span class="p">,</span> <span class="err">一个</span><span class="n">tulip</span><span class="o">.</span><span class="n">Future</span><span class="err">实例）。</span>
+
+<span class="n">run_in_executor</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。安排在一个执行器中调用</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="err">（请看</span> <span class="n">PEP</span>
+<span class="mi">3148</span><span class="err">）。返回的</span><span class="n">Future</span><span class="err">的成功的结果是调用的返回值。</span> <span class="err">这个方法等价于</span><span class="n">wrap_future</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span>
+<span class="o">*</span><span class="n">args</span><span class="p">))</span><span class="err">。</span> <span class="err">如果没有执行器</span><span class="p">,</span><span class="err">则会是也能够一个默认为</span><span class="mi">5</span><span class="err">个线程的</span><span class="n">ThreadPoolExecutor</span><span class="err">。</span>
+
+<span class="n">set_default_executor</span><span class="p">(</span><span class="n">executor</span><span class="p">)</span><span class="o">.</span> <span class="err">设置一个被</span><span class="n">run_in_executor</span><span class="p">()</span><span class="err">使用的默认执行器。</span>
+
+<span class="n">getaddrinfo</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">proto</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span> <span class="err">类似</span><span class="n">socket</span><span class="o">.</span><span class="n">getaddri</span>
+<span class="n">nfo</span><span class="p">()</span><span class="err">函数，但是返回一个</span><span class="n">Future</span><span class="err">。</span><span class="n">Future</span><span class="err">的成功结果为一列与</span><span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">()</span><span class="err">的返回值有相同格式数据。</span> <span class="err">默认的实现通过</span><span class="n">ru</span>
+<span class="n">n_in_executor</span><span class="p">()</span><span class="err">来调用</span><span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">()</span><span class="err">，但其他实现可能会选择使用他们自己的</span><span class="n">DNS</span><span class="err">查找。可选参数必需是指定的关键字参数。</span>
+
+<span class="n">getnameinfo</span><span class="p">(</span><span class="n">sockaddr</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span> <span class="err">类似</span><span class="n">socket</span><span class="o">.</span><span class="n">getnameinfo</span><span class="p">()</span><span class="err">，但返回一个</span><span class="n">Future</span><span class="err">。</span>
+<span class="n">Future</span><span class="err">的成功的结果将会是一个</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="err">的数组。</span> <span class="err">与</span><span class="n">forgetaddrinfo</span><span class="p">()</span><span class="err">有相同的实现。</span>
+
+<span class="n">create_connection</span><span class="p">(</span><span class="n">protocol_factory</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span>
+<span class="err">使用给定的主机和端口创建一个流链接。这会创建一个依赖</span><span class="n">Transport</span><span class="err">的实现来表示链接，</span>
+<span class="err">然后调用</span><span class="n">protocol_factory</span><span class="p">()</span><span class="err">来实例化（或者取回）用户的</span><span class="n">Protocol</span><span class="err">实现，</span>
+<span class="err">然后把两者绑定到一起。（看下面对</span><span class="n">Transport</span><span class="err">和</span><span class="n">Protocol</span><span class="err">的定义。）</span> <span class="err">用户的</span><span class="n">Protocol</span><span class="err">实现通过调用无参数</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="err">的</span><span class="n">protocol_facto</span>
+<span class="n">ry</span><span class="p">()</span><span class="err">来创建或者取回。返回值是</span><span class="n">Future</span><span class="err">，它的成功结果是</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="n">protocol</span><span class="p">)</span><span class="err">对；</span> <span class="err">如果有错误阻止创建一个成功的链接，</span><span class="n">Future</span><span class="err">会</span>
+<span class="err">包含一个适合的异常集。注意，当</span><span class="n">Future</span><span class="err">完成的适合，协议的</span><span class="n">connection_made</span><span class="p">()</span><span class="err">方法不会调用；那会发生在链接握手完成的适合。</span>
+
+<span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="err">没有要求</span><span class="n">protocol_factory</span><span class="err">是一个类。如果你的协议类需要定义参数传递到构造函数，你可以使用</span><span class="k">lambda</span><span class="err">或者</span><span class="n">functool</span><span class="o">.</span><span class="n">partia</span>
+<span class="n">l</span><span class="p">()</span><span class="err">。你也可以传入一个之前构造好的</span><span class="n">Protocol</span><span class="err">实例的</span><span class="k">lambda</span><span class="err">。</span>
+
+<span class="err">可选关键参数</span><span class="p">:</span>
+
+<span class="n">family</span><span class="p">,</span><span class="n">proto</span><span class="p">,</span><span class="n">flags</span><span class="err">：地址簇，协议，</span>
+<span class="err">和混合了标志的参数传递到</span><span class="n">getaddrinfo</span><span class="p">()</span><span class="err">。这些全是默认为</span><span class="mi">0</span><span class="err">的。（</span><span class="p">(</span><span class="n">socket</span><span class="err">类型总是</span><span class="n">SOCK_STREAM</span><span class="err">。）</span>
+
+<span class="n">ssl</span><span class="err">：传入</span><span class="bp">True</span><span class="err">来创建一个</span><span class="n">SSL</span><span class="err">传输（通过默认一个无格式的</span><span class="n">TCP</span><span class="err">来建立）。或者传入一个</span><span class="n">ssl</span><span class="o">.</span><span class="n">SSLConteext</span><span class="err">对象来重载默认的</span><span class="n">SSL</span><span class="err">上下文对象来使</span>
+<span class="err">用。</span>
+
+<span class="n">start_serving</span><span class="p">(</span><span class="n">protocol_factory</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span><span class="err">。进入一个接收连接的循环。返回一个</span><span class="n">Future</span><span class="err">，一旦循</span>
+<span class="err">环设定到服务即完成；它的返回值为是</span><span class="bp">None</span><span class="err">。每当接收一个链接，无参数</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="err">的</span><span class="n">protocol_factory</span><span class="err">被调用来创建一个</span><span class="n">Protocol</span><span class="err">，一个代表了链接</span>
+<span class="err">网络端的</span><span class="n">Transport</span><span class="err">会被创建，以及两个对象通过调用</span><span class="n">protocol</span><span class="o">.</span><span class="n">connection_made</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span><span class="err">绑定到一起。</span>
+
+<span class="err">（</span><span class="o">*</span><span class="err">）看上面对</span><span class="n">create_connection</span><span class="p">()</span><span class="err">的补充说明。</span> <span class="err">然而，</span>
+<span class="err">因为</span><span class="n">protocol_factory</span><span class="p">()</span><span class="err">只会在每个新进来的连接调用一次，所以推荐在它每次调用的时候返回一个新的</span><span class="n">Protocol</span><span class="err">对象。</span>
+
+<span class="err">可选关键参数</span><span class="p">:</span>
+
+<span class="n">family</span><span class="p">,</span><span class="n">proto</span><span class="p">,</span><span class="n">flags</span><span class="err">：地址簇，协议，</span>
+<span class="err">和混合了标志的参数传递到</span><span class="n">getaddrinfo</span><span class="p">()</span><span class="err">。这些全是默认为</span><span class="mi">0</span><span class="err">的。（</span><span class="p">(</span><span class="n">socket</span><span class="err">类型总是</span><span class="n">SOCK_STREAM</span><span class="err">。）</span>
+
+<span class="err">补充</span><span class="p">:</span> <span class="err">支持</span><span class="n">SSL</span><span class="err">吗?</span> <span class="err">我并不知道怎样来异步地支持（</span><span class="n">SSL</span><span class="err">），我建议这需要一个证书。</span>
+
+<span class="err">补充</span><span class="p">:</span><span class="err">也许可以使一个</span><span class="n">Future</span><span class="err">的结果对象能够用来控制服务循环，例如停止服务，终止所有的活动连接，以及（如果支持）调整积压（的服务）或者其他参数？它也可以有</span>
+<span class="err">一个</span><span class="n">API</span><span class="err">来查询活动连接。另外，如果循环由于错误而停止服务，或者如果不能启动，则返回一个仅仅完成了的</span><span class="n">Future</span><span class="err">（子类？）？取消了它可能会导致停止循环。</span>
+
+<span class="err">补充：一些平台可能没兴趣实现所有的这些方法，</span> <span class="err">例如</span> <span class="err">移动</span><span class="n">APP</span><span class="err">就对</span><span class="n">start_serving</span><span class="p">()</span><span class="err">不太感兴趣。</span>
+<span class="err">（尽管我的</span><span class="n">iPad</span><span class="err">上有一个</span><span class="n">Minecraft</span><span class="err">的服务器</span><span class="o">...</span><span class="err">）</span>
+
+<span class="err">以下这些注册文件描述符的回调函数的方法不是必需的。如果没有实现这些方法，访问这些方法（而不是调用它们）时会返回属性错误（</span><span class="ne">AttributeError</span><span class="err">）。默认</span>
+<span class="err">的实现提供了这些方法，但是用户一般不会直接用到它们，只有传输层独家使用。同样，在</span> <span class="n">Windows</span> <span class="err">平台，这些方法不一定实现，要看到底是否使用了</span> <span class="n">select</span>
+<span class="err">或</span> <span class="n">IOCP</span> <span class="err">的事件循环模型。这两个模型接收整型的文件描述符，而不是</span> <span class="n">fileno</span><span class="p">()</span> <span class="err">方法返回的对象。文件描述符最好是可查询的，例如，磁盘文件就不行。</span>
+
+<span class="n">add_reader</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span> <span class="err">在文件描述符</span> <span class="n">fd</span> <span class="err">准备好可以进行读操作时调用指定的回调函数</span>
+<span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">。返回一个处理函数对象，可以用来取消回调函数。注意，不同于</span>
+<span class="n">call_later</span><span class="p">()</span><span class="err">，这个回调函数可以被多次调用。在同一个文件描述符上再次调用</span> <span class="n">add_reader</span><span class="p">()</span>
+<span class="err">将会取消之前设置的回调函数。注意：取消处理函数有可能会等到处理函数调用后。如果你要关闭</span> <span class="n">fd</span><span class="err">，你应该调用</span>
+<span class="n">remove_reader</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="err">。（</span><span class="n">TODO</span><span class="err">：如果已经设置了处理函数，抛出一个异常）。</span>
+
+<span class="n">add_writer</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span> <span class="err"> 类似</span> <span class="n">add_reader</span><span class="p">()</span><span class="err">，不过是在可以写操作之前调用回调函数。</span>
+
+<span class="n">remove_reader</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="o">.</span> <span class="err">为文件描述符</span> <span class="n">fd</span>
+<span class="err">删除已经设置的读操作回调函数。如果没有设置回调函数，则不进行操作。（提供这样的替代接口是因为记录文件描述符比记录处理函数更方便简单）。删除成功则返回</span>
+<span class="bp">True</span><span class="err">，失败则返回</span> <span class="bp">False</span><span class="err">。</span>
+
+<span class="n">remove_writer</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="o">.</span> <span class="err"> 为文件描述符</span> <span class="n">fd</span> <span class="err">删除已经设置的写操作回调函数。</span>
+
+<span class="err">未完成的：如果一个文件描述符里面包含了多个回调函数，那应该怎么办呢？目前的机制是替换之前的回调函数，如果已经注册了回调函数则应该招聘异常。</span>
+
+<span class="err">接下来下面的方法在</span><span class="n">socket</span><span class="err">的异步</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">中是可选的。他们是替代上面提到的可选方法的，目的是在</span><span class="n">Windows</span><span class="err">的传输实现中使用</span><span class="n">IOCP</span><span class="err">（如果事件循环支持）。</span><span class="n">s</span>
+<span class="n">ocket</span><span class="err">参数必需是唔阻塞</span><span class="n">socket</span><span class="err">。</span>
+
+<span class="n">sock_recv</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="err">。从套接字</span><span class="n">sock</span><span class="err">中接收字节。返回一个</span><span class="n">Future</span><span class="err">，</span><span class="n">Future</span><span class="err">在成功的时候会是一个字节对象。</span>
+
+<span class="n">sock_sendall</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span><span class="err">。发送字节数据到套接字</span><span class="n">sock</span><span class="err">。返回一个</span><span class="n">Future</span><span class="err">，</span><span class="n">Future</span><span class="err">的结果在成功后会是</span><span class="bp">None</span><span class="err">。（补充：让它去</span>
+<span class="err">模拟</span><span class="n">sendall</span><span class="p">()</span><span class="err">或</span><span class="n">send</span><span class="p">()</span><span class="err">会更好吗？但是我认为</span><span class="n">sendall</span><span class="p">()</span><span class="err">——也许它扔应该命名为</span><span class="n">send</span><span class="p">()</span><span class="err">?</span><span class="p">)</span>
+
+<span class="n">sock_connect</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span><span class="err">。连接到给定的地址。返回一个</span><span class="n">Future</span><span class="err">，</span><span class="n">Future</span><span class="err">的成功结果是</span><span class="bp">None</span><span class="err">。</span>
+
+<span class="n">sock_accept</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span><span class="err">。从</span><span class="n">socket</span><span class="err">中接收一个链接。这</span><span class="n">socket</span><span class="err">必需在监听模式以及绑定到一个定制。返回一个</span><span class="n">Future</span><span class="err">，</span><span class="n">Future</span><span class="err">的成功结</span>
+<span class="err">果会是一个（</span><span class="n">conn</span><span class="err">，</span><span class="n">peer</span><span class="err">）的数组，</span><span class="n">conn</span><span class="err">是一个已连接的无阻塞</span><span class="n">socket</span><span class="err">以及</span><span class="n">peer</span><span class="err">是对等的地址。（补充：人们告诉我这个</span><span class="n">API</span><span class="err">风格对于高水平的服务器</span>
+<span class="err">是很慢的。所以上面也有</span><span class="n">start_sering</span><span class="p">()</span><span class="err">。我们还需要这个吗？）</span>
+
+<span class="err">补充：可选方法都不是太好的。也许这些都是需要的？它仍然依赖于平台的更有效设置。另外的可能是：文档标注这些“仅提供给传输”，然后其他的“可提供给任何的情况”。</span>
+
+<span class="err">回调顺序</span>
+
+
+
+<span class="err">当在同一时间调度两个回调函数时，它们会按照注册的顺序去执行。例如：</span>
+
+<span class="n">ev</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="n">ev</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+
+<span class="err">保证</span><span class="n">foo</span><span class="p">()</span><span class="err">会在</span><span class="n">bar</span><span class="p">()</span><span class="err">执行。</span>
+
+<span class="err">如果使用</span><span class="n">call_soon</span><span class="p">()</span><span class="err">，即使系统时钟要逆行，这个保证还是成立的。这同样对</span><span class="n">call_later</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">callback</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="err">有效。然而，如果在系</span>
+<span class="err">统时钟要逆行下，零延迟地使用</span><span class="n">call_later</span><span class="p">()</span><span class="err">，那就无法得到保证了。（一个好的事件循环实现应该使用</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="err">来避免系统时钟逆行的</span>
+<span class="err">情况导致的问题。参考</span> <span class="n">PEP</span> <span class="mi">418</span> <span class="err">。）</span>
+
+<span class="err">上下文</span>
+
+
+
+<span class="err">所有的事件循环都有上下文的概念。对于默认的事件循环实现来说，上下文就是一个线程。一个事件循环实现应该在相同的上下问中运行所有的回调。一个事件循环实现应该在同</span>
+<span class="err">一时刻只运行一个回调，所以，回调要负责保持与相同事件循环里调度的其他回调自动互斥。</span>
+
+<span class="err">异常</span>
+
+
+
+<span class="err">在</span><span class="n">Python</span><span class="err">里有两类异常：从</span><span class="ne">Exception</span><span class="err">类到处的和从</span><span class="ne">BaseException</span><span class="err">导出的。从</span><span class="ne">Exception</span><span class="err">导出的异常通常能适当地被捕获和处理；例如，</span>
+<span class="err">异常会通过</span><span class="n">Future</span><span class="err">传递，以及当他们在一个回调了出现时，会被记录和忽略。</span>
+
+<span class="err">然而，从</span><span class="ne">BaseException</span><span class="err">到处的异常从来不会被捕获到，他们通常带有一个错误回溯信息，同时导致程序终止。（这类的例子包括</span><span class="n">KeyboardInterru</span>
+<span class="n">pt</span><span class="err">和</span><span class="ne">SystemExit</span><span class="err">；如果把这些异常与其他大部分异常同样对待，那时不明智的）。</span>
+
+<span class="n">Handler</span><span class="err">类</span>
+
+
+
+<span class="err">有各样注册回调函数的方法（例如</span><span class="n">call_later</span><span class="p">())</span><span class="err">都会返回一个对象来表示注册，改对象能够用来取消回调函数。尽管用户从来不用去实例化这个类，但还是想要给</span>
+<span class="err">这个对象一个好的名字：</span><span class="n">Handler</span><span class="err">。这个类有一个公用的方法：</span>
+
+<span class="n">cancel</span><span class="p">()</span><span class="o">.</span> <span class="err">尝试取消回调函数。</span> <span class="err">补充：准确的规范。</span>
+
+<span class="err">只读的公共属性：</span>
+
+<span class="n">callback</span><span class="err">。</span> <span class="err">要被调用的回调函数。</span>
+
+<span class="n">args</span><span class="err">。调用回调函数的参数数组。</span>
+
+<span class="n">cancelled</span><span class="err">。如果</span><span class="n">cancel</span><span class="p">()</span><span class="err">表调用了，它的值为</span><span class="bp">True</span><span class="err">。</span>
+
+
+
+<span class="err">要注意的是一些回调函数（例如通过</span><span class="n">call_later</span><span class="p">()</span><span class="err">注册的）意味着只会被调用一次。其他的（如通过</span><span class="n">add_reader</span><span class="p">()</span><span class="err">注册的）意味着可以多次被调用。</span>
+
+<span class="err">补充：一个调用回调函数的</span><span class="n">API</span><span class="err">（是否有必要封装异常处理）？它是不是要记录自己被调用了多少次？也许这个</span><span class="n">API</span><span class="err">应该是</span><span class="n">_call_</span><span class="p">()</span><span class="err">这样？（但它应该抑制异常。）</span>
+
+<span class="err">补充：当回调函数在调度的时候有没有一些公共的属性来记录那些实时的值？（因为这需要一些方法来把它保存到堆里面的。）</span>
+
+<span class="n">Futures</span>
+
+
+
+<span class="n">ulip</span><span class="o">.</span><span class="n">Future</span> <span class="err">特意设计成和</span> <span class="n">PEP</span> <span class="mi">3148</span><span class="err">中的</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="err">类似，只是有细微的不同。这个</span><span class="n">PEP</span><span class="err">中谈及</span>
+<span class="n">Future</span> <span class="err">时，都是指</span> <span class="n">tulip</span><span class="o">.</span><span class="n">Future</span><span class="err">，除非明确指定是</span>
+<span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span><span class="err">。</span><span class="n">tulip</span><span class="o">.</span><span class="n">Future</span><span class="err">支持的公开</span><span class="n">API</span><span class="err">如下，同时也指出了和</span> <span class="n">PEP</span> <span class="mi">3148</span> <span class="err">的不同：</span>
+
+<span class="n">cancel</span><span class="p">()</span><span class="o">.</span> <span class="err"> 如果该</span> <span class="n">Future</span> <span class="err">已经完成（或者被取消了），则返回</span> <span class="bp">False</span><span class="err">。否则，将该</span> <span class="n">Future</span>
+<span class="err">的状态更改成取消状态（也可以理解成已完成），调度回调函数，返回</span> <span class="bp">True</span><span class="err">。</span>
+
+<span class="n">cancelled</span><span class="p">()</span><span class="o">.</span> <span class="err">如果该</span> <span class="n">Future</span> <span class="err">已经被取消了，返回</span> <span class="bp">True</span><span class="err">。</span>
+
+<span class="n">running</span><span class="p">()</span><span class="o">.</span> <span class="err">总是返回</span><span class="bp">False</span><span class="err">。和</span> <span class="n">PEP</span> <span class="mi">3148</span> <span class="err">不同，这里没有</span> <span class="n">running</span> <span class="err">状态。</span>
+
+<span class="n">done</span><span class="p">()</span><span class="o">.</span> <span class="err">如果该</span><span class="n">Future</span><span class="err">已经完成了，返回</span><span class="bp">True</span><span class="err">。注意：取消了的</span><span class="n">Future</span><span class="err">也认为是已经完成了的（这里和其他地方都是这样）。</span>
+
+<span class="n">result</span><span class="p">()</span><span class="o">.</span> <span class="err">返回</span> <span class="n">set_result</span><span class="p">()</span> <span class="err">设置的结果，或者返回</span> <span class="n">set_exception</span><span class="p">()</span>
+<span class="err">设置的异常。如果已经被取消了，则抛出</span><span class="n">CancelledError</span><span class="err">。和</span> <span class="n">PEP</span> <span class="mi">3148</span>
+<span class="err">不同，这里没有超时参数，并不等待。如果该</span><span class="n">Future</span><span class="err">尚未完成，则抛出一个异常。</span>
+
+<span class="n">exception</span><span class="p">()</span><span class="o">.</span> <span class="err">同上，返回的是异常。</span>
+
+<span class="n">add_done_callback</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span> <span class="err"> 添加一个回调函数，在</span><span class="n">Future</span><span class="err">完成（或者被取消）时运行。如果该</span><span class="n">Future</span><span class="err">已经完成（或者被取消），通过</span>
+<span class="n">call_soon</span><span class="p">()</span> <span class="err">来调度回调函数。不同于</span> <span class="n">PEP</span>
+<span class="mi">3148</span><span class="err">，添加的回调函数不会立即被调用，且总是会在调用者的上下文中运行。（典型地，一个上下文是一个线程）。你可以理解为，使用</span> <span class="n">call_soon</span><span class="p">()</span>
+<span class="err">来调用该回调函数。注意：添加的回调函数（不同于本</span><span class="n">PEP</span><span class="err">其他的回调函数，且忽略下面</span><span class="s2">&quot;回调风格（Callback Style）&quot;</span><span class="err">小节的约定）总会接收到一个</span>
+<span class="n">Future</span> <span class="err">作为参数，且这个回调函数不应该是</span> <span class="n">Handler</span> <span class="err">对象。</span>
+
+<span class="n">set_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span>
+<span class="n">T</span><span class="err">该</span><span class="n">Future</span><span class="err">不能处于完成（或者取消）状态。这个方法将使当前</span><span class="n">Future</span><span class="err">进入完成状态，并准备调用相关的回调函数。不同于</span> <span class="n">PEP</span>
+<span class="mi">3148</span><span class="err">：这是一个公开的</span><span class="n">API</span><span class="err">。</span>
+
+<span class="n">set_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span> <span class="err"> 同上，设置的是异常。</span>
+
+<span class="err">内部的方法</span> <span class="n">set_running_or_notify_cancel</span><span class="p">()</span> <span class="err">不再被支持；现在已经没有方法直接设置成</span> <span class="n">running</span> <span class="err"> 状态。</span>
+
+<span class="err">这个</span><span class="n">PEP</span><span class="err">定义了以下的异常</span><span class="p">:</span>
+
+<span class="n">InvalidStateError</span><span class="o">.</span> <span class="err">当调用的方法不接受这个</span> <span class="n">Future</span> <span class="err">的状态时，将会抛出该异常（例如：在一个已经完成的</span> <span class="n">Future</span>
+<span class="err">中调用</span><span class="n">set_result</span><span class="p">()</span> <span class="err">方法，或者在一个未完成的</span> <span class="n">Future</span> <span class="err">中调用</span> <span class="n">result</span><span class="p">()</span><span class="err">方法）。</span>
+
+<span class="n">InvalidTimeoutError</span><span class="o">.</span> <span class="err">当调用</span> <span class="n">result</span><span class="p">()</span> <span class="err">或者</span> <span class="n">exception</span><span class="p">()</span> <span class="err">时传递一个非零参数时抛出该异常。</span>
+
+<span class="n">CancelledError</span><span class="o">.</span> <span class="err"> </span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">CancelledError</span> <span class="err">的别名。在一个已经取消的</span> <span class="n">Future</span> <span class="err">上面调用</span>
+<span class="n">result</span><span class="p">()</span> <span class="err">或</span> <span class="n">exception</span><span class="p">()</span> <span class="err">方法时抛出该异常。</span>
+
+<span class="n">TimeoutError</span><span class="o">.</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="err">的别名。有可能由</span>
+<span class="n">EventLoop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">()</span> <span class="err">方法抛出。</span>
+
+<span class="err">创建一个</span> <span class="n">Future</span> <span class="err">时将会与默认的事件循环关联起来。（尚未完成的：允许传递一个事件循环作为参数?）。</span>
+
+<span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span> <span class="err">包里面的</span> <span class="n">wait</span><span class="p">()</span> <span class="err">和</span> <span class="n">as_completed</span><span class="p">()</span> <span class="err">方法不接受</span> <span class="n">tulip</span><span class="o">.</span><span class="n">Future</span>
+<span class="err">对象作为参数。然而，有类似的</span> <span class="n">API</span> <span class="n">tulip</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="err">和</span> <span class="n">tulip</span><span class="o">.</span><span class="n">as_completed</span><span class="p">()</span><span class="err">，</span> <span class="err">如下所述。</span>
+
+<span class="err">在子程序（</span><span class="n">coroutine</span><span class="err">）中可以将</span> <span class="n">tulip</span><span class="o">.</span><span class="n">Future</span> <span class="err">对象应用到</span> <span class="k">yield from</span> <span class="err">表达式中。这个是通过</span> <span class="n">Future</span> <span class="err">中的</span>
+<span class="fm">__iter__</span><span class="p">()</span> <span class="err">接口实现的。请参考下面的“子程序和调度器”小节。</span>
+
+<span class="err">当</span> <span class="n">Future</span> <span class="err">对象被回收时，如果有相关联的异常但是并没有调用</span> <span class="n">result</span><span class="p">()</span> <span class="err">、</span> <span class="n">exception</span><span class="p">()</span> <span class="err">或</span> <span class="fm">__iter__</span><span class="p">()</span>
+<span class="err">方法（或者说产生了异常但是还没有抛出），那么应该将该异常记录到日志中。</span><span class="n">TBD</span><span class="err">：记录成什么级别？</span>
+
+<span class="err">将来，我们可能会把</span> <span class="n">tulip</span><span class="o">.</span><span class="n">Future</span> <span class="err">和</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="err">统一起来。例如，为后面个对象添加一个</span>
+<span class="fm">__iter__</span><span class="p">()</span> <span class="err">方法，以支持</span> <span class="k">yield from</span> <span class="err">表达式。为了防止意外调用尚未完成的</span> <span class="n">result</span><span class="p">()</span>
+<span class="err">而阻塞事件循环，阻塞机制需要检测当前线程是否存在活动的事件循环，否则抛出异常。然而，这个</span><span class="n">PEP</span><span class="err">为了尽量减少外部依赖（只依赖</span>
+<span class="n">Python3</span><span class="o">.</span><span class="mi">3</span><span class="err">），所以目前将不会对</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="err">作出改变。</span>
+
+<span class="err">传输层</span>
+
+
+
+<span class="err">传输层是指基于</span> <span class="n">socket</span> <span class="err">或者其他类似的机制（例如，管道或者</span><span class="n">SSL</span><span class="err">连接）的抽象层。这里的传输层深受</span> <span class="n">Twisted</span> <span class="err">和</span> <span class="n">PEP</span> <span class="mi">3153</span>
+<span class="err">的影响。用户很少会直接实现或者实例化传输层，事件循环提供了设置传输层的相关方法。</span>
+
+<span class="err">传输层是用来和协议一起工作的。典型的协议不关心底层传输层的具体细节，而传输层可以用来和多种的协议一起工作。例如，</span><span class="n">HTTP</span> <span class="err">客户端实现可以使用普通的</span>
+<span class="n">socket</span> <span class="err">传输层，也可以使用</span><span class="n">SSL</span><span class="err">传输层。普通</span> <span class="n">socket</span> <span class="err">传输层可以与</span> <span class="n">HTTP</span> <span class="err">协议外的大量协议一起工作（例如，</span><span class="n">SMTP</span><span class="p">,</span> <span class="n">IMAP</span><span class="p">,</span> <span class="n">POP</span><span class="p">,</span>
+<span class="n">FTP</span><span class="p">,</span> <span class="n">IRC</span><span class="p">,</span> <span class="n">SPDY</span><span class="p">)</span><span class="err">。</span>
+
+<span class="err">大多数连接有不对称特性：客户端和服务器通常有不同的角色和行为。因此，传输层和协议之间的接口也是不对称的。从协议的视角来看，发送数据通过调用传输层对象的</span>
+<span class="n">write</span><span class="p">()</span> <span class="err">方法来完成。</span><span class="n">write</span><span class="p">()</span> <span class="err">方法将数据放进缓冲区后立即返回。在读取数据时，传输层将充当一个更主动的角色：当从</span>
+<span class="n">socket</span><span class="err">（或者其他数据来源）</span> <span class="err">接到数据后，传输层将调用协议的</span> <span class="n">data_received</span><span class="p">()</span> <span class="err">方法。</span>
+
+<span class="err">传输层有以下公开方法：</span>
+
+<span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span> <span class="err">写数据。参数必须是一个</span> <span class="nb">bytes</span> <span class="err">对象。返回</span> <span class="bp">None</span><span class="err">。传输层可以自由缓存</span> <span class="nb">bytes</span>
+<span class="err">数据，但是必须确保数据发送到另一端，并且维护数据流的行为。即：</span><span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">);</span> <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;def&#39;</span><span class="p">)</span> <span class="err">等价于</span>
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;abcdef&#39;</span><span class="p">)</span><span class="err">，也等价于：</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+
+<span class="n">writelines</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span><span class="o">.</span> <span class="err">等价于：</span>
+
+<span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+
+<span class="err"> </span> <span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">write_eof</span><span class="p">()</span><span class="o">.</span> <span class="err">关闭写数据端的连接，将不再允许调用</span> <span class="n">write</span><span class="p">()</span>
+<span class="err">方法。当所有缓冲的数据传输之后，传输层将向另一端发信号，表示已经没有其他数据了。有些协议不支持此操作；那样的话，调用</span> <span class="n">write_eof</span><span class="p">()</span>
+<span class="err">将会抛出异常。（注意：这个方法以前叫做</span> <span class="n">half_close</span><span class="p">()</span><span class="err">，除非你明确知道具体含义，这个方法名字并不明确表示哪一端会被关闭。）</span>
+
+<span class="n">can_write_eof</span><span class="p">()</span><span class="o">.</span> <span class="err"> 如果协议支持</span> <span class="n">write_eof</span><span class="p">()</span><span class="err">，返回</span> <span class="bp">True</span> <span class="err">；否则返回</span> <span class="bp">False</span><span class="err">。（当</span> <span class="n">write_eof</span><span class="p">()</span>
+<span class="err">不可用时，有些协议需要改变相应的行为，所以需要这个方法。例如，</span><span class="n">HTTP</span><span class="err">中，为了发送当前大小未知的数据，通常会使用</span> <span class="n">write_eof</span><span class="p">()</span>
+<span class="err">来表示数据发送完毕。但是，</span><span class="n">SSL</span>
+<span class="err">不支持这种行为，相应的</span><span class="n">HTTP</span><span class="err">协议实现需要使用分段（</span><span class="n">chunked</span><span class="err">）编码。但是如果数据大小在发送时未知，适用于两种情况的最好方案是使用</span> <span class="n">Content</span><span class="o">-</span>
+<span class="n">Length</span> <span class="err">头。）</span>
+
+<span class="n">pause</span><span class="p">()</span><span class="o">.</span> <span class="err">暂停发送数据，直接调用了</span> <span class="n">resume</span><span class="p">()</span> <span class="err">方法。在</span> <span class="n">pause</span><span class="p">()</span> <span class="err">调用，再到调用</span> <span class="n">resume</span><span class="p">()</span> <span class="err">之间，不会再调用协议的</span>
+<span class="n">data_received</span><span class="p">()</span> <span class="err">方法。在</span> <span class="n">write</span><span class="p">()</span> <span class="err"> 方法中无效。</span>
+
+<span class="n">resume</span><span class="p">()</span><span class="o">.</span> <span class="err">使用协议的</span> <span class="n">data_received</span><span class="p">()</span> <span class="err">重新开始传输数据。</span>
+
+<span class="n">close</span><span class="p">()</span><span class="o">.</span> <span class="err">关闭连接。在所有使用</span> <span class="n">write</span><span class="p">()</span> <span class="err">缓冲好的数据发送完毕之前，不会关闭连接。连接关闭后，协议的</span> <span class="n">data_received</span><span class="p">()</span>
+<span class="err">方法不会再被调用。当所有缓冲的数据发送完毕后，将会用</span> <span class="bp">None</span> <span class="err">作为参数调用协议的</span> <span class="n">connection_lost</span><span class="p">()</span>
+<span class="err">方法。注意：这个方法不确保会调用上面所有的方法。</span>
+
+<span class="n">abort</span><span class="p">()</span><span class="o">.</span> <span class="err">中断连接。所有在缓冲区内尚未传输的数据都会被丢弃。不久后，协议的</span> <span class="n">connection_lost</span><span class="p">()</span> <span class="err">将会被调用，传入一个</span> <span class="bp">None</span>
+<span class="err">参数。（待定：在</span> <span class="n">close</span><span class="p">(),</span> <span class="n">abort</span><span class="p">()</span> <span class="err">或者另一端的关闭动作中，对</span> <span class="n">connection_lost</span><span class="p">()</span> <span class="err">传入不同的参数?</span>
+<span class="err">或者添加一个方法专门用来查询这个?</span> <span class="n">Glyph</span> <span class="err">建议传入不同的异常）</span>
+
+<span class="err">尚未完成的：提供另一种流量控制的方法：传输层在缓冲区数据成为负担的情况下有可能暂停协议层。建议：如果协议有</span> <span class="n">pause</span><span class="p">()</span> <span class="err">和</span> <span class="n">resume</span><span class="p">()</span>
+<span class="err">方法的话，允许传输层调用它们；如果不存在，则协议不支持流量控制。（对</span> <span class="n">pause</span><span class="p">()</span> <span class="err">和</span> <span class="n">resume</span><span class="p">()</span><span class="err">，可能协议层和传输层使用不同的名称会好一点？）</span>
+
+<span class="err">协议</span> <span class="p">(</span><span class="n">Protocols</span><span class="p">)</span>
+
+
+
+<span class="err">协议通常和传输层一起配合使用。这里提供了几个常用的协议（例如，几个有用的</span><span class="n">HTTP</span><span class="err">客户端和服务器实现），大多数协议需要用户或者第三方库来实现。</span>
+
+<span class="err">一个协议必须实现以下的方法，这些方法将被传输层调用。这些回调函数将被事件循环在正确的上下文中调用（参考上面的上下文</span><span class="p">(</span><span class="s2">&quot;Context&quot;</span><span class="p">)</span><span class="err">小节）。</span>
+
+<span class="n">connection_made</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span><span class="o">.</span>
+<span class="err">意味着传输层已经准备好且连接到一个实现的另一端。协议应该将传输层引用作为一个变量保存起来（这样后面就可以调用它的</span> <span class="n">write</span><span class="p">()</span>
+<span class="err">及其他方法），也可以在这时发送握手请求。</span>
+
+<span class="n">data_received</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span> <span class="err">传输层已经从读取了部分数据。参数是一个不为空的的</span> <span class="nb">bytes</span> <span class="err">对象。这个参数的大小并没有明确的限制。</span>
+<span class="n">p</span><span class="o">.</span><span class="n">data_received</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;abcdef&#39;</span><span class="p">)</span> <span class="err">应该等价于下面的语句：</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">data_received</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">data_received</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;def&#39;</span><span class="p">)</span>
+
+<span class="n">eof_received</span><span class="p">()</span><span class="o">.</span> <span class="err">在另一端调用了</span> <span class="n">write_eof</span><span class="p">()</span> <span class="err">或者其他等价的方法时，这个方法将被调用。默认的实现将调用传输层的</span> <span class="n">close</span><span class="p">()</span>
+<span class="err">方法，</span><span class="n">close</span><span class="p">()</span> <span class="err">方法调用了协议中的</span> <span class="n">connection_lost</span><span class="p">()</span> <span class="err">方法。</span>
+
+<span class="n">connection_lost</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="o">.</span> <span class="err">传输层已经关闭或者中断了，另一端已经安全地关闭了连接，或者发生了异常。在前三种情况中，参数为</span>
+<span class="bp">None</span><span class="err">；在发生了异常的情况下，参数是导致传输层中断的异常。（待定：是否需要区分对待前三种情况？）</span>
+
+<span class="err">这里是一个表示了调用的顺序和多样性的图</span><span class="p">:</span>
+
+<span class="n">connection_made</span><span class="p">()</span><span class="o">--</span> <span class="n">exactly</span> <span class="n">once</span>
+
+<span class="n">data_received</span><span class="p">()</span><span class="o">--</span> <span class="n">zero</span> <span class="ow">or</span> <span class="n">more</span> <span class="n">times</span>
+
+<span class="n">eof_received</span><span class="p">()</span><span class="o">--</span> <span class="n">at</span> <span class="n">most</span> <span class="n">once</span>
+
+<span class="n">connection_lost</span><span class="p">()</span><span class="o">--</span> <span class="n">exactly</span> <span class="n">once</span>
+
+<span class="err">补充</span><span class="p">:</span> <span class="err">讨论用户的代码是否要做一些事情保证协议和传输协议不会被过早地</span><span class="n">GC</span><span class="err">（垃圾回收）。</span>
+
+<span class="err">回调函数风格</span>
+
+
+
+<span class="err">大部分接口采取回调函数也采取位置参数。举例来说，要安排</span><span class="n">foor</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">,</span><span class="mi">42</span><span class="p">)</span><span class="err">马上调用，你可以调用</span><span class="n">ev</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span><span class="s2">&quot;abc&quot;</span><span class="p">,</span><span class="mi">42</span><span class="p">)</span><span class="err">。</span>
+<span class="err">要计划调用</span><span class="n">foo</span><span class="p">()</span><span class="err">，则使用</span><span class="n">ev</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="err">。这种约定大大地减少了需要典型的回调函数编程的小</span><span class="k">lambda</span><span class="err">表达式的数量。</span>
+
+<span class="err">这种约定明确的不支持关键字参数。关键字参数常用来传递可选的关于回调函数的额外信息。这允许</span><span class="n">API</span><span class="err">的优雅的改革，不用担心是否一个关键字在某些地方被一个调用者声明</span>
+<span class="err">。如果你有一个必需使用关键字参数调用的回调函数，你可以使用</span><span class="k">lambda</span><span class="err">表达式或者</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="err">。例如：</span>
+
+<span class="n">ev</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+
+
+
+<span class="err">选择一种事件循环的实现方式</span>
+
+<span class="err">待完成。（关于使用</span><span class="n">select</span><span class="o">/</span><span class="n">poll</span><span class="o">/</span><span class="n">epoll</span><span class="err">，以及如何改变选择。属于事件循环策略）</span>
+
+<span class="err">协程和调度器</span>
+
+
+
+<span class="err">这是一个独立的顶层部分，因为它的状态与事件循环接口不同。协程是可选的，而且只用回调的方式来写代码也是很好的。另一方面，只有一种调度器</span><span class="o">/</span><span class="err">协程的</span><span class="n">API</span><span class="err">实现，如果</span>
+<span class="err">你选择了协程，那就是你唯一要用的。</span>
+
+<span class="err">协同程序</span>
+
+
+
+<span class="err">一个协同程序是遵循一下约定的生产者。为了良好的文档的目的，所有的协同程序应该用</span><span class="nd">@tulip.coroutine</span><span class="err">来修饰，但这并没严格要求。</span>
+
+<span class="err">协同程序使用在</span> <span class="n">PEP</span> <span class="mi">380</span> <span class="err">里介绍的</span><span class="k">yield from</span><span class="err">语法啦代替原始的</span><span class="k">yield</span><span class="err">语法。</span>
+
+<span class="err">这个“协同程序”的词和“生产者”的含义类似，是用来描述两个不同（尽管是有关系）的概念。</span>
+
+<span class="err">定义了协同程序的函数（使用</span><span class="n">tulip</span><span class="o">.</span><span class="n">coroutine</span><span class="err">修饰定义的一个函数）。如果要消除歧义的话，我们可以称这个函数为协同程序函数</span><span class="p">(</span><span class="n">coroutine</span>
+<span class="n">function</span><span class="p">)</span><span class="err">。</span>
+
+<span class="err">通过一个协同函数获得对象。这个对象代表了一个最终会完成的计算或者</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">操作（通常两者都有）。我们可以称这个对象为协同程序对象</span><span class="p">(</span><span class="n">coroutine</span>
+<span class="nb">object</span><span class="p">)</span><span class="err">来消除歧义。</span>
+
+
+
+<span class="err">协程能做的事情：</span>
+
+<span class="err">结果</span><span class="o">=</span> <span class="err">从</span><span class="n">future</span><span class="err">使用</span><span class="k">yield</span><span class="o">--</span> <span class="err">直到</span><span class="n">future</span><span class="err">完成，挂起协程，然后返回</span><span class="n">future</span><span class="err">的结果，或者抛出它要传递的异常。</span>
+
+<span class="err">结果</span> <span class="o">=</span> <span class="err">从</span><span class="n">coroutine</span><span class="err">使用</span><span class="k">yield</span><span class="o">--</span><span class="err">等待另外的协程产生结果</span> <span class="err">（或者抛出一个要传递的异常）。这协程的异常必须是对另外一个协同程序的调用。</span>
+
+<span class="err">返回结果</span><span class="o">--</span> <span class="err">为使用</span><span class="k">yield from</span><span class="err">表达式等待结果的协程返回一个结果。</span>
+
+<span class="err">抛出异常</span><span class="o">--</span> <span class="err">在协程里为使用</span><span class="k">yield from</span><span class="err">表达式等待的（程序）抛出一个异常。</span>
+
+<span class="err">调用一个协程不会马上执行它的代码——它仅仅是一个生产者，同时通过调用而返回的协程确实只是一个生产者对象，它在你迭代它之前不会做任何事情。对于协程来说，有两种</span>
+<span class="err">基本的方法来让它开始运行：从别的协程里调用</span><span class="k">yield</span><span class="err">（假设另外的协程已经在运行了！），或者把它转换为一个</span><span class="n">Task</span><span class="err">（看下面）。</span>
+
+<span class="err">协程只有在事件循环在运行时才能运行。</span>
+
+<span class="err">等待多个协同程序</span>
+
+
+
+<span class="err">有两个类似</span><span class="n">wait</span><span class="p">()</span><span class="err">和</span><span class="n">as_completed</span><span class="p">()</span><span class="err">，在包</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="err">里的</span><span class="n">API</span><span class="err">提供来等待多个协同程序或者</span><span class="n">Future</span><span class="err">：</span>
+
+<span class="n">tulip</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">return_when</span><span class="o">=</span><span class="n">ALL_COMPLETED</span><span class="p">)</span><span class="err">。</span> <span class="err">这是一个由</span><span class="n">fs</span><span class="err">提供等待</span><span class="n">Future</span><span class="err">或者其他</span>
+<span class="err">协同程序完成的协同程序。协同程序参数会封装在</span><span class="n">Task</span><span class="err">里（看下面）。这方法会返回一个</span><span class="n">Future</span><span class="err">，</span><span class="n">Future</span><span class="err">的成功结果是一个包含了两个</span><span class="n">Future</span><span class="err">集的元组（</span>
+<span class="err">做完</span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="err">，挂起</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span><span class="err">），</span><span class="n">done</span><span class="err">是一个原始</span><span class="n">Future</span><span class="err">（或封装过的协同程序）的集合表示完成（或取消），以及</span><span class="n">pending</span><span class="err">表示休息，例如还</span>
+<span class="err">没完成（或者取消）。可选参数</span><span class="n">timeout</span><span class="err">和</span><span class="n">return_when</span><span class="err">与</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span><span class="err">里的参数都有同样的意思和默认值</span><span class="p">:</span><span class="n">tim</span>
+<span class="n">eout</span><span class="err">，如果不是</span><span class="bp">None</span><span class="err">，则为全部的操作指定一个</span><span class="n">timeout</span><span class="err">；</span><span class="n">return_when</span><span class="err">，指定什么时候停止。常量</span><span class="n">FIRST_COMPLETED</span><span class="err">，</span><span class="n">FIRST_</span>
+<span class="n">EXCEPTION</span><span class="err">，</span><span class="n">ALL_COMPLETED</span><span class="err">使用相同的值定义同时在</span> <span class="n">PEP</span> <span class="mi">3148</span><span class="err">里有相同的意思：</span>
+
+<span class="n">ALL_COMPLETED</span><span class="p">(</span><span class="n">default</span><span class="p">):</span> <span class="err">等待，知道所有的</span><span class="n">Future</span><span class="err">处理了或者完成了</span> <span class="err">（或者直到超时发生）。</span>
+
+<span class="n">FIRST_COMPLETED</span><span class="p">:</span> <span class="err">等待，知道至少一个</span><span class="n">Future</span><span class="err">做好了或者取消（或者直到超时发生）。</span>
+
+<span class="n">FIRST_EXCEPTION</span><span class="p">:</span> <span class="err">等待，知道至少一个</span><span class="n">Future</span><span class="err">由于异常而做好（非取消）</span> <span class="err">（这种从过滤器中排除取消的</span><span class="n">Future</span><span class="err">是很神奇的，但</span><span class="n">PEP</span>
+<span class="mi">3148</span> <span class="err">就用这种方法里做了。）</span>
+
+<span class="n">tulip</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span> <span class="err">返回一个值为</span><span class="n">Future</span><span class="err">的迭代器</span><span class="p">;</span>
+<span class="err">等待成功的值，直到下一个</span><span class="n">Future</span><span class="err">或者协同程序从</span><span class="n">fs</span><span class="err">中完成都处于等待状态，</span> <span class="err">同时返回它自己的结果</span>
+<span class="err">（或者抛出它的异常）。可选参数</span><span class="n">timeout</span><span class="err">与</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span><span class="err">里的参数都有同样的意思和默认值</span><span class="p">:</span> <span class="err">当存在超时的时候，</span>
+<span class="err">下一个由迭代器返回的</span><span class="n">Future</span><span class="err">在等待的时候会抛出异常</span><span class="n">TimeoutError</span><span class="err">。</span> <span class="err">使用列子：</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+
+<span class="err"> </span> <span class="err"> </span><span class="n">result</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">f</span> <span class="err"> </span><span class="c1"># May raise an exception.</span>
+
+<span class="err"> </span> <span class="err"> </span><span class="c1"># Use result.</span>
+
+
+
+<span class="err">任务（</span><span class="n">Task</span><span class="err">）</span>
+
+
+
+<span class="err">任务（</span><span class="n">Task</span><span class="err">）是一个管理独立运行子程序的对象。</span><span class="n">Task</span><span class="err">接口和</span><span class="n">Future</span><span class="err">接口是一样的。如果子程序完成或者抛出异常，那么与之关联的任务也就完成了。返回的结果</span>
+<span class="err">就是相应任务的结果，抛出的异常就是相应任务的异常。</span>
+
+<span class="err">如果取消一个尚未完成的任务，将会阻止关联的子程序继续执行。在这种情况下，子程序将会接收到一个异常，以更好地处理这个取消命令。当然，子程序不一定要处理这个异常</span>
+<span class="err">。这种机制通过调用生成器标准的</span> <span class="err"> </span><span class="n">close</span><span class="p">()</span> <span class="err">方法，这个在</span> <span class="n">PEP</span> <span class="mi">342</span> <span class="err">中有描述。</span>
+
+<span class="err">任务对于子程序间的交互以及基于回调的框架（例如</span> <span class="n">Twisted</span><span class="err">）也很有用。将一个子程序转化成任务之后，就可以将回调函数加到任务里。</span>
+
+<span class="err">你可能会问，为什么不将所有子程序都转化成任务？</span> <span class="nd">@tulip.coroutinedecorator</span>
+<span class="err">可以实现这个任务。这样的话，如果一个子程序调用了另外的子程序（或者其他复杂情况），那么整个程序将会变得相当慢。在复杂情况下，保持子程序比转换成任务要快得多。</span>
+
+<span class="err">调度器</span>
+
+
+
+<span class="err">调度器没有公开的接口。你可以使用</span> <span class="n">future</span> <span class="err">和</span> <span class="n">task</span> <span class="err">的</span> <span class="k">yield</span>
+<span class="err">和调度器进行交互。实际上，调度器并没有一个具体的类实现。通过使用事件循环的公共接口，</span><span class="n">Future</span> <span class="err">和</span> <span class="n">Task</span>
+<span class="err">类表现了调度器的行为。所以即使换了第三方的事件循环实现，调度器特性也可以使用。</span>
+
+<span class="err">睡眠</span>
+
+
+
+<span class="err">尚未完成的：</span><span class="k">yield</span> <span class="n">sleep</span><span class="p">(</span><span class="err">秒</span><span class="p">)</span><span class="o">.</span> <span class="err">可以用</span> <span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="err">来挂起并查询</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">。</span>
+
+<span class="err">协同程序与协议</span>
+
+
+
+<span class="err">使用协同程序去实现协议的最好方法坑农是使用一个流缓存，这缓存使用</span><span class="n">data_received</span><span class="p">()</span><span class="err">来填充数据，同时能够使用像</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="err">和</span><span class="n">readline</span><span class="p">()</span>
+<span class="err">等返回一个</span><span class="n">Future</span><span class="err">的方法来异步读取数据。当链接关闭时，</span><span class="n">read</span><span class="p">()</span><span class="err">方法应该返回一个</span><span class="n">Future</span><span class="err">，这</span><span class="n">Future</span><span class="err">的结果会是</span><span class="s1">&#39;&#39;</span><span class="err">，或者如果</span><span class="n">connectio</span>
+<span class="n">n_closed</span><span class="p">()</span><span class="err">由于异常而被调用，则抛出一个异常。</span>
+
+<span class="err">要写入数据的话，在</span><span class="n">transport</span><span class="err">上的</span><span class="n">write</span><span class="p">()</span><span class="err">（及同类型的）方法能够使用——这些不会返回一个</span><span class="n">Future</span><span class="err">。应该提供用于设置和在调用了</span><span class="n">connecti</span>
+<span class="n">on_made</span><span class="p">()</span><span class="err">时开始协同程序的一个标准的协议实现。</span>
+
+<span class="err">补充：更多的规范。</span>
+
+<span class="err">取消</span>
+
+
+
+<span class="err">补充。当一个任务被取消了，它的协同程序会在它从调度程序中放弃的任何一个地方中看到异常（例如可能在操作中放弃）。我们需要讲清楚要抛出什么异常。</span>
+
+<span class="err">再次补充：超时。</span>
+
+<span class="err">已知问题</span>
+
+
+
+<span class="err">调试的</span><span class="n">API</span><span class="err">？</span> <span class="err">例如</span> <span class="err">一些能够记录大量材料的或者是记录不常用条件的</span> <span class="err">（就像队列填充比排空快）或者甚至回调函数耗费大量时间</span><span class="o">...</span>
+
+<span class="err">我们需要内省的</span><span class="n">API</span><span class="err">吗？例如请求读回调函数返回一个文件描述符。或者当下一个调度的（回调函数）被调用时。或者由回调函数注册了的一些文件描述符。</span>
+
+<span class="err">传输可能需要一个方法来试着返回</span><span class="n">socket</span><span class="err">的地址（和另外的方法返回对等的地址）。尽管这是依赖于</span><span class="n">socket</span><span class="err">的类型，同时这并不总是一个</span><span class="n">socket</span><span class="err">；然后就应该</span>
+<span class="err">返回</span><span class="bp">None</span><span class="err">。（作为选择，可以有个方法来返回</span><span class="n">socket</span><span class="err">自身——但可以想到一个没有使用</span><span class="n">socket</span><span class="err">来实现</span><span class="n">IP</span><span class="err">链接，那它应该怎么做呢？）</span>
+
+<span class="err">需要处理</span><span class="n">os</span><span class="o">.</span><span class="n">fokd</span><span class="p">()</span><span class="err">。（这可能在</span><span class="n">Tulip</span><span class="err">的情况下会上升到选择器类。）</span>
+
+<span class="err">也许</span><span class="n">start_serving</span><span class="p">()</span><span class="err">需要一个方法来传入到一个当前的</span><span class="n">socket</span><span class="err">（例如</span><span class="n">gunicorn</span><span class="err">就需要这个）。</span><span class="n">create_connection</span><span class="p">()</span><span class="err">也有同</span>
+<span class="err">样的问题。</span>
+
+<span class="err">我们也许会介绍一些明确的锁，尽管使用起来有点痛苦，因为我们不能使用</span><span class="k">with</span><span class="err">锁：阻塞语法（因为要等待一个锁的话，我们就要用</span><span class="k">yield</span>
+<span class="n">from</span><span class="err">了，这是</span><span class="k">with</span><span class="err">语句不能做到的）。</span>
+
+<span class="err">是否要支持数据报协议、链接。可能要更多的套接字</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">方法，例如</span><span class="n">sock_sendto</span><span class="p">()</span><span class="err">和</span><span class="n">sock_recvfrom</span><span class="p">()</span><span class="err">。或者用户客户自己编写（这不是火箭科</span>
+<span class="err">学）。有它的理由去覆盖</span><span class="n">write</span><span class="p">()</span><span class="err">，</span><span class="n">writelines</span><span class="p">()</span><span class="err">，</span><span class="n">data_received</span><span class="p">()</span><span class="err">到一个单一的数据报？（</span><span class="n">Glyph</span><span class="err">推荐后者。）然后用什么来代替</span><span class="n">w</span>
+<span class="n">rite</span><span class="p">()</span><span class="err">？最后，我们需要支持无连接数据报协议吗？（这意味着要封装</span><span class="n">sendto</span><span class="p">()</span><span class="err">和</span><span class="n">recvfrom</span><span class="p">()</span><span class="err">。）</span>
+
+<span class="err">我们可能需要</span><span class="n">API</span><span class="err">来控制各种超市。例如我们可能想限制在解析</span><span class="n">DNS</span><span class="err">、链接、</span><span class="n">SSL</span><span class="err">握手、空闲链接、甚至是每个会话里消耗的时间。也许有能充分的加入</span><span class="n">timeout</span><span class="err">的</span>
+<span class="err">关键字参数到一些方法里，和其他能够巧妙地通过</span><span class="n">call_later</span><span class="err">和</span><span class="n">Task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span><span class="err">来实现超时。但可能有些方法需要默认的超时时间，同时我们可能想改变</span>
+<span class="err">这种规范的全局操作的默认值。（例如，每个事件循环）。</span>
+
+<span class="err">一个</span><span class="n">NodeJS</span><span class="err">风格的事件触发器？或者把这个作为一个单独的教程？这其实在用户空间做是足够容易的，尽管可能放在标准化里好一点（看</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span>
+<span class="n">com</span><span class="o">/</span><span class="n">mnot</span><span class="o">/</span><span class="n">thor</span><span class="o">/</span><span class="n">blob</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">thor</span><span class="o">/</span><span class="n">events</span><span class="o">.</span><span class="n">py</span><span class="err">和</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mnot</span><span class="o">/</span><span class="n">thor</span><span class="o">/</span><span class="n">blob</span><span class="o">/</span><span class="n">mas</span>
+<span class="n">ter</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">events</span><span class="o">.</span><span class="n">md</span> <span class="err">举的例子。）</span>
+
+
+
+<span class="err">参考文献</span>
+
+
+
+<span class="n">PEP</span> <span class="mi">380</span> <span class="err">来自于</span><span class="n">TBD</span><span class="err">：</span><span class="n">Greg</span> <span class="n">Ewing</span><span class="err">的教程描述</span><span class="k">yield</span><span class="err">的语义。</span>
+
+<span class="n">PEP</span> <span class="mi">3148</span> <span class="err">描述</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span><span class="o">.</span>
+
+<span class="n">PEP</span> <span class="mi">3153</span><span class="p">,</span><span class="err">虽然被拒绝了</span><span class="p">,</span> <span class="err">但很好的描述了分离传输和协议的需要。</span>
+
+<span class="n">Tulip</span> <span class="n">repo</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">code</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">p</span><span class="o">/</span><span class="n">tulip</span><span class="o">/</span>
+
+<span class="n">Nick</span> <span class="n">Coghlan</span><span class="err">在一些背景下写的一个很好的博客条目，关于异步</span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="err">不同处理、</span><span class="n">gevent</span><span class="err">、以及怎样使用</span><span class="n">future</span><span class="err">就像</span><span class="n">wihle</span><span class="err">、</span><span class="k">for</span><span class="err">和</span><span class="k">with</span><span class="err">的</span>
+<span class="err">概念的思想，</span> <span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">python</span><span class="o">-</span>
+<span class="n">notes</span><span class="o">.</span><span class="n">boredomandlaziness</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">pep_ideas</span><span class="o">/</span><span class="n">async_programming</span><span class="o">.</span><span class="n">html</span>
+
+<span class="n">TBD</span><span class="p">:</span> <span class="err">有关</span><span class="n">Twisted</span><span class="err">、</span><span class="n">Tornado</span><span class="err">、</span><span class="n">ZeroMQ</span><span class="err">、</span><span class="n">pyftpdlib</span><span class="err">、</span><span class="n">libevent</span><span class="err">、</span><span class="n">libev</span><span class="err">、</span><span class="n">pyev</span><span class="err">、</span><span class="n">libuv</span><span class="err">、</span><span class="n">wattle</span><span class="err">等的参考</span>
+
+<span class="err">鸣谢</span>
+
+
+
+<span class="err">除了</span><span class="n">PEP</span> <span class="mi">3153</span><span class="err">之外</span><span class="p">,</span> <span class="err">受到的影响包括</span> <span class="n">PEP</span> <span class="mi">380</span> <span class="ow">and</span> <span class="n">Greg</span> <span class="n">Ewing</span><span class="err">的</span><span class="k">yield from</span><span class="err">的教程</span><span class="p">,</span> <span class="n">Twisted</span><span class="p">,</span> <span class="n">Tornado</span><span class="p">,</span>
+<span class="n">ZeroMQ</span><span class="p">,</span> <span class="n">pyftpdlib</span><span class="p">,</span> <span class="n">tulip</span> <span class="p">(</span><span class="err">作者的企图是想把这些全部综合起来</span><span class="p">),</span> <span class="n">wattle</span> <span class="p">(</span><span class="n">Steve</span> <span class="n">Dower</span><span class="err">的相反的提议</span><span class="p">),</span>
+<span class="mi">2012</span><span class="err">年</span><span class="mi">9</span><span class="err">月到</span><span class="mi">12</span><span class="err">月在</span><span class="n">python</span><span class="o">-</span><span class="n">ideas</span><span class="err">上大量讨论</span><span class="p">,</span> <span class="err">一个与</span><span class="n">Steve</span> <span class="n">Dower</span><span class="err">和</span> <span class="n">Dino</span> <span class="n">Viehland</span><span class="err">在</span><span class="n">Skype</span><span class="err">上的会话</span><span class="p">,</span> <span class="err">和</span><span class="n">Ben</span>
+<span class="n">Darnell</span><span class="err">的电子邮件交流</span><span class="p">,</span> <span class="err">一个</span><span class="n">Niels</span> <span class="n">Provos</span><span class="err">的听众</span> <span class="p">(</span><span class="n">libevent</span><span class="err">原始作者</span><span class="p">),</span><span class="err">两场和几个</span><span class="n">Twisted</span><span class="err">开发者的面对面会议，</span> <span class="err">包括了</span>
+<span class="n">Glyph</span><span class="err">、</span><span class="n">Brian</span> <span class="n">Warner</span><span class="err">、</span><span class="n">David</span> <span class="n">Reid</span><span class="err">、</span> <span class="err">以及</span><span class="n">Duncan</span> <span class="n">McGreggor</span><span class="err">。同样的，作者前期在为</span><span class="n">Google</span> <span class="n">App</span>
+<span class="n">Engine</span><span class="err">的</span><span class="n">NDB</span><span class="err">库的异步支持也有重要的影响。</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

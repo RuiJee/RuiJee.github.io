@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>python动态捕获异常</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to python动态捕获异常">
+                                        python动态捕获异常
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># python动态捕获异常</span>
+
+<span class="err">在讨论动态捕获异常时让我大吃一惊的是</span><span class="p">,</span><span class="err">可以让我找到隐藏的</span><span class="n">Bug</span><span class="err">和乐趣</span><span class="o">...</span>
+
+<span class="err">有问题的代码</span>
+
+
+
+<span class="err">下面的代码来自一个产品中看起来是好的抽象代码</span> <span class="o">-</span> <span class="n">slightly</span><span class="p">(</span><span class="err">!</span><span class="p">)</span> <span class="o">.</span><span class="err">这是调用一些统计数据的函数</span><span class="p">,</span><span class="err">然后进行处理</span> <span class="o">.</span>
+<span class="err">首先是用</span><span class="n">socket</span><span class="err">连接获取一个值</span><span class="p">,</span><span class="err">可能发生了</span><span class="n">socket</span><span class="err">错误</span><span class="o">.</span><span class="err">由于统计数据在系统中不是至关重要的</span><span class="p">,</span><span class="err">我们只是记一下日志错误并继续往下走</span><span class="o">.</span>
+
+<span class="p">(</span><span class="err">请注意</span><span class="p">,</span><span class="err">这篇文章我使用</span><span class="n">doctest</span><span class="err">测试的</span> <span class="o">-</span> <span class="err">这代表代码可以运行!</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">get_stats</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">do_something_with_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">stats</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">()</span>
+
+<span class="o">...</span> <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can&#39;t get statistics&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">do_something_with_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+<span class="err">查找</span>
+
+
+
+<span class="err">我们测试时并没有发现不妥</span><span class="p">,</span> <span class="err">但实际上我们注意到静态分析报告显示一个问题</span><span class="p">:</span>
+
+<span class="err">$</span> <span class="n">flake8</span> <span class="n">filename</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">351</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span> <span class="n">F821</span> <span class="n">undefined</span> <span class="n">name</span> <span class="s1">&#39;socket&#39;</span>
+
+<span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">352</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span> <span class="n">F821</span> <span class="n">undefined</span> <span class="n">name</span> <span class="s1">&#39;logging&#39;</span>
+
+<span class="err">显然是我们没测试</span><span class="p">,</span><span class="err">这个问题是代码中我们没有引用</span><span class="n">socket</span> <span class="err">和</span> <span class="n">logging</span>
+<span class="err">两个模块</span><span class="o">.</span><span class="err">使我感到惊奇的是</span><span class="p">,</span><span class="err">这并没有预先抛出</span><span class="ne">NameError</span><span class="err">错</span><span class="p">,</span><span class="err">我以为它会查找这些异常语句中的一些名词</span><span class="p">,</span><span class="err">如它需要捕捉这些异常</span><span class="p">,</span><span class="err">它需要知道些什么呢!</span>
+
+<span class="err">事实证明并非如此</span><span class="p">,</span><span class="err">异常语句的查找是延迟完成的</span><span class="p">,</span><span class="err">只是评估时抛出异常</span><span class="o">.</span> <span class="err">不只是名称延迟查找</span><span class="p">,</span><span class="err">也可以定制显示声明异常做为</span><span class="s1">&#39;参数(argument)&#39;</span><span class="o">.</span>
+
+<span class="err">这可能是好事</span><span class="p">,</span><span class="err">坏事</span><span class="p">,</span><span class="err">或者是令人厌恶的</span><span class="o">.</span>
+
+<span class="err">好事</span><span class="p">(</span><span class="err">上段中提到的</span><span class="p">)</span>
+
+<span class="err">异常参数可以以任意形式数值传递</span><span class="o">.</span> <span class="err">这样就允许了异常的动态参数被捕获</span><span class="o">.</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">do_something</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span><span class="n">blob</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">attempt</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">ignore_spec</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="n">action</span><span class="p">()</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">except</span> <span class="n">ignore_spec</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">attempt</span><span class="p">(</span><span class="n">do_something</span><span class="p">,</span> <span class="n">ignore_spec</span><span class="o">=</span><span class="p">(</span><span class="ne">NameError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">attempt</span><span class="p">(</span><span class="n">do_something</span><span class="p">,</span> <span class="n">ignore_spec</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">)</span>
+
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+
+<span class="err"> </span><span class="o">...</span>
+
+<span class="ne">NameError</span><span class="p">:</span> <span class="k">global</span> <span class="n">name</span> <span class="s1">&#39;blob&#39;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">defined</span>
+
+<span class="err">坏事</span><span class="p">(</span><span class="err">上段中提到的</span><span class="p">)</span>
+
+<span class="err">这种明显的弊端就是异常参数中的错误通常只有在异常触发之后才会被注意到</span><span class="p">,</span><span class="err">不过为时已晚</span><span class="o">.</span><span class="err">当用异常去捕获不常见的事件时</span><span class="p">(</span><span class="err">例如</span><span class="p">:</span><span class="err">以写方式打开文件失败</span><span class="p">),</span><span class="err">除非做个一个</span>
+<span class="err">特定的测试用例</span><span class="p">,</span><span class="err">否则只有当一个异常</span><span class="p">(</span><span class="err">或者任何异常</span><span class="p">)</span><span class="err">被触发的时候才会知道</span><span class="p">,</span> <span class="err">届时记录下来并且查看是否有匹配的异常</span><span class="p">,</span> <span class="err">并且抛出它自己的错误异常</span> <span class="o">-</span>
+<span class="err">这是一个</span><span class="ne">NameError</span><span class="err">通常所做的事情</span><span class="o">.</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">do_something</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">return</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">do_something</span><span class="p">()</span>
+
+<span class="o">...</span> <span class="k">except</span> <span class="n">ValuError</span><span class="p">:</span> <span class="err"> </span><span class="c1"># oops - someone can&#39;t type</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Oops&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;OK!&quot;</span><span class="p">)</span> <span class="err"> </span> <span class="c1"># we are &#39;ok&#39; until do_something returns a triple...</span>
+
+<span class="n">OK</span><span class="err">!</span>
+
+<span class="err">令人讨厌的</span><span class="p">(</span><span class="err">上段中提到的</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span><span class="ne">TypeError</span> <span class="o">=</span> <span class="ne">ZeroDivisionError</span> <span class="err"> </span><span class="c1"># now why would we do this...?!</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span><span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span>
+
+<span class="o">...</span> <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Caught!&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">Caught</span><span class="err">!</span>
+
+<span class="err">不仅仅是异常参数通过名称查找</span><span class="p">,</span> <span class="o">-</span> <span class="err">其它的表达式也是这样工作的</span><span class="p">:</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span>
+
+<span class="o">...</span> <span class="k">except</span> <span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;Zero Division Error&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">())):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Caught!&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">Caught</span><span class="err">!</span>
+
+<span class="err">异常参数不仅仅只能在运行时确定</span><span class="p">,</span><span class="err">它甚至可以使用在生命周期内的异常的信息</span><span class="o">.</span> <span class="err">以下是一个比较费解的方式来捕捉抛出的异常</span> <span class="o">-</span> <span class="err">但也只能如此了</span><span class="p">:</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">current_exc_type</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">blob</span>
+
+<span class="o">...</span> <span class="k">except</span> <span class="n">current_exc_type</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Got you!&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">Got</span> <span class="n">you</span><span class="err">!</span>
+
+<span class="err">很明显这才是我们真正要寻找的当我们写异常处理程序时</span><span class="p">,</span> <span class="err">我们应该首先想到的就是这种</span>
+
+<span class="err">（字节）代码</span>
+
+<span class="err">为了确认它是如何在异常处理工作中出现的</span><span class="p">,</span><span class="err">我在一个异常的例子中运行</span> <span class="n">dis</span><span class="o">.</span><span class="n">dis</span><span class="p">()</span><span class="o">.</span> <span class="p">(</span><span class="err">注意</span> <span class="err">这里的分解是在</span><span class="n">Python2</span><span class="o">.</span><span class="mi">7</span> <span class="err">下</span> <span class="o">-</span>
+<span class="err">不同的字节码是</span><span class="n">Python</span> <span class="mf">3.3</span><span class="err">下产生的</span><span class="p">,</span><span class="err">但这基本上是类似的</span><span class="p">):</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">dis</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">x</span><span class="p">():</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">except</span> <span class="n">Blobbity</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;bad&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;good&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">dis</span><span class="o">.</span><span class="n">dis</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="err"> </span><span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+
+<span class="err"> </span><span class="mi">2</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">0</span> <span class="n">SETUP_EXCEPT</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">4</span> <span class="p">(</span><span class="n">to</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">BLANKLINE</span><span class="o">&gt;</span>
+
+<span class="err"> </span><span class="mi">3</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">3</span> <span class="n">POP_BLOCK</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">4</span> <span class="n">JUMP_FORWARD</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">22</span> <span class="p">(</span><span class="n">to</span> <span class="mi">29</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">BLANKLINE</span><span class="o">&gt;</span>
+
+<span class="err"> </span><span class="mi">4</span> <span class="err"> </span> <span class="err"> </span> <span class="o">&gt;&gt;</span> <span class="err"> </span> <span class="err"> </span><span class="mi">7</span> <span class="n">DUP_TOP</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">8</span> <span class="n">LOAD_GLOBAL</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">0</span> <span class="p">(</span><span class="n">Blobbity</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">11</span> <span class="n">COMPARE_OP</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">10</span> <span class="p">(</span><span class="n">exception</span> <span class="n">match</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">14</span> <span class="n">POP_JUMP_IF_FALSE</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">28</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">17</span> <span class="n">POP_TOP</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">18</span> <span class="n">POP_TOP</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">19</span> <span class="n">POP_TOP</span>
+
+<span class="o">&lt;</span><span class="n">BLANKLINE</span><span class="o">&gt;</span>
+
+<span class="err"> </span><span class="mi">5</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="mi">20</span> <span class="n">LOAD_CONST</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">1</span> <span class="p">(</span><span class="s1">&#39;bad&#39;</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">23</span> <span class="n">PRINT_ITEM</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">24</span> <span class="n">PRINT_NEWLINE</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">25</span> <span class="n">JUMP_FORWARD</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">6</span> <span class="p">(</span><span class="n">to</span> <span class="mi">34</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="o">&gt;&gt;</span> <span class="err"> </span> <span class="mi">28</span> <span class="n">END_FINALLY</span>
+
+<span class="o">&lt;</span><span class="n">BLANKLINE</span><span class="o">&gt;</span>
+
+<span class="err"> </span><span class="mi">7</span> <span class="err"> </span> <span class="err"> </span> <span class="o">&gt;&gt;</span> <span class="err"> </span> <span class="mi">29</span> <span class="n">LOAD_CONST</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">2</span> <span class="p">(</span><span class="s1">&#39;good&#39;</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">32</span> <span class="n">PRINT_ITEM</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">33</span> <span class="n">PRINT_NEWLINE</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="o">&gt;&gt;</span> <span class="err"> </span> <span class="mi">34</span> <span class="n">LOAD_CONST</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">0</span> <span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="mi">37</span> <span class="n">RETURN_VALUE</span>
+
+<span class="err">这显示出了我原来预期的问题</span><span class="p">(</span><span class="n">issue</span><span class="p">)</span><span class="o">.</span> <span class="err">异常处理</span><span class="s2">&quot;看起来&quot;</span><span class="err">完全是按照</span><span class="n">Python</span><span class="err">内部机制在运行</span><span class="o">.</span> <span class="err">这一步完全没有必要知道关于后续的异常“捕获”语句</span><span class="p">,</span>
+<span class="err">并且如果没有异常抛出它们将被完全忽略了</span><span class="o">.</span><span class="n">SETUP_EXCEPT</span><span class="err">并不关心发生了什么</span><span class="p">,</span> <span class="err">仅仅是如果发生了异常</span><span class="p">,</span>
+<span class="err">第一个处理程序应该被评估</span><span class="p">,</span><span class="err">然后第二个</span><span class="p">,</span><span class="err">以此类推</span><span class="o">.</span>
+
+<span class="err">每个处理程序都有两部分组成</span><span class="p">:</span> <span class="err">获得一个异常的规则</span><span class="p">,</span> <span class="err">和刚刚抛出的异常进行对比</span><span class="o">.</span> <span class="err">一切都是延迟的</span><span class="p">,</span> <span class="err">一切看起来正如对你的逐行的代码的预期一样</span><span class="p">,</span>
+<span class="err">从解释器的角度来考虑</span><span class="o">.</span> <span class="err">没有任务聪明的事情发生了</span><span class="p">,</span><span class="err">只是突然使得它看起来非常聪明</span><span class="o">.</span>
+
+<span class="err">总结</span>
+
+<span class="err">虽然这种动态的异常参数让我大吃一惊</span><span class="p">,</span> <span class="err">但是这当中包含很多有趣的应用</span><span class="o">.</span> <span class="err">当然去实现它们当中的许多或许是个馊主意</span><span class="p">,</span><span class="err">呵呵</span>
+
+<span class="err">有时并不能总是凭直觉来确认有多少</span><span class="n">Python</span><span class="err">特性的支持</span> <span class="o">-</span> <span class="err">例如</span> <span class="err">在类作用域内</span> <span class="err">表达式和声明都是被显式接受的</span><span class="p">,</span> <span class="p">(</span><span class="err">而不是函数</span><span class="p">,</span> <span class="err">方法</span><span class="p">,</span>
+<span class="err">全局作用域</span><span class="p">),</span><span class="err">但是并不是所有的都是如此灵活的</span><span class="o">.</span> <span class="err">虽然</span><span class="p">(</span><span class="err">我认为</span><span class="p">)</span><span class="err">那将是十分美好的</span><span class="p">,</span> <span class="err">表达式被禁止应用于装饰器</span> <span class="o">-</span> <span class="err">以下是</span><span class="n">Python</span><span class="err">语法错误</span><span class="p">:</span>
+
+<span class="err">@</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">fn</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">x</span><span class="p">():</span>
+
+<span class="err"> </span> <span class="k">pass</span>
+
+<span class="err">这个是尝试动态异常参数通过给定类型传递给第一个异常的例子</span><span class="p">,</span> <span class="err">静静的忍受重复的异常</span><span class="p">:</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Pushover</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="n">exc_spec</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<span class="o">...</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">def</span> <span class="nf">attempt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">return</span> <span class="n">action</span><span class="p">()</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">except</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exc_spec</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">pass</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="bp">self</span><span class="o">.</span><span class="n">exc_spec</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">raise</span>
+
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pushover</span> <span class="o">=</span> <span class="n">Pushover</span><span class="p">()</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">try</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="n">pushover</span><span class="o">.</span><span class="n">attempt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">except</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Boo&quot;</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="k">else</span><span class="p">:</span>
+
+<span class="o">...</span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Yay!&quot;</span><span class="p">)</span>
+
+<span class="n">Boo</span>
+
+<span class="n">Yay</span><span class="err">!</span>
+
+<span class="n">Yay</span><span class="err">!</span>
+
+<span class="n">Yay</span><span class="err">!</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

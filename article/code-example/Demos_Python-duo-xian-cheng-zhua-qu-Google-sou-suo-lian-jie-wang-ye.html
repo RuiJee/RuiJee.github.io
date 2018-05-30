@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python多线程抓取Google搜索链接网页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python多线程抓取Google搜索链接网页">
+                                        Python多线程抓取Google搜索链接网页
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python多线程抓取Google搜索链接网页</span>
+
+<span class="mi">1</span><span class="err">）</span><span class="n">urllib2</span><span class="o">+</span><span class="n">BeautifulSoup</span><span class="err">抓取</span><span class="n">Goolge</span><span class="err">搜索链接</span>
+
+<span class="err">近期，参与的项目需要对</span><span class="n">Google</span><span class="err">搜索结果进行处理，之前学习了</span><span class="n">Python</span><span class="err">处理网页相关的工具。实际应用中，使用了</span><span class="n">urllib2</span><span class="err">和</span><span class="n">beautifulsoup</span><span class="err">来</span>
+<span class="err">进行网页的抓取，但是在抓取</span><span class="n">google</span><span class="err">搜索结果的时候，发现如果是直接对</span><span class="n">google</span><span class="err">搜索结果页面的源代码进行处理，会得到很多“脏”链接。</span>
+
+<span class="err">看下图为搜索“</span><span class="n">titanic</span> <span class="err"> </span><span class="n">james</span><span class="err">”的结果：</span>
+
+<span class="err">!</span><span class="p">[</span><span class="n">QQ</span><span class="err">截图</span><span class="mi">20130407145449</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">pythontab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">uploadfile</span><span class="o">/</span><span class="mi">2013</span><span class="o">/</span><span class="mo">0410</span><span class="o">/</span><span class="mi">2013041009</span>
+<span class="mf">5957782.j</span><span class="n">pg</span><span class="p">)</span>
+
+<span class="err">图中红色标记的是不需要的，蓝色标记的是需要抓取处理的。</span>
+
+<span class="err">这种“脏链接”当然可以通过规则过滤的方法来过滤掉，但是这样程序的复杂度就高了。正当自己愁眉苦脸的正在写过滤规则时。同学提醒说</span><span class="n">google</span><span class="err">应该提供相关的</span><span class="n">api</span>
+<span class="err">，才恍然大明白。</span>
+
+<span class="err">（</span><span class="mi">2</span><span class="err">）</span><span class="n">Google</span> <span class="n">Web</span> <span class="n">Search</span> <span class="n">API</span><span class="o">+</span><span class="err">多线程</span>
+
+<span class="err">文档中给出使用</span><span class="n">Python</span><span class="err">进行搜索的例子：</span>
+
+
+
+    <span class="kn">import</span> <span class="nn">simplejson</span>
+
+    <span class="c1"># The request also includes the userip parameter which provides the end  </span>
+    <span class="c1"># user&#39;s IP address. Doing so will help distinguish this legitimate  </span>
+    <span class="c1"># server-side traffic from traffic which doesn&#39;t come from an end-user.  </span>
+    <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://ajax.googleapis.com/ajax/services/search/web&#39;</span>
+           <span class="s1">&#39;?v=1.0&amp;q=Paris%20Hilton&amp;userip=USERS-IP-ADDRESS&#39;</span><span class="p">)</span>
+
+    <span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span> 
+        <span class="n">url</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="o">/*</span> <span class="n">Enter</span> <span class="n">the</span> <span class="n">URL</span> <span class="n">of</span> <span class="n">your</span> <span class="n">site</span> <span class="n">here</span> <span class="o">*/</span><span class="p">})</span> 
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="c1"># Process the JSON string.  </span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> 
+    <span class="c1"># now have some fun with the results...</span>
+
+    <span class="kn">import</span> <span class="nn">simplejson</span>
+
+    <span class="c1"># The request also includes the userip parameter which provides the end</span>
+    <span class="c1"># user&#39;s IP address. Doing so will help distinguish this legitimate</span>
+    <span class="c1"># server-side traffic from traffic which doesn&#39;t come from an end-user.</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://ajax.googleapis.com/ajax/services/search/web&#39;</span>
+           <span class="s1">&#39;?v=1.0&amp;q=Paris%20Hilton&amp;userip=USERS-IP-ADDRESS&#39;</span><span class="p">)</span>
+
+    <span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span>
+        <span class="n">url</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="o">/*</span> <span class="n">Enter</span> <span class="n">the</span> <span class="n">URL</span> <span class="n">of</span> <span class="n">your</span> <span class="n">site</span> <span class="n">here</span> <span class="o">*/</span><span class="p">})</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="c1"># Process the JSON string.</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="c1"># now have some fun with the results..</span>
+
+
+
+<span class="err">实际应用中可能需要抓取</span><span class="n">google</span><span class="err">的很多网页，所以还需要使用多线程来分担抓取任务。使用</span><span class="n">google</span> <span class="n">web</span> <span class="n">search</span>
+<span class="n">api</span><span class="err">的参考详细介绍，请看此处（这里介绍了</span><span class="n">Standard</span> <span class="n">URL</span>
+<span class="n">Arguments</span><span class="err">）。另外要特别注意，</span><span class="n">url</span><span class="err">中参数</span><span class="n">rsz</span><span class="err">必须是</span><span class="mi">8</span><span class="err">（包括</span><span class="mi">8</span><span class="err">）以下的值，若大于</span><span class="mi">8</span><span class="err">，会报错的！</span>
+
+<span class="err">（</span><span class="mi">3</span><span class="err">）代码实现</span>
+
+<span class="err">代码实现还存在问题，但是能够运行，鲁棒性差，还需要进行改进，希望各路大神指出错误（初学</span><span class="n">Python</span><span class="err">），不胜感激。</span>
+
+
+
+    <span class="c1">#-*-coding:utf-8-*-  </span>
+    <span class="kn">import</span> <span class="nn">urllib2</span><span class="o">,</span><span class="nn">urllib</span> 
+    <span class="kn">import</span> <span class="nn">simplejson</span> 
+    <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span><span class="nn">threading</span>
+
+    <span class="kn">import</span> <span class="nn">common</span><span class="o">,</span> <span class="nn">html_filter</span> 
+    <span class="c1">#input the keywords  </span>
+    <span class="n">keywords</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s1">&#39;Enter the keywords: &#39;</span><span class="p">)</span>
+
+    <span class="c1">#define rnum_perpage, pages  </span>
+    <span class="n">rnum_perpage</span><span class="o">=</span><span class="mi">8</span>
+    <span class="n">pages</span><span class="o">=</span><span class="mi">8</span>
+
+    <span class="c1">#定义线程函数  </span>
+    <span class="k">def</span> <span class="nf">thread_scratch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">rnum_perpage</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span> 
+     <span class="n">url_set</span> <span class="o">=</span> <span class="p">[]</span>  
+     <span class="k">try</span><span class="p">:</span> 
+       <span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="s1">&#39;http://www.sina.com&#39;</span><span class="p">})</span> 
+       <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> 
+       <span class="c1"># Process the JSON string.  </span>
+       <span class="n">results</span> <span class="o">=</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> 
+       <span class="n">info</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;responseData&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> 
+     <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span> 
+       <span class="k">print</span> <span class="s1">&#39;error occured&#39;</span>
+       <span class="k">print</span> <span class="n">e</span> 
+     <span class="k">else</span><span class="p">:</span> 
+       <span class="k">for</span> <span class="n">minfo</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span> 
+          <span class="n">url_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">minfo</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span> 
+          <span class="k">print</span> <span class="n">minfo</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> 
+      <span class="c1">#处理链接  </span>
+     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+     <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">url_set</span><span class="p">:</span> 
+       <span class="k">try</span><span class="p">:</span> 
+         <span class="n">request_url</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="s1">&#39;http://www.sina.com&#39;</span><span class="p">})</span> 
+         <span class="n">request_url</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span> 
+         <span class="s1">&#39;User-agent&#39;</span><span class="p">,</span> 
+         <span class="s1">&#39;CSC&#39;</span>
+         <span class="p">)</span> 
+         <span class="n">response_data</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> 
+         <span class="c1">#过滤文件  </span>
+         <span class="c1">#content_data = html_filter.filter_tags(response_data)  </span>
+         <span class="c1">#写入文件  </span>
+         <span class="n">filenum</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="n">page</span> 
+         <span class="n">filename</span> <span class="o">=</span> <span class="n">dir_name</span><span class="o">+</span><span class="s1">&#39;/related_html_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">filenum</span><span class="p">)</span> 
+         <span class="k">print</span> <span class="s1">&#39;  write start: related_html_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">filenum</span><span class="p">)</span> 
+         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response_data</span><span class="p">)</span> 
+         <span class="c1">#print content_data  </span>
+         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+         <span class="k">print</span> <span class="s1">&#39;  write down: related_html_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">filenum</span><span class="p">)</span> 
+       <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> 
+         <span class="k">print</span> <span class="s1">&#39;error occured 2&#39;</span>
+         <span class="k">print</span> <span class="n">e</span> 
+       <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+     <span class="k">return</span>
+
+    <span class="c1">#创建文件夹  </span>
+    <span class="n">dir_name</span> <span class="o">=</span> <span class="s1">&#39;related_html_&#39;</span><span class="o">+</span><span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span> 
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span> 
+       <span class="k">print</span> <span class="s1">&#39;exists  file&#39;</span>
+       <span class="n">common</span><span class="o">.</span><span class="n">delete_dir_or_file</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span> 
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
+
+    <span class="c1">#抓取网页  </span>
+    <span class="k">print</span> <span class="s1">&#39;start to scratch web pages:&#39;</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pages</span><span class="p">):</span> 
+      <span class="k">print</span> <span class="s2">&quot;page:</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> 
+      <span class="n">page</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">rnum_perpage</span> 
+      <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://ajax.googleapis.com/ajax/services/search/web&#39;</span>
+                      <span class="s1">&#39;?v=1.0&amp;q=</span><span class="si">%s</span><span class="s1">&amp;rsz=</span><span class="si">%s</span><span class="s1">&amp;start=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">keywords</span><span class="p">),</span> <span class="n">rnum_perpage</span><span class="p">,</span><span class="n">page</span><span class="p">)</span> 
+      <span class="k">print</span> <span class="n">url</span> 
+      <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread_scratch</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">rnum_perpage</span><span class="p">,</span> <span class="n">page</span><span class="p">))</span> 
+      <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> 
+    <span class="c1">#主线程等待子线程抓取完  </span>
+    <span class="n">main_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span> 
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threading</span><span class="o">.</span><span class="n">enumerate</span><span class="p">():</span> 
+      <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">main_thread</span><span class="p">:</span> 
+        <span class="k">continue</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

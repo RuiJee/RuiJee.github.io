@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Python3 加密解密技术详解</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Alex">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/nest.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/fonts.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments.css" rel="stylesheet">
+
+    <!--<link href="/theme/css/base.css" rel="stylesheet">-->
+
+    <script src="/theme/js/jquery-1.7.2.min.js"></script>
+
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+
+    <link href="/" type="application/atom+xml" rel="alternate" title="Alex's Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/index.html">Alex's Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="/category/code-example/index.html">
+						<i class="icon-folder-open icon-large"></i>Code Example
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/linux/index.html">
+						<i class="icon-folder-open icon-large"></i>Linux
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pa-chong-ji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>爬虫技术
+					</a>
+                  </li>
+                  <li >
+                    <a href="/category/pythonji-zhu/index.html">
+						<i class="icon-folder-open icon-large"></i>Python技术
+					</a>
+                  </li>
+                              <!--<li ><a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></li>-->
+                                <li><a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></li>
+                          <ul class="nav pull-right">
+
+                                <li><a href="/archives.html"><i class="icon-th-list"></i>文章列表</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Python3 加密解密技术详解">
+                                        Python3 加密解密技术详解
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-01-01T00:00:00+08:00">
+        <i class="icon-calendar"></i>Mon 01 January 2018
+</abbr>
+<span class="label">By</span>
+<a href="/author/alex/"><i class="icon-user"></i>Alex</a>
+<span class="label">Category</span>
+<a href="/category/code-example/index.html"><i class="icon-folder-open"></i>Code Example</a>.
+
+
+<span class="label">Tags</span>
+	<a href="/tag/code_demos/index.html"><i class="icon-tag"></i>code_Demos</a>
+
+</footer><!-- /.post-info -->                </div>
+                <div class="highlight"><pre><span></span><span class="c1"># Python3 加密解密技术详解</span>
+
+<span class="n">Python</span> <span class="mi">3</span>
+<span class="err">的标准库中没多少用来解决加密的，不过却有用于处理哈希的库。在这里我们会对其进行一个简单的介绍，但重点会放在两个第三方的软件包：</span><span class="n">PyCrypto</span> <span class="err">和</span>
+<span class="n">cryptography</span> <span class="err">上。我们将学习如何使用这两个库，来加密和解密字符串。</span>
+
+<span class="c1">### 哈希</span>
+
+<span class="err">如果需要用到安全哈希算法或是消息摘要算法，那么你可以使用标准库中的</span> <span class="n">hashlib</span> <span class="err">模块。这个模块包含了符合</span>
+<span class="n">FIPS</span><span class="err">（美国联邦信息处理标准）的安全哈希算法，包括</span> <span class="n">SHA1</span><span class="err">，</span><span class="n">SHA224</span><span class="err">，</span><span class="n">SHA256</span><span class="err">，</span><span class="n">SHA384</span><span class="err">，</span><span class="n">SHA512</span> <span class="err">以及</span> <span class="n">RSA</span> <span class="err">的</span> <span class="n">MD5</span>
+<span class="err">算法。</span><span class="n">Python</span> <span class="err">也支持</span> <span class="n">adler32</span> <span class="err">以及</span> <span class="n">crc32</span> <span class="err">哈希函数，不过它们在</span> <span class="n">zlib</span> <span class="err">模块中。</span>
+
+
+
+<span class="err">哈希的一个最常见的用法是，存储密码的哈希值而非密码本身。当然了，使用的哈希函数需要稳健一点，否则容易被破解。另一个常见的用法是，计算一个文件的哈希值，然后将</span>
+<span class="err">这个文件和它的哈希值分别发送。接收到文件的人可以计算文件的哈希值，检验是否与接受到的哈希值相符。如果两者相符，就说明文件在传送的过程中未经篡改。</span>
+
+
+
+<span class="err">让我们试着创建一个</span> <span class="n">md5</span> <span class="err">哈希：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">hashlib</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">md5</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;Python rocks!&#39;</span><span class="p">)</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&lt;pyshell#5&gt;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="err">    </span><span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;Python rocks!&#39;</span><span class="p">)</span>
+    <span class="ne">TypeError</span><span class="p">:</span><span class="err"> </span><span class="n">Unicode</span><span class="o">-</span><span class="n">objects</span><span class="err"> </span><span class="n">must</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">encoded</span><span class="err"> </span><span class="n">before</span><span class="err"> </span><span class="n">hashing</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Python rocks!&#39;</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">md5</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x14\x82\xec\x1b</span><span class="s1">#d</span><span class="se">\xf6</span><span class="s1">N}</span><span class="se">\x16</span><span class="s1">*+[</span><span class="se">\x16\xf4</span><span class="s1">w&#39;</span>
+
+<span class="err">让我们花点时间一行一行来讲解。首先，我们导入</span> <span class="n">hashlib</span> <span class="err">，然后创建一个</span> <span class="n">md5</span>
+<span class="err">哈希对象的实例。接着，我们向这个实例中添加一个字符串后，却得到了报错信息。原来，计算</span> <span class="n">md5</span>
+<span class="err">哈希时，需要使用字节形式的字符串而非普通字符串。正确添加字符串后，我们调用它的</span> <span class="n">digest</span>
+<span class="err">函数来得到哈希值。如果你想要十六进制的哈希值，也可以用以下方法：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">md5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="s1">&#39;1482ec1b2364f64e7d162a2b5b16f477&#39;</span>
+
+<span class="err">实际上，有一种精简的方法来创建哈希，下面我们看一下用这种方法创建一个</span> <span class="n">sha1</span> <span class="err">哈希：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">sha</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Hello Python&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">sha</span>
+    <span class="s1">&#39;422fbfbc67fe17c86642c5eaaa48f8b670cbed1b&#39;</span>
+
+<span class="err">可以看到，我们可以同时创建一个哈希实例并且调用其</span> <span class="n">digest</span> <span class="err">函数。然后，我们打印出这个哈希值看一下。这里我使用</span> <span class="n">sha1</span>
+<span class="err">哈希函数作为例子，但它不是特别安全，读者可以随意尝试其他的哈希函数。</span>
+
+<span class="c1">### 密钥导出</span>
+
+<span class="n">Python</span> <span class="err">的标准库对密钥导出支持较弱。实际上，</span><span class="n">hashlib</span> <span class="err">函数库提供的唯一方法就是</span> <span class="n">pbkdf2_hmac</span> <span class="err">函数。它是</span> <span class="n">PKCS</span><span class="c1">#5</span>
+<span class="err">的基于口令的第二个密钥导出函数，并使用</span> <span class="n">HMAC</span>
+<span class="err">作为伪随机函数。因为它支持“加盐</span><span class="n">salt</span><span class="err">”和迭代操作，你可以使用类似的方法来哈希你的密码。例如，如果你打算使用</span> <span class="n">SHA</span><span class="o">-</span><span class="mi">256</span> <span class="err">加密方法，你将需要至少</span> <span class="mi">16</span>
+<span class="err">个字节的“盐”，以及最少</span> <span class="mi">100000</span> <span class="err">次的迭代操作。</span>
+
+
+
+<span class="err">简单来说，“盐”就是随机的数据，被用来加入到哈希的过程中，以加大破解的难度。这基本可以保护你的密码免受字典和彩虹表</span><span class="n">rainbow</span> <span class="n">table</span><span class="err">的攻击。</span>
+
+
+
+<span class="err">让我们看一个简单的例子：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">binascii</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">dk</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">hashlib</span><span class="o">.</span><span class="n">pbkdf2_hmac</span><span class="p">(</span><span class="n">hash_name</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">,</span>
+    <span class="err">        </span><span class="n">password</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;bad_password34&#39;</span><span class="p">,</span><span class="err"> </span>
+    <span class="err">        </span><span class="n">salt</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;bad_salt&#39;</span><span class="p">,</span><span class="err"> </span>
+    <span class="err">        </span><span class="n">iterations</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">dk</span><span class="p">)</span>
+    <span class="sa">b</span><span class="s1">&#39;6e97bad21f6200f9087036a71e7ca9fa01a59e1d697f7e0284cd7f9b897d7c02&#39;</span>
+
+<span class="err">这里，我们用</span> <span class="n">SHA256</span> <span class="err">对一个密码进行哈希，使用了一个糟糕的盐，但经过了</span> <span class="mi">100000</span> <span class="err">次迭代操作。当然，</span><span class="n">SHA</span>
+<span class="err">实际上并不被推荐用来创建密码的密钥。你应该使用类似</span> <span class="n">scrypt</span> <span class="err">的算法来替代。另一个不错的选择是使用一个叫</span> <span class="n">bcrypt</span>
+<span class="err">的第三方库，它是被专门设计出来哈希密码的。</span>
+
+<span class="c1">### PyCryptodome</span>
+
+<span class="n">PyCrypto</span> <span class="err">可能是</span> <span class="n">Python</span> <span class="err">中密码学方面最有名的第三方软件包。可惜的是，它的开发工作于</span> <span class="mi">2012</span> <span class="err">年就已停止。其他人还在继续发布最新版本的</span>
+<span class="n">PyCrypto</span><span class="err">，如果你不介意使用第三方的二进制包，仍可以取得</span> <span class="n">Python</span> <span class="mf">3.5</span> <span class="err">的相应版本。比如，我在</span> <span class="n">Github</span>
+<span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sfbahr</span><span class="o">/</span><span class="n">PyCrypto</span><span class="o">-</span><span class="n">Wheels</span><span class="p">)</span> <span class="err">上找到了对应</span> <span class="n">Python</span> <span class="mf">3.5</span> <span class="err">的</span> <span class="n">PyCrypto</span> <span class="err">二进制包。</span>
+
+
+
+<span class="err">幸运的是，有一个该项目的分支</span> <span class="n">PyCrytodome</span> <span class="err">取代了</span> <span class="n">PyCrypto</span> <span class="err">。为了在</span> <span class="n">Linux</span> <span class="err">上安装它，你可以使用以下</span> <span class="n">pip</span> <span class="err">命令：</span>
+
+
+
+    <span class="n">pip</span><span class="err"> </span><span class="n">install</span><span class="err"> </span><span class="n">pycryptodome</span>
+
+<span class="err">在</span> <span class="n">Windows</span> <span class="err">系统上安装则稍有不同：</span>
+
+
+
+    <span class="n">pip</span><span class="err"> </span><span class="n">install</span><span class="err"> </span><span class="n">pycryptodomex</span>
+
+<span class="err">如果你遇到了问题，可能是因为你没有安装正确的依赖包（</span><span class="n">LCTT</span> <span class="err">译注：如</span> <span class="n">python</span><span class="o">-</span><span class="n">devel</span><span class="err">），或者你的</span> <span class="n">Windows</span> <span class="err">系统需要一个编译器。</span>
+
+<span class="err">还值得注意的是，</span><span class="n">PyCryptodome</span> <span class="err">在</span> <span class="n">PyCrypto</span> <span class="err">最后版本的基础上有很多改进。非常值得去访问它们的主页，看看有什么新的特性。</span>
+
+<span class="c1">### 加密字符串</span>
+
+<span class="err">访问了他们的主页之后，我们可以看一些例子。在第一个例子中，我们将使用</span> <span class="n">DES</span> <span class="err">算法来加密一个字符串：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">Cipher</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">DES</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;abcdefgh&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">def</span><span class="err"> </span><span class="n">pad</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="err">        </span><span class="k">while</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="err"> </span><span class="o">%</span><span class="err"> </span><span class="mi">8</span><span class="err"> </span><span class="o">!=</span><span class="err"> </span><span class="mi">0</span><span class="p">:</span>
+    <span class="err">            </span><span class="n">text</span><span class="err"> </span><span class="o">+=</span><span class="err"> </span><span class="s1">&#39; &#39;</span>
+    <span class="err">        </span><span class="k">return</span><span class="err"> </span><span class="n">text</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">des</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">DES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="err"> </span><span class="n">DES</span><span class="o">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;Python rocks!&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">padded_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">pad</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">des</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">Traceback</span><span class="err"> </span><span class="p">(</span><span class="n">most</span><span class="err"> </span><span class="n">recent</span><span class="err"> </span><span class="n">call</span><span class="err"> </span><span class="n">last</span><span class="p">):</span>
+    <span class="err">  </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;&lt;pyshell#35&gt;&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">1</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="err">    </span><span class="n">encrypted_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">des</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="err">  </span><span class="n">File</span><span class="err"> </span><span class="s2">&quot;C:\Programs\Python\Python35-32\lib\site-packages\Crypto\Cipher</span><span class="se">\b</span><span class="s2">lockalgo.py&quot;</span><span class="p">,</span><span class="err"> </span><span class="n">line</span><span class="err"> </span><span class="mi">244</span><span class="p">,</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">encrypt</span>
+    <span class="err">    </span><span class="k">return</span><span class="err"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_cipher</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">plaintext</span><span class="p">)</span>
+    <span class="ne">ValueError</span><span class="p">:</span><span class="err"> </span><span class="n">Input</span><span class="err"> </span><span class="n">strings</span><span class="err"> </span><span class="n">must</span><span class="err"> </span><span class="n">be</span><span class="err"> </span><span class="n">a</span><span class="err"> </span><span class="n">multiple</span><span class="err"> </span><span class="n">of</span><span class="err"> </span><span class="mi">8</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">length</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">des</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">padded_text</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_text</span>
+    <span class="sa">b</span><span class="s1">&#39;&gt;</span><span class="se">\xfc\x1f\x16</span><span class="s1">x</span><span class="se">\x87\xb2\x93\x0e\xfc</span><span class="s1">H</span><span class="se">\x02\xd5</span><span class="s1">9VQ&#39;</span>
+
+<span class="err">这段代码稍有些复杂，让我们一点点来看。首先需要注意的是，</span><span class="n">DES</span> <span class="err">加密使用的密钥长度为</span> <span class="mi">8</span> <span class="err">个字节，这也是我们将密钥变量设置为</span> <span class="mi">8</span>
+<span class="err">个字符的原因。而我们需要加密的字符串的长度必须是</span> <span class="mi">8</span> <span class="err">的倍数，所以我们创建了一个名为</span> <span class="n">pad</span> <span class="err">的函数，来给一个字符串末尾填充空格，直到它的长度是</span> <span class="mi">8</span>
+<span class="err">的倍数。然后，我们创建了一个</span> <span class="n">DES</span>
+<span class="err">的实例，以及我们需要加密的文本。我们还创建了一个经过填充处理的文本。我们尝试着对未经填充处理的文本进行加密，啊欧，报了一个</span> <span class="ne">ValueError</span>
+<span class="err">错误！我们需要对经过填充处理的文本进行加密，然后得到加密的字符串。（</span><span class="n">LCTT</span> <span class="err">译注：</span><span class="n">encrypt</span> <span class="err">函数的参数应为</span> <span class="n">byte</span>
+<span class="err">类型字符串，代码为：</span><span class="n">encrypted_text</span> <span class="o">=</span> <span class="n">des</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">padded_text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="err">）</span>
+
+
+
+<span class="err">知道了如何加密，还要知道如何解密：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">des</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">encrypted_text</span><span class="p">)</span>
+    <span class="sa">b</span><span class="s1">&#39;Python rocks!   &#39;</span>
+
+<span class="err">幸运的是，解密非常容易，我们只需要调用</span> <span class="n">des</span> <span class="err">对象的</span> <span class="n">decrypt</span> <span class="err">方法就可以得到我们原来的</span> <span class="n">byte</span> <span class="err">类型字符串了。下一个任务是学习如何用</span> <span class="n">RSA</span>
+<span class="err">算法加密和解密一个文件。首先，我们需要创建一些</span> <span class="n">RSA</span> <span class="err">密钥。</span>
+
+<span class="c1">### 创建 RSA 密钥</span>
+
+<span class="err">如果你希望使用</span> <span class="n">RSA</span> <span class="err">算法加密数据，那么你需要拥有访问</span> <span class="n">RAS</span>
+<span class="err">公钥和私钥的权限，否则你需要生成一组自己的密钥对。在这个例子中，我们将生成自己的密钥对。创建</span> <span class="n">RSA</span> <span class="err">密钥非常容易，所以我们将在</span> <span class="n">Python</span>
+<span class="err">解释器中完成。</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">PublicKey</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">RSA</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">code</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;nooneknows&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">RSA</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">key</span><span class="o">.</span><span class="n">exportKey</span><span class="p">(</span><span class="n">passphrase</span><span class="o">=</span><span class="n">code</span><span class="p">,</span><span class="err"> </span><span class="n">pkcs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="err"> </span>
+    <span class="err">        </span><span class="n">protection</span><span class="o">=</span><span class="s2">&quot;scryptAndAES128-CBC&quot;</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">with</span><span class="err"> </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path_to_private_key/my_private_rsa_key.bin&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">f</span><span class="p">:</span>
+    <span class="err">        </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">encrypted_key</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="k">with</span><span class="err"> </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path_to_public_key/my_rsa_public.pem&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">f</span><span class="p">:</span>
+    <span class="err">        </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">publickey</span><span class="p">()</span><span class="o">.</span><span class="n">exportKey</span><span class="p">())</span>
+
+<span class="err">首先我们从</span> <span class="n">Crypto</span><span class="o">.</span><span class="n">PublicKey</span> <span class="err">包中导入</span> <span class="n">RSA</span><span class="err">，然后创建一个傻傻的密码。接着我们生成</span> <span class="mi">2048</span> <span class="err">位的</span> <span class="n">RSA</span>
+<span class="err">密钥。现在我们到了关键的部分。为了生成私钥，我们需要调用</span> <span class="n">RSA</span> <span class="err">密钥实例的</span> <span class="n">exportKey</span> <span class="err">方法，然后传入密码，使用的</span> <span class="n">PKCS</span>
+<span class="err">标准，以及加密方案这三个参数。之后，我们把私钥写入磁盘的文件中。</span>
+
+
+
+<span class="err">接下来，我们通过</span> <span class="n">RSA</span> <span class="err">密钥实例的</span> <span class="n">publickey</span> <span class="err">方法创建我们的公钥。我们使用方法链调用</span> <span class="n">publickey</span> <span class="err">和</span> <span class="n">exportKey</span>
+<span class="err">方法生成公钥，同样将它写入磁盘上的文件。</span>
+
+<span class="c1">### 加密文件</span>
+
+<span class="err">有了私钥和公钥之后，我们就可以加密一些数据，并写入文件了。这里有个比较标准的例子：</span>
+
+
+
+    <span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">PublicKey</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">RSA</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">Random</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">get_random_bytes</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">Cipher</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">AES</span><span class="p">,</span><span class="err"> </span><span class="n">PKCS1_OAEP</span>
+    <span class="k">with</span><span class="err"> </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/encrypted_data.bin&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">out_file</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">recipient_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span>
+    <span class="err">        </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path_to_public_key/my_rsa_public.pem&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="err">    </span><span class="n">session_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">get_random_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">cipher_rsa</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">PKCS1_OAEP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">recipient_key</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cipher_rsa</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">session_key</span><span class="p">))</span>
+    <span class="err">    </span><span class="n">cipher_aes</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">session_key</span><span class="p">,</span><span class="err"> </span><span class="n">AES</span><span class="o">.</span><span class="n">MODE_EAX</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="sa">b</span><span class="s1">&#39;blah blah blah Python blah blah&#39;</span>
+    <span class="err">    </span><span class="n">ciphertext</span><span class="p">,</span><span class="err"> </span><span class="n">tag</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">cipher_aes</span><span class="o">.</span><span class="n">encrypt_and_digest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cipher_aes</span><span class="o">.</span><span class="n">nonce</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
+
+<span class="err">代码的前三行导入</span> <span class="n">PyCryptodome</span> <span class="err">包。然后我们打开一个文件用于写入数据。接着我们导入公钥赋给一个变量，创建一个</span> <span class="mi">16</span>
+<span class="err">字节的会话密钥。在这个例子中，我们将使用混合加密方法，即</span> <span class="n">PKCS</span><span class="c1">#1 OAEP</span>
+<span class="err">，也就是最优非对称加密填充。这允许我们向文件中写入任意长度的数据。接着我们创建</span> <span class="n">AES</span>
+<span class="err">加密，要加密的数据，然后加密数据。我们将得到加密的文本和消息认证码。最后，我们将随机数，消息认证码和加密的文本写入文件。</span>
+
+
+
+<span class="err">顺便提一下，随机数通常是真随机或伪随机数，只是用来进行密码通信的。对于</span> <span class="n">AES</span> <span class="err">加密，其密钥长度最少是</span> <span class="mi">16</span>
+<span class="err">个字节。随意用一个你喜欢的编辑器试着打开这个被加密的文件，你应该只能看到乱码。</span>
+
+
+
+<span class="err">现在让我们学习如何解密我们的数据。</span>
+
+
+
+    <span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">PublicKey</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">RSA</span>
+    <span class="n">from</span><span class="err"> </span><span class="n">Crypto</span><span class="o">.</span><span class="n">Cipher</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">AES</span><span class="p">,</span><span class="err"> </span><span class="n">PKCS1_OAEP</span>
+    <span class="n">code</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s1">&#39;nooneknows&#39;</span>
+    <span class="k">with</span><span class="err"> </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/encrypted_data.bin&#39;</span><span class="p">,</span><span class="err"> </span><span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">fobj</span><span class="p">:</span>
+    <span class="err">    </span><span class="n">private_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span>
+    <span class="err">        </span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path_to_private_key/my_rsa_key.pem&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+    <span class="err">        </span><span class="n">passphrase</span><span class="o">=</span><span class="n">code</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">enc_session_key</span><span class="p">,</span><span class="err"> </span><span class="n">nonce</span><span class="p">,</span><span class="err"> </span><span class="n">tag</span><span class="p">,</span><span class="err"> </span><span class="n">ciphertext</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="err"> </span><span class="n">fobj</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="err"> </span>
+    <span class="err">                                                </span><span class="k">for</span><span class="err"> </span><span class="n">x</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">size_in_bytes</span><span class="p">(),</span><span class="err"> </span>
+    <span class="err">                                                </span><span class="mi">16</span><span class="p">,</span><span class="err"> </span><span class="mi">16</span><span class="p">,</span><span class="err"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="err"> </span><span class="p">]</span>
+    <span class="err">    </span><span class="n">cipher_rsa</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">PKCS1_OAEP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">private_key</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">session_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">cipher_rsa</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">enc_session_key</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">cipher_aes</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">session_key</span><span class="p">,</span><span class="err"> </span><span class="n">AES</span><span class="o">.</span><span class="n">MODE_EAX</span><span class="p">,</span><span class="err"> </span><span class="n">nonce</span><span class="p">)</span>
+    <span class="err">    </span><span class="n">data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">cipher_aes</span><span class="o">.</span><span class="n">decrypt_and_verify</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">,</span><span class="err"> </span><span class="n">tag</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="err">如果你认真看了上一个例子，这段代码应该很容易解析。在这里，我们先以二进制模式读取我们的加密文件，然后导入私钥。注意，当你导入私钥时，需要提供一个密码，否则会</span>
+<span class="err">出现错误。然后，我们文件中读取数据，首先是加密的会话密钥，然后是</span> <span class="mi">16</span> <span class="err">字节的随机数和</span> <span class="mi">16</span> <span class="err">字节的消息认证码，最后是剩下的加密的数据。</span>
+
+
+
+<span class="err">接下来我们需要解密出会话密钥，重新创建</span> <span class="n">AES</span> <span class="err">密钥，然后解密出数据。</span>
+
+
+
+<span class="err">你还可以用</span> <span class="n">PyCryptodome</span> <span class="err">库做更多的事。不过我们要接着讨论在</span> <span class="n">Python</span> <span class="err">中还可以用什么来满足我们加密解密的需求。</span>
+
+<span class="c1">### cryptography 包</span>
+
+<span class="n">cryptography</span> <span class="err">的目标是成为“人类易于使用的密码学包</span><span class="n">cryptography</span> <span class="k">for</span> <span class="n">humans</span><span class="err">”，就像</span> <span class="n">requests</span> <span class="err">是“人类易于使用的</span>
+<span class="n">HTTP</span> <span class="err">库</span><span class="n">HTTP</span> <span class="k">for</span> <span class="n">Humans</span><span class="err">”一样。这个想法使你能够创建简单安全、易于使用的加密方案。如果有需要的话，你也可以使用一些底层的密码学基元，但这也</span>
+<span class="err">需要你知道更多的细节，否则创建的东西将是不安全的。</span>
+
+
+
+<span class="err">如果你使用的</span> <span class="n">Python</span> <span class="err">版本是</span> <span class="mf">3.5</span><span class="p">,</span> <span class="err">你可以使用</span> <span class="n">pip</span> <span class="err">安装，如下：</span>
+
+
+
+    <span class="n">pip</span><span class="err"> </span><span class="n">install</span><span class="err"> </span><span class="n">cryptography</span>
+
+<span class="err">你会看到</span> <span class="n">cryptography</span> <span class="err">包还安装了一些依赖包（</span><span class="n">LCTT</span> <span class="err">译注：如</span> <span class="n">libopenssl</span><span class="o">-</span>
+<span class="n">devel</span><span class="err">）。如果安装都顺利，我们就可以试着加密一些文本了。让我们使用</span> <span class="n">Fernet</span>
+<span class="err">对称加密算法，它保证了你加密的任何信息在不知道密码的情况下不能被篡改或读取。</span><span class="n">Fernet</span> <span class="err">还通过</span> <span class="n">MultiFernet</span>
+<span class="err">支持密钥轮换。下面让我们看一个简单的例子：</span>
+
+
+
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">from</span><span class="err"> </span><span class="n">cryptography</span><span class="o">.</span><span class="n">fernet</span><span class="err"> </span><span class="n">import</span><span class="err"> </span><span class="n">Fernet</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">cipher_key</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Fernet</span><span class="o">.</span><span class="n">generate_key</span><span class="p">()</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">cipher_key</span>
+    <span class="sa">b</span><span class="s1">&#39;APM1JDVgT8WDGOWBgQv6EIhvxl4vDYvUnVdg-Vjdt0o=&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">cipher</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">Fernet</span><span class="p">(</span><span class="n">cipher_key</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="sa">b</span><span class="s1">&#39;My super secret message&#39;</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">encrypted_text</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;gAAAAABXOnV86aeUGADA6mTe9xEL92y_m0_TlC9vcqaF6NzHqRKkjEqh4d21PInEP3C9HuiUkS9f&#39;</span>
+    <span class="err"> </span><span class="sa">b</span><span class="s1">&#39;6bdHsSlRiCNWbSkPuRd_62zfEv3eaZjJvLAm3omnya8=&#39;</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">decrypted_text</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">encrypted_text</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span><span class="err"> </span><span class="n">decrypted_text</span>
+    <span class="sa">b</span><span class="s1">&#39;My super secret message&#39;</span>
+
+<span class="err">首先我们需要导入</span> <span class="n">Fernet</span><span class="err">，然后生成一个密钥。我们输出密钥看看它是什么样儿。如你所见，它是一个随机的字节串。如果你愿意的话，可以试着多运行</span>
+<span class="n">generate_key</span> <span class="err">方法几次，生成的密钥会是不同的。然后我们使用这个密钥生成</span> <span class="n">Fernet</span> <span class="err">密码实例。</span>
+
+
+
+<span class="err">现在我们有了用来加密和解密消息的密码。下一步是创建一个需要加密的消息，然后使用</span> <span class="n">encrypt</span>
+<span class="err">方法对它加密。我打印出加密的文本，然后你可以看到你再也读不懂它了。为了解密出我们的秘密消息，我们只需调用</span> <span class="n">decrypt</span>
+<span class="err">方法，并传入加密的文本作为参数。结果就是我们得到了消息字节串形式的纯文本。</span>
+
+<span class="c1">### 小结</span>
+
+<span class="err">这一章仅仅浅显地介绍了</span> <span class="n">PyCryptodome</span> <span class="err">和</span> <span class="n">cryptography</span>
+<span class="err">这两个包的使用。不过这也确实给了你一个关于如何加密解密字符串和文件的简述。请务必阅读文档，做做实验，看看还能做些什么！</span>
+</pre></div>
+                </div><!-- /.entry-content -->
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC8zNjgwNi8xMzM0Mg==">
+                    <script type="text/javascript">
+                   (function(d, s) {
+                       var j, e = d.getElementsByTagName(s)[0];
+
+                       if (typeof LivereTower === 'function') { return; }
+
+                       j = d.createElement(s);
+                       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                       j.async = true;
+
+                       e.parentNode.insertBefore(j, e);
+                   })(document, 'script');
+                    </script>
+                <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
+    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
+    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
+    <li><a href="http://www.runoob.com/"><i class="icon-external-link"></i>Python教程</a></li>
+    <li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000"><i class="icon-external-link"></i>廖雪峰Python</a></li>
+<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
+<li><a href="/feeds/all.atom.xml" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
+    <li><a href="https://github.com/RuiJee"><i class="icon-Github-sign icon-large"></i>Github</a></li>
+
+<li class="nav-header"><h4> <a href="/categories.html"><i class="icon-folder-close icon-large"></i>Categories</a></h4></li>
+<li>
+<a href="/category/code-example/index.html">
+    <i class="icon-folder-open icon-large"></i>Code Example
+</a>
+</li>
+<li>
+<a href="/category/linux/index.html">
+    <i class="icon-folder-open icon-large"></i>Linux
+</a>
+</li>
+<li>
+<a href="/category/pa-chong-ji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>爬虫技术
+</a>
+</li>
+<li>
+<a href="/category/pythonji-zhu/index.html">
+    <i class="icon-folder-open icon-large"></i>Python技术
+</a>
+</li>
+
+<li class="nav-header"><h4> <a href="/tags.html"><i class="icon-tags icon-large"></i>Tags</a></h4></li>
+<li class="tag-4">
+    <a href="/tag/re/index.html">
+        <i class="icon-tag icon-large"></i>re
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/legb/index.html">
+        <i class="icon-tag icon-large"></i>legb
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/jie-huo/index.html">
+        <i class="icon-tag icon-large"></i>解惑
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_demos/index.html">
+        <i class="icon-tag icon-large"></i>code_Demos
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/bi-bao/index.html">
+        <i class="icon-tag icon-large"></i>闭包
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/shi-xian-yuan-li/index.html">
+        <i class="icon-tag icon-large"></i>实现原理
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ci-yun/index.html">
+        <i class="icon-tag icon-large"></i>词云
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/suan-fa/index.html">
+        <i class="icon-tag icon-large"></i>算法
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/requests/index.html">
+        <i class="icon-tag icon-large"></i>requests
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/code_mobile/index.html">
+        <i class="icon-tag icon-large"></i>code_mobile
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/luan-ma/index.html">
+        <i class="icon-tag icon-large"></i>乱码
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/iterable/index.html">
+        <i class="icon-tag icon-large"></i>iterable
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/thread/index.html">
+        <i class="icon-tag icon-large"></i>thread
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/python/index.html">
+        <i class="icon-tag icon-large"></i>python
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/stringio/index.html">
+        <i class="icon-tag icon-large"></i>stringio
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/decorator/index.html">
+        <i class="icon-tag icon-large"></i>decorator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/shu/index.html">
+        <i class="icon-tag icon-large"></i>书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/metaclass/index.html">
+        <i class="icon-tag icon-large"></i>metaclass
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zuo-yong-yu/index.html">
+        <i class="icon-tag icon-large"></i>作用域
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/pa-chong/index.html">
+        <i class="icon-tag icon-large"></i>爬虫
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/han-shu/index.html">
+        <i class="icon-tag icon-large"></i>函数
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/linux/index.html">
+        <i class="icon-tag icon-large"></i>linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zhi-hu/index.html">
+        <i class="icon-tag icon-large"></i>知乎
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/djang-blog/index.html">
+        <i class="icon-tag icon-large"></i>djang-blog
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/rename/index.html">
+        <i class="icon-tag icon-large"></i>rename
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/equals-identical/index.html">
+        <i class="icon-tag icon-large"></i>equals-identical
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_other/index.html">
+        <i class="icon-tag icon-large"></i>code_other
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_scripts-shell/index.html">
+        <i class="icon-tag icon-large"></i>code_scripts-shell
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_linux/index.html">
+        <i class="icon-tag icon-large"></i>code_linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/django/index.html">
+        <i class="icon-tag icon-large"></i>django
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/gc/index.html">
+        <i class="icon-tag icon-large"></i>gc
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/datetime/index.html">
+        <i class="icon-tag icon-large"></i>datetime
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/dict/index.html">
+        <i class="icon-tag icon-large"></i>dict
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/dian-zi-shu/index.html">
+        <i class="icon-tag icon-large"></i>电子书
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ming-ming-kong-jian/index.html">
+        <i class="icon-tag icon-large"></i>命名空间
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/cai-dan/index.html">
+        <i class="icon-tag icon-large"></i>彩蛋
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/str/index.html">
+        <i class="icon-tag icon-large"></i>str
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_algorithm/index.html">
+        <i class="icon-tag icon-large"></i>code_algorithm
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/generator/index.html">
+        <i class="icon-tag icon-large"></i>generator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/fudge/index.html">
+        <i class="icon-tag icon-large"></i>fudge
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/with/index.html">
+        <i class="icon-tag icon-large"></i>with
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pycharm/index.html">
+        <i class="icon-tag icon-large"></i>pycharm
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/timestamp/index.html">
+        <i class="icon-tag icon-large"></i>timestamp
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/pip/index.html">
+        <i class="icon-tag icon-large"></i>pip
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/zheng-ze-biao-da-shi/index.html">
+        <i class="icon-tag icon-large"></i>正则表达式
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/bian-ma/index.html">
+        <i class="icon-tag icon-large"></i>编码
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_base/index.html">
+        <i class="icon-tag icon-large"></i>code_base
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_graphics/index.html">
+        <i class="icon-tag icon-large"></i>code_graphics
+    </a>
+</li>
+<li class="tag-1">
+    <a href="/tag/code_text-file/index.html">
+        <i class="icon-tag icon-large"></i>code_text-file
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/extractor/index.html">
+        <i class="icon-tag icon-large"></i>extractor
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/book/index.html">
+        <i class="icon-tag icon-large"></i>book
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/iterator/index.html">
+        <i class="icon-tag icon-large"></i>iterator
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/beautifulsoup/index.html">
+        <i class="icon-tag icon-large"></i>beautifulsoup
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/ru-men/index.html">
+        <i class="icon-tag icon-large"></i>入门
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/method/index.html">
+        <i class="icon-tag icon-large"></i>method
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lambda/index.html">
+        <i class="icon-tag icon-large"></i>lambda
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/zhuang-shi-qi/index.html">
+        <i class="icon-tag icon-large"></i>装饰器
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/virtualenv/index.html">
+        <i class="icon-tag icon-large"></i>virtualenv
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/centos/index.html">
+        <i class="icon-tag icon-large"></i>centos
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/list/index.html">
+        <i class="icon-tag icon-large"></i>list
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/int/index.html">
+        <i class="icon-tag icon-large"></i>int
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/for/index.html">
+        <i class="icon-tag icon-large"></i>for
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/python3/index.html">
+        <i class="icon-tag icon-large"></i>python3
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/biao-qian-yun/index.html">
+        <i class="icon-tag icon-large"></i>标签云
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tornado/index.html">
+        <i class="icon-tag icon-large"></i>tornado
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_game/index.html">
+        <i class="icon-tag icon-large"></i>code_game
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/pythonic/index.html">
+        <i class="icon-tag icon-large"></i>pythonic
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/tuple/index.html">
+        <i class="icon-tag icon-large"></i>tuple
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_security/index.html">
+        <i class="icon-tag icon-large"></i>code_security
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_gui/index.html">
+        <i class="icon-tag icon-large"></i>code_gui
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/python27/index.html">
+        <i class="icon-tag icon-large"></i>python27
+    </a>
+</li>
+<li class="tag-2">
+    <a href="/tag/code_mail/index.html">
+        <i class="icon-tag icon-large"></i>code_mail
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/yield/index.html">
+        <i class="icon-tag icon-large"></i>yield
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/free/index.html">
+        <i class="icon-tag icon-large"></i>free
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/singleton/index.html">
+        <i class="icon-tag icon-large"></i>singleton
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/lsof/index.html">
+        <i class="icon-tag icon-large"></i>lsof
+    </a>
+</li>
+<li class="tag-3">
+    <a href="/tag/http/index.html">
+        <i class="icon-tag icon-large"></i>http
+    </a>
+</li>
+<li class="tag-4">
+    <a href="/tag/intern/index.html">
+        <i class="icon-tag icon-large"></i>intern
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <!--<address id="about">
+                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
+                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
+        </address>--><!-- /#about -->
+
+       <!-- <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
+                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>-->
+         <p>&copy; Alex 2018</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="/theme/js/jquery-1.7.2.min.js"></script>-->
+    <script src="/theme/js/bootstrap.min.js"></script>
+  </body>
+</html>
